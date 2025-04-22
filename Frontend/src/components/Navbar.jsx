@@ -1,24 +1,26 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Menubar } from 'primereact/menubar';
 
 const Navbar = () => {
+  const items = [
+    {
+      label: 'Inicio',
+      icon: 'pi pi-home',
+      url: '/'
+    },
+    {
+      label: 'Acerca de',
+      icon: 'pi pi-info-circle',
+      url: '/about'
+    }
+  ];
+
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Mi Aplicación
-        </Typography>
-        <Box>
-          <Button color="inherit" component={RouterLink} to="/">
-            Inicio
-          </Button>
-          <Button color="inherit" component={RouterLink} to="/about">
-            Acerca de
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <Menubar 
+      model={items}
+      start={<div className="text-xl font-bold">Mi Aplicación</div>}
+    />
   );
 };
 
