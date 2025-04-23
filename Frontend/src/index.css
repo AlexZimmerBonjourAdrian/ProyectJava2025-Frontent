@@ -1,9 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
 @import 'primereact/resources/primereact.min.css';
 @import 'primeicons/primeicons.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
     --primary-color: #4f46e5;
     --secondary-color: #6366f1;
