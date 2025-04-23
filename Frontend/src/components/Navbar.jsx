@@ -13,6 +13,11 @@ const Navbar = () => {
       label: 'Acerca de',
       icon: 'pi pi-info-circle',
       url: '/about'
+    },
+    {
+      label: 'Iniciar Sesión',
+      icon: 'pi pi-user',
+      url: '/login'
     }
   ];
 
