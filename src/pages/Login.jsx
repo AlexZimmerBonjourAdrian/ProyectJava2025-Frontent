@@ -1,4 +1,16 @@
-//Todo: Loguin
+/**
+Para despues de iniciar sesión, se puede usar el token almacenado en localStorage para hacer peticiones a la API.
+
+const token = localStorage.getItem('authToken');
+
+fetch('http://localhost:8080/profile', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`, // 👈 acá va el token
+        'Content-Type': 'application/json'
+    }
+})
+ */
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +18,8 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -27,14 +41,31 @@ const Login = () => {
         if (!formData.email || !formData.password) {
             return;
         }
-        
         setLoading(true);
         try {
-            console.log('Login attempt:', formData);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            navigate('/');
+            fetch(
+                `${API_URL}/api/seguridad/login`, 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    const token = data.token;
+                    localStorage.setItem('authToken', token);
+                    console.log('Token almacenado:', token);
+                    navigate('/home')
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+            });
         } catch (error) {
-            console.error('Error en el login:', error);
+            console.error('Error en la solicitud:', error);
         } finally {
             setLoading(false);
         }
