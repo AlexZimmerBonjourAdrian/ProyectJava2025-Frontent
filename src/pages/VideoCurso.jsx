@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { Button } from 'primereact/button';
+import React from 'react';
 import VideoComponent from '../components/VideoComponent';
 import './VideoCurso.css';
 
 const VideoCurso = () => {
-    const [mostrarVideo, setMostrarVideo] = useState(false);
-
     const videoData = {
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // Video de ejemplo
         title: "Introducción al Curso",
@@ -25,49 +22,38 @@ const VideoCurso = () => {
 
     return (
         <div className="video-curso-container">
-            <div className="video-controls">
-                <Button 
-                    label={mostrarVideo ? "Ocultar Video" : "Mostrar Video"} 
-                    icon={`pi pi-${mostrarVideo ? 'eye-slash' : 'eye'}`}
-                    onClick={() => setMostrarVideo(!mostrarVideo)}
-                    className="p-button-primary p-button-rounded"
-                />
-            </div>
-
-            {mostrarVideo && (
-                <div className="video-section">
-                    <div className="video-header">
-                        <h2 className="video-title">{videoData.title}</h2>
-                        <p className="video-description">{videoData.description}</p>
-                    </div>
-
-                    <VideoComponent
-                        videoUrl={videoData.videoUrl}
-                        title={videoData.title}
-                        description={videoData.description}
-                        thumbnail={videoData.thumbnail}
-                    />
-
-                    <div className="recursos-section">
-                        <h3 className="recursos-title">Recursos Adicionales</h3>
-                        <ul className="recursos-list">
-                            {videoData.recursos.map((recurso, index) => (
-                                <li key={index} className="recurso-item">
-                                    <a 
-                                        href={recurso.url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="recurso-link"
-                                    >
-                                        <i className="pi pi-file-pdf"></i>
-                                        {recurso.nombre}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+            <div className="video-section">
+                <div className="video-header">
+                    <h2 className="video-title">{videoData.title}</h2>
+                    <p className="video-description">{videoData.description}</p>
                 </div>
-            )}
+
+                <VideoComponent
+                    videoUrl={videoData.videoUrl}
+                    title={videoData.title}
+                    description={videoData.description}
+                    thumbnail={videoData.thumbnail}
+                />
+
+                <div className="recursos-section">
+                    <h3 className="recursos-title">Recursos Adicionales</h3>
+                    <ul className="recursos-list">
+                        {videoData.recursos.map((recurso, index) => (
+                            <li key={index} className="recurso-item">
+                                <a 
+                                    href={recurso.url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="recurso-link"
+                                >
+                                    <i className="pi pi-file-pdf"></i>
+                                    {recurso.nombre}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };
