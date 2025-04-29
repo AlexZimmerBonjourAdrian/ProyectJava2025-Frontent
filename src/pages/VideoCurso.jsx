@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import VideoComponent from '../components/VideoComponent';
 import './VideoCurso.css';
 
 const VideoCurso = () => {
     const videoData = {
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // Video de ejemplo
-        title: "Introducción al Curso",
-        description: "Bienvenido al curso. En este video aprenderás los conceptos básicos.",
+        title: "0. Introducción a la meditación",
+        description: "Se presentarán todas las técnicas de meditación con el objetivo de conseguir un estado de relajación y plenitud antes de iniciar el largo viaje que nos depara.",
         thumbnail: "https://picsum.photos/800/450", // Imagen de ejemplo
         recursos: [
             {
@@ -22,18 +23,28 @@ const VideoCurso = () => {
 
     return (
         <div className="video-curso-container">
-            <div className="video-section">
-                <div className="video-header">
-                    <h2 className="video-title">{videoData.title}</h2>
-                    <p className="video-description">{videoData.description}</p>
+            <div className="header-container">
+                <div className="header-left">
+                    <Link to="/" className="back-button">
+                        <i className="pi pi-arrow-left"></i>
+                    </Link>
+                    <span className="header-title">SOL FUENTES</span>
                 </div>
+                <Link to="/" className="home-icon">
+                    <i className="pi pi-home"></i>
+                </Link>
+            </div>
 
+            <div className="video-section">
                 <VideoComponent
                     videoUrl={videoData.videoUrl}
                     title={videoData.title}
                     description={videoData.description}
                     thumbnail={videoData.thumbnail}
                 />
+
+                <h2 className="video-title">{videoData.title}</h2>
+                <p className="video-description">{videoData.description}</p>
 
                 <div className="recursos-section">
                     <h3 className="recursos-title">Recursos Adicionales</h3>

@@ -13,7 +13,6 @@ const VideoComponent = ({
 }) => {
   return (
     <div className={`video-container ${className}`}>
-      {title && <h2 className="video-title">{title}</h2>}
       <div className="video-wrapper">
         <video
           src={videoUrl}
@@ -26,7 +25,6 @@ const VideoComponent = ({
           Tu navegador no soporta el elemento de video.
         </video>
       </div>
-      {description && <p className="video-description">{description}</p>}
     </div>
   );
 };

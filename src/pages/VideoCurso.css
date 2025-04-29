@@ -2,48 +2,83 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
-}
-
-.video-controls {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
+    background-color: #ffffff;
 }
 
 .video-section {
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    padding: 1rem;
 }
 
-.video-header {
-    padding: 1.5rem;
+
+/* Estilo del encabezado */
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
     border-bottom: 1px solid #eee;
 }
 
-.video-title {
-    font-size: 1.5rem;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-button {
     color: #333;
-    margin: 0;
-    margin-bottom: 0.5rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.back-button:hover {
+    color: #D4AF37;
+}
+
+.header-title {
+    color: #D4AF37;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.home-icon {
+    color: #D4AF37;
+    font-size: 1.2rem;
+}
+
+.home-icon:hover {
+    color: #b38f1d;
+}
+
+.video-title {
+    font-size: 1.8rem;
+    color: #D4AF37;
+    margin: 1rem 0;
+    font-weight: 600;
 }
 
 .video-description {
     color: #666;
     font-size: 1rem;
     line-height: 1.5;
+    margin-bottom: 2rem;
 }
 
 .recursos-section {
-    padding: 1.5rem;
-    background-color: #f8f9fa;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid #eee;
 }
 
 .recursos-title {
     font-size: 1.2rem;
-    color: #333;
+    color: #D4AF37;
     margin-bottom: 1rem;
 }
 
@@ -58,7 +93,7 @@
 }
 
 .recurso-link {
-    color: #4285f4;
+    color: #666;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -67,6 +102,5 @@
 }
 
 .recurso-link:hover {
-    color: #1a73e8;
-    text-decoration: underline;
+    color: #D4AF37;
 }
