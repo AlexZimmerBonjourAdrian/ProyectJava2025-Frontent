@@ -10,6 +10,7 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VideoCurso from './pages/VideoCurso';
+import Session11 from './pages/Session11';
 import Layout from './components/Layout';
 
 // Configurar las rutas con las nuevas banderas
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/VideoCurso" element={<VideoCurso />} />
+      <Route path="/session11" element={<Session11 />} />
     </Route>
   ),
   {

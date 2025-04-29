@@ -30,21 +30,27 @@ const Navbar = () => {
       textDecoration: 'none',
       fontSize: '0.9rem',
       opacity: '0.8',
-      transition: 'opacity 0.2s',
+      transition: 'opacity 0.2s, color 0.2s',
       ':hover': {
         opacity: '1'
       }
+    },
+    activeLink: {
+      color: '#D4AF37',
+      opacity: '1'
     }
   };
 
   return (
     <nav style={styles.navbar}>
       <div style={styles.container}>
-        <Link to="/" style={styles.brand}>Mi Aplicación</Link>
+        <Link to="/" style={styles.brand}>SOL FUENTES</Link>
         <div style={styles.nav}>
           <Link to="/" style={styles.link}>Inicio</Link>
-          <Link to="/about" style={styles.link}>Acerca de</Link>
           <Link to="/VideoCurso" style={styles.link}>Video Curso</Link>
+          <Link to="/session11" style={{...styles.link, color: '#D4AF37'}}>Sesión 11</Link>
+          <Link to="/about" style={styles.link}>Acerca de</Link>
+          <div style={{borderLeft: '1px solid rgba(255,255,255,0.2)', height: '20px', margin: '0 0.5rem'}} />
           <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
           <Link to="/register" style={styles.link}>Registrarse</Link>
         </div>
