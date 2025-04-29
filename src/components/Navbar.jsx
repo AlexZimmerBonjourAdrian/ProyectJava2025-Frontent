@@ -44,6 +44,7 @@ const Navbar = () => {
         <div style={styles.nav}>
           <Link to="/" style={styles.link}>Inicio</Link>
           <Link to="/about" style={styles.link}>Acerca de</Link>
+          <Link to="/VideoCurso" style={styles.link}>Video Curso</Link>
           <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
           <Link to="/register" style={styles.link}>Registrarse</Link>
         </div>

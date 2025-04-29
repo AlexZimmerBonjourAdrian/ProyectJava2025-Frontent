@@ -1,0 +1,106 @@
+.video-curso-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+.video-section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+
+/* Estilo del encabezado */
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-button {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.back-button:hover {
+    color: #D4AF37;
+}
+
+.header-title {
+    color: #D4AF37;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.home-icon {
+    color: #D4AF37;
+    font-size: 1.2rem;
+}
+
+.home-icon:hover {
+    color: #b38f1d;
+}
+
+.video-title {
+    font-size: 1.8rem;
+    color: #D4AF37;
+    margin: 1rem 0;
+    font-weight: 600;
+}
+
+.video-description {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+.recursos-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.recursos-title {
+    font-size: 1.2rem;
+    color: #D4AF37;
+    margin-bottom: 1rem;
+}
+
+.recursos-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recurso-item {
+    margin-bottom: 0.8rem;
+}
+
+.recurso-link {
+    color: #666;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.recurso-link:hover {
+    color: #D4AF37;
+}
