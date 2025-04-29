@@ -1,8 +1,11 @@
 import React from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-slate-50 to-slate-100/50">
       <div className="section-container">
@@ -14,11 +17,20 @@ const Home = () => {
           <p className="text-body max-w-3xl mx-auto mb-8">
             Una plataforma moderna construida con React y Java Spring Boot, diseñada para ofrecer la mejor experiencia de usuario.
           </p>
-          <Button 
-            label="Comenzar" 
-            icon="pi pi-arrow-right" 
-            className="p-button-primary p-button-rounded text-lg px-6 py-3"
-          />
+          <div className="flex justify-center gap-4">
+            <Button 
+              label="Comenzar" 
+              icon="pi pi-arrow-right" 
+              className="p-button-primary p-button-rounded text-lg px-6 py-3"
+            />
+            <Button 
+              label="Ver Video Curso" 
+              icon="pi pi-play"
+              severity="secondary"
+              className="p-button-rounded text-lg px-6 py-3"
+              onClick={() => navigate('/VideoCurso')}
+            />
+          </div>
         </div>
 
         {/* Features Grid */}
@@ -62,11 +74,19 @@ const Home = () => {
               <p className="text-lg mb-6 text-primary-100">
                 Únete a nosotros y descubre todas las características que tenemos para ti.
               </p>
-              <Button 
-                label="Explorar Más" 
-                icon="pi pi-search"
-                className="p-button-outlined p-button-rounded p-button-white text-lg"
-              />
+              <div className="flex justify-center gap-4">
+                <Button 
+                  label="Explorar Más" 
+                  icon="pi pi-search"
+                  className="p-button-outlined p-button-rounded p-button-white text-lg"
+                />
+                <Button 
+                  label="Ir al Video Curso" 
+                  icon="pi pi-video"
+                  className="p-button-outlined p-button-rounded p-button-white text-lg"
+                  onClick={() => navigate('/VideoCurso')}
+                />
+              </div>
             </div>
           </Card>
         </div>
