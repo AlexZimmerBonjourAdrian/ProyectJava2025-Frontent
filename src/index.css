@@ -5,10 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 :root {
-    --primary-color: #4f46e5;
-    --secondary-color: #6366f1;
-    --background-color: #f8fafc;
-    --text-color: #1e293b;
+    --primary-color: #F29AAE;
+    --secondary-color: #CCA43B;
+    --background-color: #E8EEF2;
+    --dark-color: #511730;
 }
 
 body {
@@ -18,6 +18,24 @@ body {
     font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 
+h1.heading {
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.lato-light {
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+.playfair-display{
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: extra-bold;
+    font-style: normal;
+  }
 
 /* Componentes personalizados */
 

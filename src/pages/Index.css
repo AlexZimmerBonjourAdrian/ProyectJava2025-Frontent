@@ -1,0 +1,135 @@
+main div p.sub-title {
+    color: var(--secondary-color);
+    font-size: 2rem;
+}
+
+main div button.compra-button {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 100;
+    border-radius: 20px;
+    padding: 6px 20px;
+}
+
+main div button.compra-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+main div.rectangle-container {
+    width: 30vw;
+    height: 100%;
+}
+
+main div.rectangle-container div.rect {
+    width: 6vw;
+    height: 100%;
+    background-color: var(--primary-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 10vw;
+}
+
+main div.rectangle-container div.sm {
+    margin-left: 6vw;
+    width: 2vw;
+}
+
+main.main{
+    background-color: var(--background-color);
+    z-index: 10;
+    margin: 0;
+    top: 0;
+    position: relative;
+}
+
+section.video-section {
+    display: flex;
+    padding: 20vw 0;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    background-color: #fff;
+}
+
+.video {
+    width: 60%;
+    height: auto;
+}
+
+.video-container {
+    padding-top: 15vh;
+}
+
+section.services-section{
+    position: relative;
+    padding-top: 10vh;
+    height: 40vh;
+    background-color: var(--dark-color);
+}
+
+section.services-section h2 {
+    line-height: 1.25;
+    font-weight: 500;
+    width: 80vw;
+    font-size: 2.5rem;
+    color: #fff;
+}
+
+div.compra-section{
+    width: 80vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+div.compra-section button{
+    font-size: 1rem;
+    height: 2.5rem;
+}
+
+span.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+section.services-section div.rectangle-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    align-items: center;
+    width: 6vw;
+    height: 40vh;
+}
+
+section.services-section div.rectangle-container div.rect{
+    position: absolute;
+    top: 0;
+    right: 0;
+    align-items: center;
+    background-color: #fff;
+    margin-left: 0;
+}
+
+section.services-section div.rectangle-container div.w-md{
+    width: 1vw;
+    height: 20vh;
+}
+
+section.services-section div.rectangle-container div.w-lg{
+    width: 1vw;
+    height: 35vh;
+    margin-left: 2vw;
+}
+
+section.services-section div.rectangle-container div.w-sm{
+    width: 1vw;
+    height: 15vh;
+    margin-left: 4vw;
+}
