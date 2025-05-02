@@ -1,0 +1,180 @@
+/* Estilos globales */
+
+.curso-container {
+    background: #eaf0f1;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.curso-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.curso-logo {
+    color: #D6C16B;
+    font-weight: bold;
+    font-size: 28px;
+    font-family: serif;
+}
+
+.curso-nav-buttons {
+    background: none;
+    border: none;
+    font-size: 24px;
+    margin-right: 16px;
+}
+
+.curso-nav-buttons:last-child {
+    margin-right: 0;
+}
+
+.curso-section {
+    background: #5B2333;
+    border-radius: 20px;
+    padding: 24px;
+    margin: 32px 0;
+}
+
+.curso-button {
+    background: #F29CA4;
+    color: #5B2333;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 32px;
+    color: #5B2333;
+    font-size: 14px;
+}
+
+
+/* Estilos para páginas de menú */
+
+.menu-container {
+    min-height: 100vh;
+    background: #e9eff3;
+}
+
+
+/* Estilos para el componente de pago */
+
+.pago-container {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.pago-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 900px;
+    text-align: left;
+    border: none;
+    margin-top: 2rem;
+    color: #000;
+}
+
+.pago-title {
+    font-family: serif;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    color: #000;
+    font-size: 2.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pago-icon {
+    color: green;
+    font-size: 2.2rem;
+    vertical-align: middle;
+}
+
+.pago-divider {
+    border-top: 5px solid #e9a9bb;
+    margin: 0.5rem 0 1.5rem 0;
+    width: 100%;
+}
+
+.pago-item {
+    margin-bottom: 1.2rem;
+    color: #000;
+}
+
+.pago-item-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    color: #000;
+}
+
+.pago-item-courses {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    color: #000;
+}
+
+.pago-item-course {
+    min-width: 260px;
+    margin-bottom: 0.5rem;
+    color: #000;
+}
+
+.pago-item-course-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #000;
+}
+
+.pago-item-course-author {
+    font-weight: bold;
+    color: #000;
+}
+
+.pago-item-course-author-span {
+    font-weight: normal;
+    color: #000;
+}
+
+.pago-item-course-date {
+    font-weight: bold;
+    color: #000;
+}
+
+.pago-item-course-date-span {
+    font-weight: normal;
+    color: #000;
+}
+
+.pago-item-amount {
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    color: #000;
+}
+
+.pago-footer {
+    font-weight: bold;
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+    color: #000;
+    font-family: serif;
+}

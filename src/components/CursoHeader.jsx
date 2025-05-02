@@ -1,14 +1,15 @@
 import React from "react";
+import "../styles/global.css";
 
 export default function CursoHeader() {
   return (
-    <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
+    <header className="curso-header">
       <div>
-        <span style={{ color: "#D6C16B", fontWeight: "bold", fontSize: 28, fontFamily: "serif" }}>SOL FUENTES</span>
+        <span className="curso-logo">SOL FUENTES</span>
       </div>
       <div>
-        <button style={{ background: "none", border: "none", fontSize: 24, marginRight: 16 }}>←</button>
-        <button style={{ background: "none", border: "none", fontSize: 24 }}>⌂</button>
+        <button className="curso-nav-buttons">←</button>
+        <button className="curso-nav-buttons">⌂</button>
       </div>
     </header>
   );

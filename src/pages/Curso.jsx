@@ -4,16 +4,17 @@ import CursoVideo from "../components/CursoVideo";
 import BotonContinuar from "../components/BotonContinuar";
 import ModuloLista from "../components/ModuloLista";
 import Footer from "../components/Footer";
+import "../styles/global.css";
 
 export default function Curso() {
   return (
-    <div style={{ background: "#eaf0f1", minHeight: "100vh", padding: 24 }}>
+    <div className="curso-container">
       <CursoHeader />
       <CursoVideo />
       <BotonContinuar />
       <ModuloLista />
-      <div style={{ background: "#5B2333", borderRadius: 20, padding: 24, margin: "32px 0" }}>
-        <BotonContinuar style={{ background: "#F29CA4", color: "#5B2333" }} />
+      <div className="curso-section">
+        <BotonContinuar className="curso-button" />
       </div>
       <Footer />
     </div>
