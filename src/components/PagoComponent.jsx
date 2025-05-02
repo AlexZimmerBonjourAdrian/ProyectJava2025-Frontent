@@ -1,11 +1,28 @@
 import React from 'react';
 
 const PagoComponent = ({
-  curso = 'Introduccion a la meditacion',
-  autora = 'Sol',
-  fecha = '25-05-2025',
-  monto = '5.00'
+  articulos = [
+    {
+      paquete: 'Meditacion para todos.',
+      cursos: [
+        {
+          nombre: 'Introduccion a la meditacion',
+          autora: 'Sol',
+          fecha: '25-05-2025',
+        },
+        {
+          nombre: 'Meditacion avanzada',
+          autora: 'Sol',
+          fecha: '25-05-2025',
+        }
+      ],
+      monto: 10.00
+    }
+  ]
 }) => {
+  // Calcular el total
+  const total = articulos.reduce((acc, art) => acc + (art.monto || 0), 0);
+
   return (
     <div style={{
       minHeight: '60vh',
@@ -23,10 +40,11 @@ const PagoComponent = ({
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
         width: '100%',
-        maxWidth: '700px',
+        maxWidth: '900px',
         textAlign: 'left',
         border: 'none',
         marginTop: '2rem',
+        color: '#000'
       }}>
         <h2 style={{
           fontFamily: 'serif',
@@ -34,7 +52,7 @@ const PagoComponent = ({
           fontStyle: 'italic',
           marginBottom: '0.5rem',
           marginTop: 0,
-          color: '#222',
+          color: '#000',
           fontSize: '2.3rem',
           display: 'flex',
           alignItems: 'center',
@@ -47,18 +65,33 @@ const PagoComponent = ({
           margin: '0.5rem 0 1.5rem 0',
           width: '100%'
         }} />
-        <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: '#222', marginBottom: '1.2rem', fontFamily: 'serif'}}>
-          <div><span style={{fontWeight: 'bold'}}>Curso: </span>Introduccion a la meditacion</div>
-          <div><span style={{fontWeight: 'bold'}}>Autora: </span>Sol</div>
-          <div><span style={{fontWeight: 'bold'}}>Fecha Pago: </span>25-05-2025</div>
-          <div><span style={{fontWeight: 'bold'}}>Monto:$ </span>5.00</div>
-        </div>
+        {articulos.map((art, idx) => (
+          <div key={idx} style={{marginBottom: '1.2rem', color: '#000'}}>
+            {art.paquete && (
+              <div style={{fontWeight: 'bold', fontSize: '1.2rem', fontStyle: 'italic', marginBottom: '0.5rem', color: '#000'}}>
+                Paquete: {art.paquete}
+              </div>
+            )}
+            <div style={{display: 'flex', gap: '2rem', flexWrap: 'wrap', color: '#000'}}>
+              {art.cursos.map((curso, cidx) => (
+                <div key={cidx} style={{minWidth: '260px', marginBottom: '0.5rem', color: '#000'}}>
+                  <div style={{fontWeight: 'bold', fontSize: '1.1rem', color: '#000'}}>Curso: {curso.nombre}</div>
+                  <div style={{fontWeight: 'bold', color: '#000'}}>Autora: <span style={{fontWeight: 'normal', color: '#000'}}>{curso.autora}</span></div>
+                  <div style={{fontWeight: 'bold', color: '#000'}}>Fecha Pago: <span style={{fontWeight: 'normal', color: '#000'}}>{curso.fecha}</span></div>
+                </div>
+              ))}
+            </div>
+            <div style={{textAlign: 'right', fontWeight: 'bold', fontSize: '1.2rem', marginTop: '0.5rem', color: '#000'}}>
+              Monto:$ {art.monto.toFixed(2)}
+            </div>
+          </div>
+        ))}
         <div style={{
           borderTop: '5px solid #e9a9bb',
           margin: '1.5rem 0 0.5rem 0',
           width: '100%'
         }} />
-        <div style={{fontWeight: 'bold', fontSize: '1.1rem', fontStyle: 'italic', marginTop: '0.5rem', color: '#222', fontFamily: 'serif'}}>
+        <div style={{fontWeight: 'bold', fontSize: '1.1rem', fontStyle: 'italic', marginTop: '0.5rem', color: '#000', fontFamily: 'serif'}}>
           Se ha enviado un correo con la facturación de su compra, ¡Muchas gracias y disfrute su compra!
         </div>
       </div>
