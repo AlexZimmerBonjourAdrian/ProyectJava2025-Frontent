@@ -1,9 +1,10 @@
 import React from 'react';
 import CursoForm from '../components/CursoForm';
+import '../styles/global.css';
 
 const CursoMenu = () => {
   return (
-    <div style={{ minHeight: '100vh', background: '#e9eff3' }}>
+    <div className="menu-container">
       <CursoForm />
     </div>
   );

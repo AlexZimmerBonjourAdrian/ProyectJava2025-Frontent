@@ -178,10 +178,7 @@ const Login = () => {
     return (
         <div style={styles.mainContainer}>
             <header style={styles.header}>
-                <div style={styles.headerContent}>
-                    <a href="/" style={styles.logo}>SOL FUENTES</a>
-                    <i className="pi pi-home" style={styles.homeIcon} onClick={() => navigate('/')} />
-                </div>
+               
             </header>
 
             <main style={styles.mainContent}>

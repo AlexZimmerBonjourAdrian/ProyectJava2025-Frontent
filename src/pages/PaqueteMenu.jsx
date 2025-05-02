@@ -1,9 +1,10 @@
 import React from 'react';
 import PaqueteForm from '../components/PaqueteForm';
+import '../styles/global.css';
 
 const Paquete = () => {
   return (
-    <div style={{ minHeight: '100vh', background: '#e9eff3' }}>
+    <div className="menu-container">
       <PaqueteForm />
     </div>
   );

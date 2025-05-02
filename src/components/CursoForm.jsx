@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./PaqueteForm.css";
 import VideoPopUp from "./VideoPopUp";
 
 const CursoForm = () => {

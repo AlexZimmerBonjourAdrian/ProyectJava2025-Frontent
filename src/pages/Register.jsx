@@ -1,4 +1,16 @@
-//Todo: Loguin
+/**
+Para despues de iniciar sesión, se puede usar el token almacenado en localStorage para hacer peticiones a la API.
+
+const token = localStorage.getItem('authToken');
+
+fetch('http://localhost:8080/profile', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`, // 👈 acá va el token
+        'Content-Type': 'application/json'
+    }
+})
+ */
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -144,8 +156,7 @@ const Register = () => {
     return (
         <div style={styles.mainContainer}>
             <header style={styles.header}>
-                <a href="/" style={styles.logo}>SOL FUENTES</a>
-                <i className="pi pi-home" style={styles.homeIcon} onClick={() => navigate('/')} />
+              
             </header>
 
             <div style={styles.formContainer}>
