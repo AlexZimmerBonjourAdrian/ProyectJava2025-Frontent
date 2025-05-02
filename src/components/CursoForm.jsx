@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./PaqueteForm.css";
+import VideoPopUp from "./VideoPopUp";
 
 const CursoForm = () => {
   const [nombre, setNombre] = useState("");
@@ -7,12 +8,22 @@ const CursoForm = () => {
   const [videoLink, setVideoLink] = useState("");
   const [videos, setVideos] = useState([]);
   const [linkPresentacion, setLinkPresentacion] = useState("");
+  const [showVideoPopUp, setShowVideoPopUp] = useState(false);
 
-  const handleAddVideo = () => {
+  const handleOpenPopUp = () => {
     if (videoLink.trim() !== "") {
-      setVideos([...videos, videoLink]);
-      setVideoLink("");
+      setShowVideoPopUp(true);
     }
+  };
+
+  const handleAddVideo = (videoData) => {
+    setVideos([...videos, videoData]);
+    setVideoLink("");
+    setShowVideoPopUp(false);
+  };
+
+  const handleCancelPopUp = () => {
+    setShowVideoPopUp(false);
   };
 
   const handleRemoveVideo = (index) => {
@@ -58,7 +69,7 @@ const CursoForm = () => {
           <button
             type="button"
             className="paquete-form-add-btn"
-            onClick={handleAddVideo}
+            onClick={handleOpenPopUp}
             title="Añadir video"
             style={{ color: '#6b1839', fontWeight: 'bold' }}
           >
@@ -68,7 +79,7 @@ const CursoForm = () => {
         <div className="paquete-form-cursos-list">
           {videos.map((video, idx) => (
             <div className="paquete-form-curso-item" key={idx}>
-              <span style={{ fontSize: '0.95rem' }}>Nombre video</span>
+              <span style={{ fontSize: '0.95rem' }}>{video.nombre || 'Nombre video'}</span>
               <button
                 type="button"
                 className="paquete-form-remove-btn"
@@ -92,6 +103,13 @@ const CursoForm = () => {
           Crear Curso
         </button>
       </form>
+      {showVideoPopUp && (
+        <VideoPopUp
+          initialLink={videoLink}
+          onCancel={handleCancelPopUp}
+          onAdd={handleAddVideo}
+        />
+      )}
     </div>
   );
 };
