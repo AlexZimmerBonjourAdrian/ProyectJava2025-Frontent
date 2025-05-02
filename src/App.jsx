@@ -21,6 +21,7 @@ import PaqueteModificar from './pages/PaqueteModificar';
 import CursoModificacion from './pages/CursoModificacion';
 import Pago from './pages/Pago';
 import Carrito from './pages/Carrito';
+import Curso from './pages/Curso';
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
       <Route path="/Pago" element={<Pago />} />
       <Route path="/Carrito" element={<Carrito />} />
       <Route path="/Paquete" element={<Paquete />} />
+      <Route path="/Curso" element={<Curso />} />
     </Route>
   ),
   {
