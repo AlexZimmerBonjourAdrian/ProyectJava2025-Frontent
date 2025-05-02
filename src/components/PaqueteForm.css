@@ -31,7 +31,8 @@
 }
 
 .paquete-form-input,
-.paquete-form-select {
+.paquete-form-select,
+.paquete-form-textarea {
     width: 100%;
     padding: 10px 14px;
     border: 1.5px solid #c7a740;
@@ -41,24 +42,13 @@
     background: #fff;
     outline: none;
     transition: border 0.2s;
+    color: #222;
 }
 
 .paquete-form-input:focus,
 .paquete-form-select:focus,
 .paquete-form-textarea:focus {
     border: 2px solid #b89b2c;
-}
-
-.paquete-form-textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 10px 14px;
-    border: 1.5px solid #c7a740;
-    border-radius: 18px;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    background: #fff;
-    resize: vertical;
 }
 
 .paquete-form-cursos-select-row {
