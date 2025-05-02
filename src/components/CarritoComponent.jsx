@@ -9,14 +9,7 @@ const borderRadius = 16;
 const CarritoComponent = () => {
   return (
     <div style={{ background: lightBg, minHeight: "100vh", fontFamily: 'Montserrat, sans-serif' }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", padding: "2rem 0 1rem 3rem" }}>
-        <span style={{ fontSize: 36, fontWeight: 700, color: accentColor, fontFamily: 'serif', letterSpacing: 2, marginRight: 10, textShadow: '0 2px 8px #e9eef2' }}>SOL FUENTES</span>
-        <div style={{ flex: 1 }} />
-        <div style={{ border: `2px solid ${accentColor}`, borderRadius: 12, padding: 8, marginRight: 30, background: cardBg, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-          <svg width="32" height="32" fill={accentColor} viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        </div>
-      </div>
+     
 
       {/* Main content */}
       <div style={{ display: "flex", justifyContent: "center", gap: 40, flexWrap: 'wrap' }}>

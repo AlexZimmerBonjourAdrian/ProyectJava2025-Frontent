@@ -156,8 +156,7 @@ const Register = () => {
     return (
         <div style={styles.mainContainer}>
             <header style={styles.header}>
-                <a href="/" style={styles.logo}>SOL FUENTES</a>
-                <i className="pi pi-home" style={styles.homeIcon} onClick={() => navigate('/')} />
+              
             </header>
 
             <div style={styles.formContainer}>
