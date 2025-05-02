@@ -17,6 +17,7 @@ import Index from './pages/Index';
 import PaqueteMenu from './pages/PaqueteMenu';
 import CursoMenu from './pages/CursoMenu';
 import PaqueteModificar from './pages/PaqueteModificar';
+import CursoModificacion from './pages/CursoModificacion';
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
       <Route path="/AgregarPaquete" element={<PaqueteMenu />} />
       <Route path="/AgregarCurso" element={<CursoMenu />} />
       <Route path="/ModificarPaquete" element={<PaqueteModificar />} />
+      <Route path="/ModificarCurso" element={<CursoModificacion />} />
     </Route>
   ),
   {
