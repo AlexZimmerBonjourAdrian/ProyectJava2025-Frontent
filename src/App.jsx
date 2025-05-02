@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import VideoCurso from './pages/VideoCurso';
 import Session11 from './pages/Session11';
 import Layout from './components/Layout';
+import Paquete from './pages/Paquete';
 
 import Index from './pages/Index';
 import PaqueteMenu from './pages/PaqueteMenu';
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="/ModificarCurso" element={<CursoModificacion />} />
       <Route path="/Pago" element={<Pago />} />
       <Route path="/Carrito" element={<Carrito />} />
+      <Route path="/Paquete" element={<Paquete />} />
     </Route>
   ),
   {
