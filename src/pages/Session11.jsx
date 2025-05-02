@@ -23,14 +23,7 @@ const Session11 = () => {
 
     return (
         <div className="sessions-container">
-            <header className="sessions-header">
-                <div className="brand-container">
-                    <span className="brand">SOL FUENTES</span>
-                    <Link to="/" className="home-icon">
-                        <i className="pi pi-home"></i>
-                    </Link>
-                </div>
-            </header>
+           
 
             <main className="sessions-main">
                 <h1 className="main-title">SESIONES PERSONALES</h1>

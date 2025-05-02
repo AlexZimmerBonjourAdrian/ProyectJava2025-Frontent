@@ -9,7 +9,7 @@ import "../styles/global.css";
 export default function Curso() {
   return (
     <div className="curso-container">
-      <CursoHeader />
+      
       <CursoVideo />
       <BotonContinuar />
       <ModuloLista />
