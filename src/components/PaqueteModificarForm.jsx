@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./PaqueteForm.css";
 
 const paquetesMock = [
   { id: 1, nombre: "Paquete React", descripcion: "Paquete de cursos de React", cursos: ["Curso de React", "Curso de JavaScript"], link: "https://www.youtube.com/watch?v=react" },

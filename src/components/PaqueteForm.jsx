@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./PaqueteForm.css";
 
 const PaqueteForm = () => {
   const [nombre, setNombre] = useState("");
