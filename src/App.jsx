@@ -14,6 +14,7 @@ import Session11 from './pages/Session11';
 import Layout from './components/Layout';
 
 import Index from './pages/Index';
+import Paquete from './pages/Paquete';
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="/VideoCurso" element={<VideoCurso />} />
       <Route path="/session11" element={<Session11 />} />
       <Route path="/index" element={<Index />} />
+      <Route path="/paquete" element={<Paquete />} />
     </Route>
   ),
   {
