@@ -12,10 +12,10 @@ const Home = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="heading-primary">
-            Bienvenido a <span className="text-primary-600">Mi Aplicación</span>
+            Bienvenido a <span className="text-primary-600">a lo de Sol Fuentes</span>
           </h1>
           <p className="text-body max-w-3xl mx-auto mb-8">
-            Una plataforma moderna construida con React y Java Spring Boot, diseñada para ofrecer la mejor experiencia de usuario.
+            
           </p>
           <div className="flex justify-center gap-4">
             <Button 
