@@ -1,7 +1,7 @@
 /**
 Para despues de iniciar sesión, se puede usar el token almacenado en localStorage para hacer peticiones a la API.
 
-const token = localStorage.getItem('authToken');
+const token = decryptToken(localStorage.getItem('authToken'));
 
 fetch('http://localhost:8080/profile', {
     method: 'GET',

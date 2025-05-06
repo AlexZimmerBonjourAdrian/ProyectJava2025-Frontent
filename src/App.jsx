@@ -23,6 +23,20 @@ import Pago from './pages/Pago';
 import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
 
+import CryptoJS from 'crypto-js';
+
+// Función para encriptar
+export function encryptToken(token) {
+  return CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
+}
+
+// Función para desencriptar
+export function decryptToken(encryptedToken) {
+  const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
   createRoutesFromElements(
