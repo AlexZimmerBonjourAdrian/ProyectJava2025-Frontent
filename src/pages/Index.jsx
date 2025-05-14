@@ -1,5 +1,6 @@
 import React from "react";
 import VideoComponent from "../components/VideoComponent";
+import './Index.css';
 
 const Index = () => {
     return (
