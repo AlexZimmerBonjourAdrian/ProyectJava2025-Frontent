@@ -3,7 +3,7 @@ Para despues de iniciar sesión, se puede usar el token almacenado en localStora
 
 const token = decryptToken(localStorage.getItem('authToken'));
 
-fetch('http://localhost:8080/profile', {
+fetch('${API_URL}/profile', {
     method: 'GET',
     headers: {
         'Authorization': `Bearer ${token}`, // 👈 acá va el token
@@ -54,11 +54,12 @@ const Login = () => {
                 })
             .then(response => response.json())
             .then(data => {
+                console.log('Respuesta del servidor:', data);
                 if (data.ok) {
                     const token = data.token;
                     localStorage.setItem('authToken', encryptToken(token));
                     console.log('Token almacenado:', token);
-                    navigate('/home')
+                    navigate('/index')
                 }
             })
             .catch(error => {
