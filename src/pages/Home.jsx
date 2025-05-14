@@ -12,6 +12,7 @@ import Hero from '../components/Hero';
 const Home = () => {
   const navigate = useNavigate();
 
+  
 
   return (
 
@@ -58,6 +59,8 @@ const Home = () => {
 
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+
 
           {/*}
           <Card className="card-hover">

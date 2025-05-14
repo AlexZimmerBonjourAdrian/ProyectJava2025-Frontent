@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Hero() {
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("token");
 
   return (
     <section style={{
@@ -18,6 +19,8 @@ function Hero() {
       <p style={{ fontSize: '1.25rem', color: '#555' }}>
         Coaching que cambia la vida
       </p>
+      
+      {!isLoggedIn && (
       <button style={{
         marginTop: '30px',
         padding: '12px 24px',
@@ -32,6 +35,7 @@ function Hero() {
       >
         ¡Ya quiero empezar!
       </button>
+      )}
     </section>
   );
 }
