@@ -1,16 +1,34 @@
 import React from 'react';
+
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import Hero from '../components/Hero';
+
+
+
+
 
 const Home = () => {
   const navigate = useNavigate();
 
+
   return (
+
+    
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-slate-50 to-slate-100/50">
+
+     
       <div className="section-container">
         {/* Hero Section */}
+         <div>
+      <Hero />
+    </div>
+
+     
         <div className="text-center mb-16">
+
+
           <h1 className="heading-primary">
             Bienvenido a <span className="text-primary-600">a lo de Sol Fuentes</span>
           </h1>
