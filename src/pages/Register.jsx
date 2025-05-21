@@ -3,7 +3,7 @@ Para despues de iniciar sesión, se puede usar el token almacenado en localStora
 
 const token = decryptToken(localStorage.getItem('authToken'));
 
-fetch('${API_URL}/profile', {
+fetch(`${API_URL}/profile`, {
     method: 'GET',
     headers: {
         'Authorization': `Bearer ${token}`, // 👈 acá va el token

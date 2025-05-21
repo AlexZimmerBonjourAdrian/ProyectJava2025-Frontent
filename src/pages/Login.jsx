@@ -2,22 +2,24 @@
 Para despues de iniciar sesión, se puede usar el token almacenado en localStorage para hacer peticiones a la API.
 
 const token = decryptToken(localStorage.getItem('authToken'));
+const API_URL = import.meta.env.VITE_API_URL;
 
-fetch('${API_URL}/profile', {
+fetch(`${API_URL}/api/profile`, {
     method: 'GET',
     headers: {
-        'Authorization': `Bearer ${token}`, // 👈 acá va el token
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
     }
 })
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
+import { encryptToken } from '../App';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,6 +30,8 @@ const Login = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
 
     const handleFieldChange = (fieldName, value) => {
         setFormData(prev => ({
@@ -55,11 +59,12 @@ const Login = () => {
             .then(response => response.json())
             .then(data => {
                 console.log('Respuesta del servidor:', data);
-                if (data.ok) {
+                if (data.nombre) {
+                    console.log(encryptToken(data.token), data.token)
                     const token = data.token;
                     localStorage.setItem('authToken', encryptToken(token));
                     console.log('Token almacenado:', token);
-                    navigate('/index')
+                    navigate(from, { replace: true });
                 }
             })
             .catch(error => {

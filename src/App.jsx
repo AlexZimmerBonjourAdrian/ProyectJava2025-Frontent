@@ -3,7 +3,11 @@ import {
   createBrowserRouter, 
   RouterProvider,
   createRoutesFromElements,
-  Route
+  Route,
+  useNavigate,
+  Navigate,
+  useLocation,
+  redirect
 } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -21,8 +25,11 @@ import CursoModificacion from './pages/CursoModificacion';
 import Pago from './pages/Pago';
 import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
+import ListadoProductos from './pages/ListadoProductos';
 
 import CryptoJS from 'crypto-js';
+
+const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
 
 // Función para encriptar
 export function encryptToken(token) {
@@ -31,10 +38,27 @@ export function encryptToken(token) {
 
 // Función para desencriptar
 export function decryptToken(encryptedToken) {
+  const location = useLocation();
+  console.log(encryptedToken)
+  if(!encryptedToken){
+    console.log('AAA')
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
   const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+  console.log(bytes.toString(CryptoJS.enc.Utf8))
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
+const UserRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken');
+  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+};
+
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken');
+  console.log('AA')
+  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+};
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
@@ -43,16 +67,20 @@ const router = createBrowserRouter(
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/VideoCurso" element={<VideoCurso />} />
       <Route path="/session11" element={<Session11 />} />
-      <Route path="/AgregarPaquete" element={<PaqueteMenu />} />
-      <Route path="/AgregarCurso" element={<CursoMenu />} />
-      <Route path="/ModificarPaquete" element={<PaqueteModificar />} />
-      <Route path="/ModificarCurso" element={<CursoModificacion />} />
-      <Route path="/Pago" element={<Pago />} />
-      <Route path="/Carrito" element={<Carrito />} />
       <Route path="/Paquete" element={<Paquete />} />
       <Route path="/Curso" element={<Curso />} />
+      <Route path="/productos" element={<ListadoProductos />} />
+
+      <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
+      <Route path="/Pago" element={<UserRoute><Pago /></UserRoute>} />
+      <Route path="/Carrito" element={<UserRoute><Carrito /></UserRoute>} />
+
+      <Route path="/AgregarPaquete" element={<AdminRoute><PaqueteMenu /></AdminRoute>} />
+      <Route path="/AgregarCurso" element={<AdminRoute><CursoMenu /></AdminRoute>} />
+      <Route path="/ModificarPaquete" element={<AdminRoute><PaqueteModificar /></AdminRoute>} />
+      <Route path="/ModificarCurso" element={<AdminRoute><CursoModificacion /></AdminRoute>} />
+
     </Route>
   ),
   {

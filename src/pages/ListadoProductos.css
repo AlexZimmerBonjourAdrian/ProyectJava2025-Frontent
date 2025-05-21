@@ -1,0 +1,26 @@
+.grid-producto{
+    background-color: var(--primary-color);
+    margin: 20px;
+    max-width: 200px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: left;
+}
+.grid-pruducto-button{
+    background-color: var(--secondary-color);
+}
+.grid-pruducto-precio{
+    color: white;
+}
+.grid-pruducto-nombre{
+    color: white;
+}
+.grid-pruducto-descrip{}
+.grid-pruducto-imagen{
+    background-color: var(--background-color);
+    height: 150px;
+    width: 150px;
+}
