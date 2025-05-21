@@ -50,7 +50,6 @@ const Navbar = () => {
           <Link to="/VideoCurso" style={styles.link}>Video Curso</Link>
           <Link to="/Curso" style={styles.link}>Curso</Link>
           <Link to="/session11" style={{...styles.link, color: '#D4AF37'}}>Sesión 11</Link>
-          <Link to="/about" style={styles.link}>Acerca de</Link>
           <Link to="/AgregarPaquete" style={styles.link}>Agregar Paquete</Link>
           <Link to="/AgregarCurso" style={styles.link}>Agregar Curso</Link>
           <Link to="/ModificarPaquete" style={styles.link}>Modificar Paquete</Link>

@@ -6,7 +6,6 @@ import {
   Route
 } from 'react-router-dom';
 import Home from './pages/Home';
-import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VideoCurso from './pages/VideoCurso';
@@ -41,13 +40,11 @@ export function decryptToken(encryptedToken) {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
+      <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/VideoCurso" element={<VideoCurso />} />
       <Route path="/session11" element={<Session11 />} />
-      <Route path="/index" element={<Index />} />
       <Route path="/AgregarPaquete" element={<PaqueteMenu />} />
       <Route path="/AgregarCurso" element={<CursoMenu />} />
       <Route path="/ModificarPaquete" element={<PaqueteModificar />} />
