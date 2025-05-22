@@ -60,6 +60,7 @@ const Navbar = () => {
             <span role="img" aria-label="carrito" style={{marginRight: 4}}>🛒</span>Carrito
           </Link>
           <Link to="/Paquete" style={styles.link}>Paquete</Link>
+          <Link to="/MisCursos" style={styles.link}>Mis Cursos</Link>
           <div style={{borderLeft: '1px solid rgba(255,255,255,0.2)', height: '20px', margin: '0 0.5rem'}} />
           <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
           <Link to="/register" style={styles.link}>Registrarse</Link>
@@ -69,4 +70,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
