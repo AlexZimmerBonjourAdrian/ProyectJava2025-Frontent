@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import CursoHeader from "../components/CursoHeader";
 import CursoIncluidoCard from "../components/CursoIncluidoCard";
 import BotonContinuar from "../components/BotonContinuar";
@@ -8,6 +9,7 @@ import { decryptToken } from '../App';
 import "../styles/global.css";
 
 export default function Curso() {
+  const { id } = useParams(); // Obtener el id de la URL
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,8 +26,8 @@ export default function Curso() {
           setLoading(false);
           return;
         }
-        // 1. Traer el ArticuloCliente (relación usuario-curso)
-        const articuloCliente = await getArticuloClienteUsuario(102, token);
+        // 1. Traer el ArticuloCliente (relación usuario-curso) usando el id de la URL
+        const articuloCliente = await getArticuloClienteUsuario(id, token);
         // 2. Obtener el id del curso real desde el ArticuloCliente
         const cursoId = articuloCliente.articulo || articuloCliente.cursoId || articuloCliente.curso_id || (articuloCliente.curso && articuloCliente.curso.id);
         let cursoData = {};
@@ -59,7 +61,7 @@ export default function Curso() {
       }
     };
     fetchCurso();
-  }, []);
+  }, [id]);
 
   if (loading) return <div className="curso-container">Cargando curso...</div>;
   if (error) return <div className="curso-container">{error}</div>;

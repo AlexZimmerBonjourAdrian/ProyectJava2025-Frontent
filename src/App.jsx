@@ -64,6 +64,7 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/session11" element={<Session11 />} />
       <Route path="/Paquete" element={<Paquete />} />
+      <Route path="/curso/:id" element={<UserRoute><Curso /></UserRoute>} />
       <Route path="/Curso" element={<UserRoute><Curso /></UserRoute> } />
       <Route path="/productos" element={<ListadoProductos />} />
 

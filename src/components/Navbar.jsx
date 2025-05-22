@@ -48,7 +48,7 @@ const Navbar = () => {
         <div style={styles.nav}>
           <Link to="/" style={styles.link}>Inicio</Link>
           <Link to="/VideoCurso" style={styles.link}>Video Curso</Link>
-          <Link to="/Curso" style={styles.link}>Curso</Link>
+          
           <Link to="/productos" style={styles.link}>Productos</Link>
           <Link to="/session11" style={{...styles.link, color: '#D4AF37'}}>Sesión 11</Link>
           <Link to="/AgregarPaquete" style={styles.link}>Agregar Paquete</Link>
