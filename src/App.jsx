@@ -38,14 +38,8 @@ export function encryptToken(token) {
 
 // Función para desencriptar
 export function decryptToken(encryptedToken) {
-  const location = useLocation();
-  console.log(encryptedToken)
-  if(!encryptedToken){
-    console.log('AAA')
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  }
+  if (!encryptedToken) return null;
   const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
-  console.log(bytes.toString(CryptoJS.enc.Utf8))
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
@@ -69,7 +63,7 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/session11" element={<Session11 />} />
       <Route path="/Paquete" element={<Paquete />} />
-      <Route path="/Curso" element={<Curso />} />
+      <Route path="/Curso" element={<UserRoute><Curso /></UserRoute> } />
       <Route path="/productos" element={<ListadoProductos />} />
 
       <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
