@@ -1,6 +1,5 @@
 import React, { useState, useRef, useLocation } from "react";
 import VideoPopUp from "./VideoPopUp";
-import { Message } from 'primereact/message';
 import { Messages } from 'primereact/messages';
 import { useDecryptToken } from "../App";
 
@@ -44,7 +43,6 @@ const CursoForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
      try{
-      // const location = useLocation();
       const token = useDecryptToken(localStorage.getItem('authToken'));
       const API_URL = import.meta.env.VITE_API_URL;
       const body = {
