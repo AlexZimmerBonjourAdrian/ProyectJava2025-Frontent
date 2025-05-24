@@ -61,7 +61,6 @@ const CursoForm = () => {
           body: JSON.stringify(body)
       }).then(res => res.json())
       .then(data => {
-          console.log(data);
           if (data.id) {
             msgs.current.clear();
             msgs.current.show([

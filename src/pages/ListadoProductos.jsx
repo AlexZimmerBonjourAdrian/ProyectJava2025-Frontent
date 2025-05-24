@@ -19,7 +19,6 @@ export default function ListadoProductos() {
             }
         }).then(res => res.json())
         .then(data => {
-            console.log(data);
             setProducts(data)
         })
     }, []);
@@ -41,7 +40,6 @@ export default function ListadoProductos() {
     };
 
     const listItem = (product, index) => {
-        console.log(product)
         return (
             <div className="col-12" key={product.id}>
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>

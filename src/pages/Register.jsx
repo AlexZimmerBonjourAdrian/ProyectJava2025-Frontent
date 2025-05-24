@@ -61,14 +61,6 @@ const Register = () => {
         try {
             const token = useDecryptToken(localStorage.getItem('authToken'));
             const API_URL = import.meta.env.VITE_API_URL;
-            // const body = {
-            //     nombre: nombre,
-            //     descripcion: descripcion,
-            //     videos: videos,
-            //     linkPresentacion: linkPresentacion,
-            //     precio: precio
-            // }
-            console.log('formData', JSON.stringify(formData));
             fetch(`${API_URL}/api/usuarios`, {
                 method: 'POST',
                 headers: {
@@ -78,7 +70,6 @@ const Register = () => {
                 body: JSON.stringify(formData)
             })
             .then(res => {
-                console.log(res);
                 if (res.ok) {
                     msgs.current.clear();
                     msgs.current.show([
@@ -99,7 +90,6 @@ const Register = () => {
                     ]);
                 }
             })
-            console.log('data', data);
         } catch (error) {
             msgs.current.clear();
             msgs.current.show([
