@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLocation } from "react";
+import React, { useState, useRef } from "react";
 import VideoPopUp from "./VideoPopUp";
 import { Messages } from 'primereact/messages';
 import { useDecryptToken } from "../App";
@@ -42,6 +42,14 @@ const CursoForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!nombre || !descripcion || !videoLink || !linkPresentacion || precio <= 0 || videos.length === 0) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', summary: 'Error', detail: 'Rellene todos los campos' },
+            ]);
+            return;
+        }
+
      try{
       const token = useDecryptToken(localStorage.getItem('authToken'));
       const API_URL = import.meta.env.VITE_API_URL;
@@ -100,14 +108,12 @@ const CursoForm = () => {
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          required
         />
         <label className="paquete-form-label">Descripción</label>
         <textarea
           className="paquete-form-textarea"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-          required
         />
         <label className="paquete-form-label">Link video:</label>
         <div className="paquete-form-cursos-select-row">
