@@ -37,8 +37,7 @@ export function encryptToken(token) {
 }
 
 // Función para desencriptar
-export function decryptToken(encryptedToken) {
-  const location = useLocation();
+export function useDecryptToken(encryptedToken, location) {
   console.log(encryptedToken)
   if(!encryptedToken){
     console.log('AAA')
