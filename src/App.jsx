@@ -38,8 +38,10 @@ export function encryptToken(token) {
 }
 
 // Función para desencriptar
-export function decryptToken(encryptedToken) {
-  if (!encryptedToken) return null;
+export function useDecryptToken(encryptedToken, location) {
+  if(!encryptedToken){
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
   const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
@@ -51,7 +53,7 @@ const UserRoute = ({ children }) => {
 
 const AdminRoute = ({ children }) => {
   const token = localStorage.getItem('authToken');
-  console.log('AA')
+  console.log('Eres Admin?')
   return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
 

@@ -58,12 +58,9 @@ const Login = () => {
                 })
             .then(response => response.json())
             .then(data => {
-                console.log('Respuesta del servidor:', data);
                 if (data.nombre) {
-                    console.log(encryptToken(data.token), data.token)
                     const token = data.token;
                     localStorage.setItem('authToken', encryptToken(token));
-                    console.log('Token almacenado:', token);
                     navigate(from, { replace: true });
                 }
             })
@@ -239,15 +236,6 @@ const Login = () => {
                                     Registrarse
                                 </a>
                             </div>
-
-                            <Button
-                                type="button"
-                                style={styles.googleButton}
-                                onClick={() => console.log('Google login')}
-                            >
-                                <i className="pi pi-google" />
-                                <span>Sign in with Google</span>
-                            </Button>
                         </form>
                     </Card>
                 </div>

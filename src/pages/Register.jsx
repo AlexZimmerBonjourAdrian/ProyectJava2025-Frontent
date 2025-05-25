@@ -1,21 +1,23 @@
 /**
-Para despues de iniciar sesión, se puede usar el token almacenado en localStorage para hacer peticiones a la API.
+import { useDecryptToken } from "../App";
 
 const token = decryptToken(localStorage.getItem('authToken'));
 
 fetch(`${API_URL}/profile`, {
     method: 'GET',
     headers: {
-        'Authorization': `Bearer ${token}`, // 👈 acá va el token
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
     }
 })
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useDecryptToken } from "../App";
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+import { Messages } from 'primereact/messages';
 import { Button } from 'primereact/button';
 
 const Register = () => {
@@ -28,30 +30,71 @@ const Register = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
+    const msgs = useRef(null);
+    
+    
     const handleFieldChange = (fieldName, value) => {
         setFormData(prev => ({
             ...prev,
             [fieldName]: value
         }));
     };
-
+    
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!formData.nombre || !formData.apellido || !formData.email || !formData.password || !formData.confirmPassword) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', summary: 'Error', detail: 'Rellene todos los campos' },
+            ]);
             return;
         }
         if (formData.password !== formData.confirmPassword) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', summary: 'Error', detail: 'Las contraseñas deben coincidir' },
+            ]);
             return;
         }
         
         setLoading(true);
         try {
-            console.log('Register attempt:', formData);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            navigate('/login');
+            const token = useDecryptToken(localStorage.getItem('authToken'));
+            const API_URL = import.meta.env.VITE_API_URL;
+            fetch(`${API_URL}/api/usuarios`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(res => {
+                if (res.ok) {
+                    msgs.current.clear();
+                    msgs.current.show([
+                        { sticky: true, severity: 'success', summary: 'Éxito', detail: 'usuario creado exitosamente' },
+                    ]);
+                    setFormData({
+                        nombre: '',
+                        apellido: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: ''
+                    })
+                    navigate('/');
+                }else{
+                    msgs.current.clear();
+                    msgs.current.show([
+                        { sticky: true, severity: 'error', summary: 'Error', detail: 'Error al crear el curso' },
+                    ]);
+                }
+            })
         } catch (error) {
-            console.error('Error en el registro:', error);
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', summary: 'Error', detail: 'Error al crear el curso' },
+            ]);
         } finally {
             setLoading(false);
         }
@@ -155,10 +198,10 @@ const Register = () => {
 
     return (
         <div style={styles.mainContainer}>
-            <header style={styles.header}>
-              
-            </header>
-
+            <div  style={{position: 'fixed', top: '2rem', zIndex: 1000, textAlign: 'center', width: '100%'}}>
+                    <Messages ref={msgs} style={{width: '70%'}}/>
+            </div>
+            <header style={styles.header} />              
             <div style={styles.formContainer}>
                 <h1 style={styles.title}>CREAR CUENTA</h1>
                 <form onSubmit={handleRegister}>
@@ -171,7 +214,6 @@ const Register = () => {
                                 onChange={(e) => handleFieldChange('nombre', e.target.value)}
                                 className="w-full"
                                 style={styles.input}
-                                required
                             />
                         </div>
                         <div style={styles.inputGroup}>
@@ -182,7 +224,6 @@ const Register = () => {
                                 onChange={(e) => handleFieldChange('apellido', e.target.value)}
                                 className="w-full"
                                 style={styles.input}
-                                required
                             />
                         </div>
                     </div>
@@ -195,7 +236,6 @@ const Register = () => {
                             onChange={(e) => handleFieldChange('email', e.target.value)}
                             className="w-full"
                             style={styles.input}
-                            required
                         />
                     </div>
 
@@ -211,7 +251,6 @@ const Register = () => {
                                 className="w-full"
                                 inputClassName="w-full"
                                 style={styles.input}
-                                required
                             />
                         </div>
                         <div style={styles.inputGroup}>
@@ -225,7 +264,6 @@ const Register = () => {
                                 className="w-full"
                                 inputClassName="w-full"
                                 style={styles.input}
-                                required
                             />
                         </div>
                     </div>
