@@ -5,7 +5,7 @@ import CursoIncluidoCard from "../components/CursoIncluidoCard";
 import BotonContinuar from "../components/BotonContinuar";
 import Footer from "../components/Footer";
 import { getArticuloClienteUsuario } from "../services/ArticuloCliente";
-import { useDecryptToken } from '../App';
+import { decryptToken } from '../App';
 import "../styles/global.css";
 
 export default function Curso() {
@@ -20,7 +20,7 @@ export default function Curso() {
       setError(null);
       try {
         const encryptedToken = localStorage.getItem('authToken');
-        const token = useDecryptToken(encryptedToken);
+        const token = decryptToken(encryptedToken);
         if (!token) {
           setError('Usuario no autenticado');
           setLoading(false);

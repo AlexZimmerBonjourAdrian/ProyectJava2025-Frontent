@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getMisCursosUsuario } from "../services/ArticuloCliente";
-import { useDecryptToken } from '../App';
+import { decryptToken } from '../App';
 import CursoHeader from "../components/CursoHeader";
 import Footer from "../components/Footer";
 import "../styles/global.css";
@@ -10,7 +10,7 @@ export default function MisCursos() {
 
   useEffect(() => {
     const fetchCursos = async () => {
-      const token = useDecryptToken(localStorage.getItem('authToken'));
+      const token = decryptToken(localStorage.getItem('authToken'));
       if (!token) return;
       const articulos = await getMisCursosUsuario(token);
       // Traer datos completos de cada curso asignado
