@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllPaquetes } from "../services/paquete";
-import { decryptToken } from '../App';
+import { useDecryptToken } from '../App';
 import PaqueteHeader from "./PaqueteHeader";
 import PaqueteDescripcion from "./PaqueteDescripcion";
 import CursoIncluidoCard from "./CursoIncluidoCard";
@@ -17,7 +17,7 @@ const PaqueteComponent = () => {
       setError(null);
       try {
         const encryptedToken = localStorage.getItem('authToken');
-        const token = decryptToken(encryptedToken);
+        const token = useDecryptToken(encryptedToken);
         if (!token) {
           setError('Usuario no autenticado');
           setLoading(false);
