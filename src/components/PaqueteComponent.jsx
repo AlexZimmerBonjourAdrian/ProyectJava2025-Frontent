@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllPaquetes } from "../services/paquete";
-import { decryptToken } from '../App';
+import { useDecryptToken } from '../App';
 import PaqueteHeader from "./PaqueteHeader";
 import PaqueteDescripcion from "./PaqueteDescripcion";
 import CursoIncluidoCard from "./CursoIncluidoCard";
