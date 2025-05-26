@@ -70,15 +70,15 @@ const VideoCurso = () => {
   return (
     <section className="flex flex-col items-center justify-center min-h-[80vh] bg-gradient-to-b from-slate-50 to-slate-100/50 py-8 px-4">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-4 text-center text-primary-700 playfair-display">{videoData.title}</h1>
+        {/* El título y la descripción se pasan al VideoComponent */}
         <VideoComponent
           videoUrl={videoData.videoUrl}
-          title={videoData.title}
-          description={videoData.description}
+          title={videoData.nombre || videoData.title}
+          description={videoData.descripcion || videoData.description}
           thumbnail={videoData.thumbnail}
           controls
         />
-        <p className="text-lg text-gray-700 mb-6 text-center">{videoData.description}</p>
+        {/* Elimina el título y descripción duplicados aquí */}
         {videoData.recursos && videoData.recursos.length > 0 && (
           <div className="mb-2">
             <h2 className="text-xl font-semibold mb-2 text-primary-700">Recursos</h2>
