@@ -27,7 +27,8 @@ const Index = () => {
 
 
         <section className="video-section flex flex-col items-center justify-center mt-8">
-            <VideoComponent className="video"/>
+            {/* Solo renderiza VideoComponent si tienes un videoUrl válido */}
+            {/* <VideoComponent className="video" /> */}
         </section>
 
 

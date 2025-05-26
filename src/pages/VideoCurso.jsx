@@ -32,7 +32,7 @@ const VideoCurso = () => {
         const data = await getVideoById(videoId, token);
         setVideoData({
           ...data,
-          videoUrl: data.videoUrl || data.link || data.url || '', // Normaliza aquí
+          videoUrl: data.videoUrl || data.link || data.url || data.embedUrl || '', // Normaliza aquí, incluye embedUrl por si el backend lo provee
         });
       } catch (err) {
         setError('No se pudo cargar el video');
