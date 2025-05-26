@@ -106,7 +106,7 @@ export default function Curso() {
             nombre={video.nombre}
             descripcion={video.descripcion}
             imagen={video.imagen}
-            onInfo={() => { /* lógica para ver el video o más info */ }}
+            onInfo={() => navigate('/VideoCurso', { state: { videoId: video.id } })}
           />
         ))}
       </div>
