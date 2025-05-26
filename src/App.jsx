@@ -27,6 +27,7 @@ import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
 import ListadoProductos from './pages/ListadoProductos';
 import MisCursos from './pages/MisCursos';
+import VentaCurso from './pages/VentaCurso';
 
 import CryptoJS from 'crypto-js';
 
@@ -79,6 +80,7 @@ const router = createBrowserRouter(
       <Route path="/ModificarPaquete" element={<AdminRoute><PaqueteModificar /></AdminRoute>} />
       <Route path="/ModificarCurso" element={<AdminRoute><CursoModificacion /></AdminRoute>} />
       <Route path="/MisCursos" element={<UserRoute><MisCursos /></UserRoute>} />
+      <Route path="/VentaCurso" element={<VentaCurso />} />
     </Route>
   ),
   {
