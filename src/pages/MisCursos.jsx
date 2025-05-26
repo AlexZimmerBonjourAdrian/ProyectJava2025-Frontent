@@ -4,9 +4,11 @@ import { useDecryptToken } from '../App';
 import CursoHeader from "../components/CursoHeader";
 import Footer from "../components/Footer";
 import "../styles/global.css";
+import { useNavigate } from 'react-router-dom';
 
 export default function MisCursos() {
   const [cursos, setCursos] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCursos = async () => {
@@ -47,7 +49,7 @@ export default function MisCursos() {
               <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>{curso.descripcion || 'Sin descripción.'}</div>
               <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>Estado: {curso.estado} | Caducidad: {curso.caducidad}</div>
               <button style={{ background: '#e98fae', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 8, padding: '10px 32px', cursor: 'pointer', marginTop: 8 }}
-                onClick={() => window.location.href = `/curso/${curso.articuloClienteId}`}
+                onClick={() => navigate('/curso', { state: { cursoId: curso.articuloClienteId } })}
               >IR AL CURSO</button>
             </div>
           </div>
