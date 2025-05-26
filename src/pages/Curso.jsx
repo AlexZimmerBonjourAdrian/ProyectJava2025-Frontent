@@ -22,7 +22,7 @@ export default function Curso() {
       setError(null);
       try {
         if (!cursoId) {
-          setError("No se proporcionó el curso.");
+          setError("No se proporcionó el curso. Regresa a Mis Cursos e intenta de nuevo.");
           setLoading(false);
           return;
         }
@@ -46,11 +46,11 @@ export default function Curso() {
           // 4. Normalizar los videos
           if (Array.isArray(cursoData.videos)) {
             videos = cursoData.videos.map((v, idx) => ({
-              id: v.id || idx,
+              id: v.id || v._id || idx,
               nombre: v.nombre || v.titulo || `Video ${idx+1}`,
               descripcion: v.descripcion || '',
               imagen: v.imagen || null,
-              link: v.link || ''
+              link: v.link || v.url || v.videoUrl || '' // Asegura que haya un link
             }));
           }
         }
@@ -58,7 +58,7 @@ export default function Curso() {
           nombre: cursoData.nombre || articuloCliente.nombre || 'Curso',
           descripcion: cursoData.descripcion || articuloCliente.descripcion || '',
           videoPresentacion: cursoData.videoPresentacion || articuloCliente.videoPresentacion || '',
-          videos,
+          videos: videos.map(v => ({ ...v, videoUrl: v.videoUrl || v.link || v.url || '' })), // Normaliza videoUrl para cada video
         });
       } catch (err) {
         console.log('Error al cargar el curso:', err);
