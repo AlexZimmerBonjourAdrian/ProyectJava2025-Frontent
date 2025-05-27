@@ -41,7 +41,8 @@ const PaqueteForm = () => {
 					descripcion: descripcion,
 					videoPresentacion: link,
 					precio: precio,
-					cursos: cursos
+					cursos: cursos,
+					activo: true
 				}
 				fetch(`${API_URL}/api/paquetes`, {
 					method: 'POST',
