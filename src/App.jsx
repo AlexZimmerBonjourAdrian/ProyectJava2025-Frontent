@@ -80,7 +80,7 @@ const router = createBrowserRouter(
       <Route path="/ModificarPaquete" element={<AdminRoute><PaqueteModificar /></AdminRoute>} />
       <Route path="/ModificarCurso" element={<AdminRoute><CursoModificacion /></AdminRoute>} />
       <Route path="/MisCursos" element={<UserRoute><MisCursos /></UserRoute>} />
-      <Route path="/VentaCurso" element={<VentaCurso />} />
+    
     </Route>
   ),
   {

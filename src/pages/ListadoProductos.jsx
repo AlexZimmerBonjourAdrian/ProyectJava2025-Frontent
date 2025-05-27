@@ -61,15 +61,22 @@ export default function ListadoProductos() {
 
     const gridItem = (product) => {
         return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2 grid-producto" key={product.id}>
-                <img src='' className='grid-pruducto-imagen'/>
-                <div className="p-4 border-1 surface-border surface-card border-round">
-                    <h3 className="text-2xl font-bold text-900 grid-pruducto-nombre">{product.nombre}</h3>
-                    <p className="text-2xl font-bold text-900 grid-pruducto-descrip">{product.descripcion}</p>                        
+            <div className="grid-producto-card" key={product.id}>
+                <div className="grid-producto-img-placeholder">
+                    {/* Imagen real si existe, si no placeholder */}
+                    {product.imagen ? (
+                        <img src={product.imagen} alt={product.nombre} className="grid-producto-img" />
+                    ) : (
+                        <div className="grid-producto-img-x">✕</div>
+                    )}
                 </div>
-                <div className="flex align-items-center justify-content-between">
-                    <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
-                    <Button icon="pi pi-shopping-cart" className="p-button-rounded grid-pruducto-button" disabled={!product.activo}></Button>
+                <div className="grid-producto-content">
+                    <div className="grid-producto-nombre">{product.nombre || 'NOMBRE DEL PAQUETE'}</div>
+                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue massa ipsum, quis placerat mauris luctus vel. Maecenas ut felis vel orci ultrices'}</div>
+                    <div className="grid-producto-precio-btn">
+                        <span className="grid-producto-precio">${product.precio || '0.00'}</span>
+                        <Button label="Añadir al carrito" className="grid-producto-btn" disabled={!product.activo} />
+                    </div>
                 </div>
             </div>
         );
@@ -85,7 +92,7 @@ export default function ListadoProductos() {
     };
 
     const listTemplate = (products, layout) => {
-        return <div className="grid grid-nogutter">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
+        return <div className="grid-producto-container">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
     };
 
     const header = () => {
@@ -97,9 +104,8 @@ export default function ListadoProductos() {
     };
 
     return (
-        <div className="card">
+        <div className="listado-productos-bg">
             <DataView value={products} listTemplate={listTemplate} layout={layout} header={header()} />
         </div>
     )
 }
-        
