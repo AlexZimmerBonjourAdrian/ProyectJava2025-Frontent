@@ -1,45 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Slider } from "primereact/slider";
 import { Checkbox } from "primereact/checkbox";
-import { RadioButton } from "primereact/radiobutton";
-import "primereact/resources/themes/lara-light-pink/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-
-// Mock de cursos
-const cursos = [
-  {
-    id: 1,
-    nombre: "Sanación Integral",
-    descripcion: "Curso de sanación física y emocional.",
-    categoria: "Sanacion",
-    precio: 10,
-    paquete: true,
-    imagen: "",
-  },
-  {
-    id: 2,
-    nombre: "Feminidad Sagrada",
-    descripcion: "Descubre tu energía femenina.",
-    categoria: "Feminidad",
-    precio: 15,
-    paquete: false,
-    imagen: "",
-  },
-  {
-    id: 3,
-    nombre: "Meditación para el Alma",
-    descripcion: "Aprende a meditar y conectar contigo.",
-    categoria: "Meditation",
-    precio: 20,
-    paquete: true,
-    imagen: "",
-  },
-  // ...agrega más cursos si lo deseas
-];
+import { getAllCursos } from "../services/curso";
+import { useDecryptToken } from "../App";
 
 const categorias = [
   { label: "Todas", value: null },
@@ -49,25 +15,41 @@ const categorias = [
 ];
 
 export default function VentaCurso() {
-  // Estados de filtros
   const [search, setSearch] = useState("");
   const [categoria, setCategoria] = useState(null);
   const [precio, setPrecio] = useState([5, 20]);
   const [soloPaquetes, setSoloPaquetes] = useState(false);
   const [layout, setLayout] = useState("grid");
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Filtrado de cursos
-  const cursosFiltrados = cursos.filter((curso) => {
-    const matchSearch =
-      curso.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      curso.descripcion.toLowerCase().includes(search.toLowerCase());
-    const matchCategoria = !categoria || curso.categoria === categoria;
-    const matchPrecio = curso.precio >= precio[0] && curso.precio <= precio[1];
-    const matchPaquete = !soloPaquetes || curso.paquete;
-    return matchSearch && matchCategoria && matchPrecio && matchPaquete;
-  });
+  useEffect(() => {
+    const fetchCursos = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const encryptedToken = localStorage.getItem("authToken");
+        const token = useDecryptToken(encryptedToken);
+        if (!token) {
+          setError("Usuario no autenticado");
+          setLoading(false);
+          return;
+        }
+        const data = await getAllCursos(token);
+        setCursos(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError("Error al cargar los cursos");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCursos();
+  }, []);
 
-  // Template para mostrar cada curso
+  // Desactivar filtros: mostrar todos los cursos sin filtrar
+  const cursosFiltrados = cursos;
+
   const itemTemplate = (curso) => (
     <div
       style={{
@@ -127,13 +109,14 @@ export default function VentaCurso() {
     </div>
   );
 
+  if (loading) return <div style={{ padding: 40 }}>Cargando cursos...</div>;
+  if (error) return <div style={{ padding: 40, color: "red" }}>{error}</div>;
+
   return (
     <div style={{ background: "#eef1f3", minHeight: "100vh", fontFamily: "serif" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", padding: "32px 0 0 40px" }}>
-       
         <div style={{ flex: 1 }} />
-        {/* Eliminados los íconos de carrito y casa */}
       </div>
       {/* Main Content */}
       <div style={{ display: "flex", marginTop: 24 }}>
@@ -223,3 +206,4 @@ export default function VentaCurso() {
     </div>
   );
 }
+
