@@ -21,10 +21,58 @@ const CarritoComponent = () => {
   useEffect(() => {
     const cargarCarrito = async () => {
       try {
+        // 1. Obtener el carrito básico del usuario
         const carritoData = await carritoService.obtenerCarritoUsuario(token);
-        setCarrito(carritoData);
+
+        if (carritoData && carritoData.items && carritoData.items.length > 0) {
+          // 2. Extraer IDs de artículos y obtener detalles completos para cada uno
+          const itemDetailsPromises = carritoData.items.map(async (item) => {
+            // Asumiendo que item.articulo contiene el ID del curso/producto
+            // Si el backend usa otro nombre (ej: itemId, productId), habrá que ajustar aquí
+            if (item.articulo) {
+              try {
+                // Obtener detalles completos del curso/producto usando su ID
+                const detalles = await import('../services/curso').then(module => module.getCursoById(item.articulo, token));
+                // Combinar los datos básicos del item del carrito con los detalles obtenidos
+                return { ...item, ...detalles };
+              } catch (detailError) {
+                console.error(`Error al obtener detalles para el artículo ${item.articulo}:`, detailError);
+                // Si falla obtener detalles, devolver el item básico (con normalización fallback)
+                return { 
+                  ...item, 
+                  nombre: item.nombre || 'Error al cargar nombre',
+                  precio: item.precio || 0, // O quizás item.precio si el carrito básico lo trae
+                  descripcion: item.descripcion || 'Error al cargar descripción.',
+                  autor: item.autor || 'Error al cargar autor'
+                };
+              }
+            } else {
+              // Si el item no tiene un ID de artículo referenciado, devolver el item básico (con normalización fallback)
+               return { 
+                  ...item, 
+                  nombre: item.nombre || 'Artículo sin referencia',
+                  precio: item.precio || 0, // O quizás item.precio si el carrito básico lo trae
+                  descripcion: item.descripcion || 'Sin descripción referenciada.',
+                  autor: item.autor || 'Autor desconocido'
+                };
+            }
+          });
+
+          // Esperar a que se completen todas las promesas de obtención de detalles
+          const itemsConDetalles = await Promise.all(itemDetailsPromises);
+
+          // 3. Actualizar el estado del carrito con los items enriquecidos
+          setCarrito({ ...carritoData, items: itemsConDetalles });
+
+        } else {
+           // Si el carrito está vacío o no tiene items, simplemente establecerlo
+           setCarrito(carritoData);
+        }
+
+        // Obtener el total del carrito (esto puede que ya esté correcto si depende solo del ID del carrito)
         const totalData = await carritoService.obtenerTotalCarrito(carritoData.id, token);
         setTotal(totalData);
+
       } catch (error) {
         console.error('Error al cargar el carrito:', error);
         toast.current.show({
@@ -214,21 +262,27 @@ const CarritoComponent = () => {
         {/* Carrito y resumen */}
         <div key="cart-summary" style={{ background: primaryColor, borderRadius: borderRadius, padding: 30, flex: 1, minWidth: 340, maxWidth: 700, boxShadow: '0 4px 24px rgba(233,143,174,0.13)' }}>
           {/* Productos en carrito */}
-          {carrito.items.map((item, index) => (
-            <div key={`item-${item.id}-${index}`} style={{ background: cardBg, borderRadius: 12, padding: 18, display: "flex", alignItems: "center", marginBottom: 30, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1.5px solid #f3c7d6' }}>
-              <div key={`imagen-${item.id}-${index}`} style={{ width: 60, height: 60, background: "#f3c7d6", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", marginRight: 18 }}>
+          {carrito.items.map((item, index) => {
+            console.log('Item del carrito:', item);
+            return (
+            <div key={`item-${item.id}-${index}`} className="carrito-item">
+              <div key={`imagen-${item.id}-${index}`} className="item-imagen">
                 {item.imagen ? (
-                  <img key={`img-${item.id}-${index}`} src={item.imagen} alt={item.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10 }} />
+                  <img key={`img-${item.id}-${index}`} src={item.imagen} alt={item.nombre} />
                 ) : (
-                  <svg key={`svg-${item.id}-${index}`} width="36" height="36" fill="#aaa" viewBox="0 0 24 24"><rect width="100%" height="100%" rx="8" fill="#eee"/><text x="50%" y="55%" textAnchor="middle" fontSize="18" fill="#aaa">✕</text></svg>
+                  <div key={`placeholder-${item.id}-${index}`} className="placeholder-imagen">
+                    <svg width="36" height="36" fill="#aaa" viewBox="0 0 24 24"><rect width="100%" height="100%" rx="8" fill="#eee"/><text x="50%" y="55%" textAnchor="middle" fontSize="18" fill="#aaa">✕</text></svg>
+                  </div>
                 )}
               </div>
-              <div key={`info-${item.id}-${index}`} style={{ flex: 1 }}>
-                <div key={`nombre-${item.id}-${index}`} style={{ fontWeight: 700, fontSize: 19, color: '#222' }}>{item.nombre}</div>
-                <div key={`descripcion-${item.id}-${index}`} style={{ color: primaryColor, fontSize: 15, marginTop: 2 }}>{item.descripcion}</div>
-                <div key={`autor-${item.id}-${index}`} style={{ color: primaryColor, fontSize: 15 }}>{item.autor}</div>
+              <div key={`info-${item.id}-${index}`} className="item-detalles">
+                <h3 key={`nombre-${item.id}-${index}`}>{item.nombre}</h3>
+                <p key={`descripcion-${item.id}-${index}`}>{item.descripcion}</p>
+                <p key={`autor-${item.id}-${index}`}>{item.autor}</p>
+                <div key={`precio-container-${item.id}-${index}`} className="item-precio">
+                  ${item.precio}
+                </div>
               </div>
-              <div key={`precio-${item.id}-${index}`} style={{ fontWeight: 700, fontSize: 22, marginRight: 18, color: accentColor }}>${item.precio}</div>
               <button 
                 key={`eliminar-${item.id}-${index}`}
                 onClick={() => handleEliminarItem(item.id)}
@@ -249,7 +303,8 @@ const CarritoComponent = () => {
                 <svg key={`delete-icon-${item.id}-${index}`} width="24" height="24" fill={primaryColor} viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2z"/></svg>
               </button>
             </div>
-          ))}
+          );
+        })}
 
           {/* Total */}
           <div key="total-section" style={{ background: cardBg, borderRadius: 10, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 28, fontWeight: 600, color: accentColor, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', marginBottom: 10 }}>
