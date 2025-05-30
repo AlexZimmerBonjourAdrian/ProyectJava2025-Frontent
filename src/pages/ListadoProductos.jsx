@@ -1,44 +1,107 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Paginator } from 'primereact/paginator';
 import { getAllPaquetes } from '../services/paquete';
-import { useDecryptToken } from '../App';
+import carritoService from '../services/carrito.js';
+import useAuth from '../hooks/useAuth';
+import { Toast } from 'primereact/toast';
+import CursoHeader from '../components/CursoHeader';
+import { useNavigate } from 'react-router-dom';
 import './ListadoProductos.css';
 
-
 export default function ListadoProductos() {
+    const { token, isLoading } = useAuth();
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
     const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(12); // 3 columnas x 4 filas
+    const [rows, setRows] = useState(12);
+    const [carritoId, setCarritoId] = useState(null);
+    const toast = useRef(null);
+    const navigate = useNavigate();
     
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchData = async () => {
-            const encryptedToken = localStorage.getItem('authToken');
-            const token = useDecryptToken(encryptedToken);
+            if (isLoading) return;
+            
+            if (!token) {
+                toast.current.show({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Debe iniciar sesión para ver y agregar productos al carrito.',
+                    life: 5000
+                });
+                setProducts([]);
+                return;
+            }
+
+            try {
+                let carrito = await carritoService.obtenerCarritoUsuario(token);
+                setCarritoId(carrito.id);
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    try {
+                        const nuevoCarrito = await carritoService.crearCarrito({}, token);
+                        setCarritoId(nuevoCarrito.id);
+                    } catch (createError) {
+                        console.error('Error al crear carrito:', createError);
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'No se pudo crear el carrito.',
+                            life: 3000
+                        });
+                    }
+                } else {
+                    console.error('Error al obtener carrito:', error);
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se pudo cargar el carrito.',
+                        life: 3000
+                    });
+                }
+            }
+
             // Traer cursos
             const cursos = await fetch(`${API_URL}/api/curso`, {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            }).then(res => res.json());
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => res.json()).catch(err => { 
+                console.error('Error fetching cursos:', err); 
+                return []; 
+            });
+
             // Traer paquetes
             let paquetes = [];
             try {
                 paquetes = await getAllPaquetes(token);
-            } catch (e) { paquetes = []; }
-            // Normaliza ambos para que tengan los mismos campos visuales
+            } catch (e) { 
+                console.error('Error fetching paquetes:', e);
+                paquetes = [];
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudieron cargar los paquetes.',
+                    life: 3000
+                });
+            }
+
             const paquetesNormalizados = (paquetes || []).map(p => ({
                 ...p,
                 nombre: p.nombre || 'Paquete',
                 descripcion: p.descripcion || '',
                 precio: p.precio || 0,
                 imagen: p.imagen || '',
-                activo: p.activo !== false // por si falta el campo
+                activo: p.activo !== false
             }));
+
             const cursosNormalizados = (cursos || []).map(c => ({
                 ...c,
                 nombre: c.nombre || 'Curso',
@@ -47,52 +110,61 @@ export default function ListadoProductos() {
                 imagen: c.imagen || '',
                 activo: c.activo !== false
             }));
+
             setProducts([...paquetesNormalizados, ...cursosNormalizados]);
         };
         fetchData();
-    }, []);
+    }, [token, isLoading, API_URL]);
 
-    const getSeverity = (product) => {
-        switch (product.inventoryStatus) {
-            case 'INSTOCK':
-                return 'success';
+    const handleAgregarAlCarrito = async (productId) => {
+        if (!carritoId) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudo acceder al carrito. Intente recargar la página.',
+                life: 3000
+            });
+            return;
+        }
 
-            case 'LOWSTOCK':
-                return 'warning';
+        if (!token) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe iniciar sesión para agregar productos al carrito.',
+                life: 5000
+            });
+            return;
+        }
 
-            case 'OUTOFSTOCK':
-                return 'danger';
-
-            default:
-                return null;
+        try {
+            await carritoService.agregarArticulo(carritoId, productId, token);
+            toast.current.show({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Producto agregado al carrito',
+                life: 3000
+            });
+        } catch (error) {
+            console.error('Error al agregar item al carrito:', error);
+            const errorMessage = error.response?.data?.message || 'No se pudo agregar el producto al carrito';
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: errorMessage,
+                life: 3000
+            });
         }
     };
 
-    const listItem = (product, index) => {
-        return (
-            <div className="col-12" key={product.id}>
-                <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.nombre} />
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <h3 className="text-2xl font-bold text-900">{product.nombre}</h3>
-                            <p className="text-2xl font-bold text-900">{product.descripcion}</p>
-                        </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span className="text-2xl font-semibold">${product.precio}</span>
-                            <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={!product.activo}></Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const handleIrAlCarrito = () => {
+        navigate('/carrito');
     };
 
     const gridItem = (product) => {
         return (
             <div className="grid-producto-card" key={product.id}>
                 <div className="grid-producto-img-placeholder">
-                    {/* Imagen real si existe, si no placeholder con X */}
                     {product.imagen ? (
                         <img src={product.imagen} alt={product.nombre} className="grid-producto-img" />
                     ) : (
@@ -104,10 +176,15 @@ export default function ListadoProductos() {
                 </div>
                 <div className="grid-producto-content">
                     <div className="grid-producto-nombre">{product.nombre || 'NOMBRE DEL PAQUETE'}</div>
-                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue massa ipsum, quis placerat mauris luctus vel. Maecenas ut felis vel orci ultrices'}</div>
+                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</div>
                     <div className="grid-producto-precio-btn">
                         <span className="grid-producto-precio">${product.precio || '0.00'}</span>
-                        <Button label="Añadir al carrito" className="grid-producto-btn" disabled={!product.activo} />
+                        <Button 
+                            label="Añadir al carrito" 
+                            className="grid-producto-btn" 
+                            disabled={!product.activo}
+                            onClick={() => handleAgregarAlCarrito(product.id)}
+                        />
                     </div>
                 </div>
             </div>
@@ -115,12 +192,8 @@ export default function ListadoProductos() {
     };
 
     const itemTemplate = (product, layout, index) => {
-        if (!product) {
-            return;
-        }
-
-        if (layout === 'list') return listItem(product, index);
-        else if (layout === 'grid') return gridItem(product);
+        if (!product) return null;
+        return layout === 'grid' ? gridItem(product) : null;
     };
 
     const paginatedProducts = products.slice(first, first + rows);
@@ -131,31 +204,36 @@ export default function ListadoProductos() {
 
     const header = () => {
         return (
-            <div className="flex justify-content-end">
+            <div className="flex justify-content-between align-items-center">
+                <Button 
+                    icon="pi pi-shopping-cart" 
+                    label="Ver Carrito" 
+                    onClick={handleIrAlCarrito}
+                    className="p-button-outlined"
+                />
                 <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
             </div>
         );
     };
 
     return (
-        <div className="listado-productos-bg" style={{paddingBottom: '40px'}}>
-            <DataView 
-                value={paginatedProducts} 
-                listTemplate={listTemplate} 
-                layout={layout} 
-                header={header()} 
-            />
-            <Paginator 
-                first={first} 
-                rows={rows} 
-                totalRecords={products.length} 
-                onPageChange={(e) => { setFirst(e.first); setRows(e.rows); }}
-                template="PrevPageLink PageLinks NextPageLink"
-                className="custom-paginator"
-            />
-            <div style={{textAlign:'center',marginTop:32,color:'#3d1426',fontSize:16,fontFamily:'serif'}}>
-                © Solariana 2025
+        <div className="listado-productos-container">
+            <CursoHeader />
+            <div className="listado-productos-bg" style={{paddingBottom: '40px'}}>
+                <Toast ref={toast} />
+                <DataView 
+                    value={paginatedProducts} 
+                    listTemplate={listTemplate} 
+                    layout={layout} 
+                    header={header()} 
+                />
+                <Paginator 
+                    first={first} 
+                    rows={rows} 
+                    totalRecords={products.length} 
+                    onPageChange={(e) => { setFirst(e.first); setRows(e.rows); }}
+                />
             </div>
         </div>
-    )
+    );
 }

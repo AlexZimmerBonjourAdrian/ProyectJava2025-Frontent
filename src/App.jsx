@@ -38,23 +38,39 @@ export function encryptToken(token) {
   return CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
 }
 
-// Función para desencriptar
-export function useDecryptToken(encryptedToken, location) {
-  if(!encryptedToken){
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+// Función para desencriptar (solo desencripta, la lógica de redirección se mueve a useAuth)
+export function useDecryptToken(encryptedToken) {
+  if(!encryptedToken) {
+    return null; // Retorna null si no hay token encriptado
   }
-  const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
-  return bytes.toString(CryptoJS.enc.Utf8);
+  try {
+    const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+    const originalToken = bytes.toString(CryptoJS.enc.Utf8);
+    if (!originalToken) { // Si la desencriptación resulta en una cadena vacía
+        console.error("Error al desencriptar el token: resultado vacío");
+        return null;
+    }
+    return originalToken;
+  } catch (error) {
+      console.error("Error al desencriptar el token:", error);
+      return null; // Retorna null en caso de error de desencriptación
+  }
 }
 
 const UserRoute = ({ children }) => {
   const token = localStorage.getItem('authToken');
+  const location = useLocation(); // Obtener location aquí
+  // La lógica de validación y redirección se moverá al componente que usa el token o a un hook de autenticación
+   // Por ahora, solo verificamos si hay token para la navegación básica de rutas privadas
   return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
 
 const AdminRoute = ({ children }) => {
   const token = localStorage.getItem('authToken');
+   const location = useLocation(); // Obtener location aquí
   console.log('Eres Admin?')
+  // La lógica de validación y redirección se moverá al componente que usa el token o a un hook de autenticación
+  // Por ahora, solo verificamos si hay token para la navegación básica de rutas privadas
   return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
 
@@ -69,7 +85,7 @@ const router = createBrowserRouter(
       <Route path="/Paquete" element={<Paquete />} />
       <Route path="/curso/:id" element={<UserRoute><Curso /></UserRoute>} />
       <Route path="/Curso" element={<UserRoute><Curso /></UserRoute> } />
-      <Route path="/productos" element={<ListadoProductos />} />
+      <Route path="/productos" element={<UserRoute><ListadoProductos /></UserRoute>} />
 
       <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
       <Route path="/Pago" element={<UserRoute><Pago /></UserRoute>} />

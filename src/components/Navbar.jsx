@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setIsLoggedIn(true);
+      // Aquí podrías obtener el nombre del usuario desde el token o hacer una llamada a la API
+      // Por ahora usaremos un nombre de ejemplo
+      setUserName('Usuario');
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setIsLoggedIn(false);
+    setUserName('');
+  };
+
   const styles = {
     navbar: {
       backgroundColor: '#1a1a2e',
@@ -38,6 +57,26 @@ const Navbar = () => {
     activeLink: {
       color: '#D4AF37',
       opacity: '1'
+    },
+    userSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem'
+    },
+    userName: {
+      color: '#D4AF37',
+      marginRight: '1rem'
+    },
+    logoutButton: {
+      background: 'none',
+      border: 'none',
+      color: '#ffffff',
+      cursor: 'pointer',
+      opacity: '0.8',
+      transition: 'opacity 0.2s',
+      ':hover': {
+        opacity: '1'
+      }
     }
   };
 
@@ -62,8 +101,17 @@ const Navbar = () => {
           <Link to="/Paquete" style={styles.link}>Paquete</Link>
           <Link to="/MisCursos" style={styles.link}>Mis Cursos</Link>
           <div style={{borderLeft: '1px solid rgba(255,255,255,0.2)', height: '20px', margin: '0 0.5rem'}} />
-          <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
-          <Link to="/register" style={styles.link}>Registrarse</Link>
+          {isLoggedIn ? (
+            <div style={styles.userSection}>
+              <span style={styles.userName}>{userName}</span>
+              <button onClick={handleLogout} style={styles.logoutButton}>Cerrar Sesión</button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
+              <Link to="/register" style={styles.link}>Registrarse</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
