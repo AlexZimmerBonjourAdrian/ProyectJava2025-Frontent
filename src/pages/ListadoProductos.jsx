@@ -42,28 +42,13 @@ export default function ListadoProductos() {
                 let carrito = await carritoService.obtenerCarritoUsuario(token);
                 setCarritoId(carrito.id);
             } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    try {
-                        const nuevoCarrito = await carritoService.crearCarrito({}, token);
-                        setCarritoId(nuevoCarrito.id);
-                    } catch (createError) {
-                        console.error('Error al crear carrito:', createError);
-                        toast.current.show({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: 'No se pudo crear el carrito.',
-                            life: 3000
-                        });
-                    }
-                } else {
-                    console.error('Error al obtener carrito:', error);
-                    toast.current.show({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'No se pudo cargar el carrito.',
-                        life: 3000
-                    });
-                }
+                console.error('Error al obtener carrito:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo cargar el carrito.',
+                    life: 3000
+                });
             }
 
             // Traer cursos

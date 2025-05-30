@@ -102,7 +102,20 @@ const carritoService = {
             return response.data;
         } catch (error) {
             console.error('Error al obtener carrito del usuario:', error);
-            throw error;
+            // Check if the error is a 404
+            if (error.response && error.response.status === 404) {
+                console.log('Carrito no encontrado, intentando crear uno nuevo.');
+                try {
+                    const nuevoCarrito = await carritoService.crearCarrito({}, token); // Use the existing crearCarrito function
+                    console.log('Nuevo carrito creado exitosamente:', nuevoCarrito);
+                    return nuevoCarrito;
+                } catch (createError) {
+                    console.error('Error al crear carrito después de 404:', createError);
+                    throw createError; // Re-throw the creation error
+                }
+            } else {
+                throw error; // Re-throw other errors
+            }
         }
     },
 
