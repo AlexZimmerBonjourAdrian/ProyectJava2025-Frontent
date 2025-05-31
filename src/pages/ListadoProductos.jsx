@@ -1,105 +1,224 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
+import { Paginator } from 'primereact/paginator';
+import { getAllPaquetes } from '../services/paquete';
+import carritoService from '../services/carrito.js';
+import useAuth from '../hooks/useAuth';
+import { Toast } from 'primereact/toast';
+import CursoHeader from '../components/CursoHeader';
+import { useNavigate } from 'react-router-dom';
 import './ListadoProductos.css';
 
-
 export default function ListadoProductos() {
+    const { token, isLoading } = useAuth();
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(12);
+    const [carritoId, setCarritoId] = useState(null);
+    const toast = useRef(null);
+    const navigate = useNavigate();
     
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        fetch(`${API_URL}/api/curso`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        const fetchData = async () => {
+            if (isLoading) return;
+            
+            if (!token) {
+                toast.current.show({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Debe iniciar sesión para ver y agregar productos al carrito.',
+                    life: 5000
+                });
+                setProducts([]);
+                return;
             }
-        }).then(res => res.json())
-        .then(data => {
-            setProducts(data)
-        })
-    }, []);
 
-    const getSeverity = (product) => {
-        switch (product.inventoryStatus) {
-            case 'INSTOCK':
-                return 'success';
+            try {
+                let carrito = await carritoService.obtenerCarritoUsuario(token);
+                setCarritoId(carrito.id);
+            } catch (error) {
+                console.error('Error al obtener carrito:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo cargar el carrito.',
+                    life: 3000
+                });
+            }
 
-            case 'LOWSTOCK':
-                return 'warning';
+            // Traer cursos
+            const cursos = await fetch(`${API_URL}/api/curso`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => res.json()).catch(err => { 
+                console.error('Error fetching cursos:', err); 
+                return []; 
+            });
 
-            case 'OUTOFSTOCK':
-                return 'danger';
+            // Traer paquetes
+            let paquetes = [];
+            try {
+                paquetes = await getAllPaquetes(token);
+            } catch (e) { 
+                console.error('Error fetching paquetes:', e);
+                paquetes = [];
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudieron cargar los paquetes.',
+                    life: 3000
+                });
+            }
 
-            default:
-                return null;
+            const paquetesNormalizados = (paquetes || []).map(p => ({
+                ...p,
+                nombre: p.nombre || 'Paquete',
+                descripcion: p.descripcion || '',
+                precio: p.precio || 0,
+                imagen: p.imagen || '',
+                activo: p.activo !== false
+            }));
+
+            const cursosNormalizados = (cursos || []).map(c => ({
+                ...c,
+                nombre: c.nombre || 'Curso',
+                descripcion: c.descripcion || '',
+                precio: c.precio || 0,
+                imagen: c.imagen || '',
+                activo: c.activo !== false
+            }));
+
+            setProducts([...paquetesNormalizados, ...cursosNormalizados]);
+        };
+        fetchData();
+    }, [token, isLoading, API_URL]);
+
+    const handleAgregarAlCarrito = async (productId) => {
+        if (!carritoId) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudo acceder al carrito. Intente recargar la página.',
+                life: 3000
+            });
+            return;
+        }
+
+        if (!token) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe iniciar sesión para agregar productos al carrito.',
+                life: 5000
+            });
+            return;
+        }
+
+        try {
+            await carritoService.agregarArticulo(carritoId, productId, token);
+            toast.current.show({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Producto agregado al carrito',
+                life: 3000
+            });
+        } catch (error) {
+            console.error('Error al agregar item al carrito:', error);
+            const errorMessage = error.response?.data?.message || 'No se pudo agregar el producto al carrito';
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: errorMessage,
+                life: 3000
+            });
         }
     };
 
-    const listItem = (product, index) => {
+    const handleIrAlCarrito = () => {
+        navigate('/carrito');
+    };
+
+    const gridItem = (product) => {
         return (
-            <div className="col-12" key={product.id}>
-                <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.nombre} />
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <h3 className="text-2xl font-bold text-900">{product.nombre}</h3>
-                            <p className="text-2xl font-bold text-900">{product.descripcion}</p>
-                        </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span className="text-2xl font-semibold">${product.precio}</span>
-                            <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={!product.activo}></Button>
-                        </div>
+            <div className="grid-producto-card" key={product.id}>
+                <div className="grid-producto-img-placeholder">
+                    {product.imagen ? (
+                        <img src={product.imagen} alt={product.nombre} className="grid-producto-img" />
+                    ) : (
+                        <svg width="100%" height="100%" viewBox="0 0 180 180" style={{background:'#ddd',borderRadius:16}}>
+                            <line x1="0" y1="0" x2="180" y2="180" stroke="#aaa" strokeWidth="4" />
+                            <line x1="180" y1="0" x2="0" y2="180" stroke="#aaa" strokeWidth="4" />
+                        </svg>
+                    )}
+                </div>
+                <div className="grid-producto-content">
+                    <div className="grid-producto-nombre">{product.nombre || 'NOMBRE DEL PAQUETE'}</div>
+                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</div>
+                    <div className="grid-producto-precio-btn">
+                        <span className="grid-producto-precio">${product.precio || '0.00'}</span>
+                        <Button 
+                            label="Añadir al carrito" 
+                            className="grid-producto-btn" 
+                            disabled={!product.activo}
+                            onClick={() => handleAgregarAlCarrito(product.id)}
+                        />
                     </div>
                 </div>
             </div>
         );
     };
 
-    const gridItem = (product) => {
-        return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2 grid-producto" key={product.id}>
-                <img src='' className='grid-pruducto-imagen'/>
-                <div className="p-4 border-1 surface-border surface-card border-round">
-                    <h3 className="text-2xl font-bold text-900 grid-pruducto-nombre">{product.nombre}</h3>
-                    <p className="text-2xl font-bold text-900 grid-pruducto-descrip">{product.descripcion}</p>                        
-                </div>
-                <div className="flex align-items-center justify-content-between">
-                    <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
-                    <Button icon="pi pi-shopping-cart" className="p-button-rounded grid-pruducto-button" disabled={!product.activo}></Button>
-                </div>
-            </div>
-        );
-    };
-
     const itemTemplate = (product, layout, index) => {
-        if (!product) {
-            return;
-        }
-
-        if (layout === 'list') return listItem(product, index);
-        else if (layout === 'grid') return gridItem(product);
+        if (!product) return null;
+        return layout === 'grid' ? gridItem(product) : null;
     };
+
+    const paginatedProducts = products.slice(first, first + rows);
 
     const listTemplate = (products, layout) => {
-        return <div className="grid grid-nogutter">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
+        return <div className="grid-producto-container">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
     };
 
     const header = () => {
         return (
-            <div className="flex justify-content-end">
+            <div className="flex justify-content-between align-items-center">
+                <Button 
+                    icon="pi pi-shopping-cart" 
+                    label="Ver Carrito" 
+                    onClick={handleIrAlCarrito}
+                    className="p-button-outlined"
+                />
                 <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
             </div>
         );
     };
 
     return (
-        <div className="card">
-            <DataView value={products} listTemplate={listTemplate} layout={layout} header={header()} />
+        <div className="listado-productos-container">
+            <CursoHeader />
+            <div className="listado-productos-bg" style={{paddingBottom: '40px'}}>
+                <Toast ref={toast} />
+                <DataView 
+                    value={paginatedProducts} 
+                    listTemplate={listTemplate} 
+                    layout={layout} 
+                    header={header()} 
+                />
+                <Paginator 
+                    first={first} 
+                    rows={rows} 
+                    totalRecords={products.length} 
+                    onPageChange={(e) => { setFirst(e.first); setRows(e.rows); }}
+                />
+            </div>
         </div>
-    )
+    );
 }
-        
