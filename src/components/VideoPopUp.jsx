@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDecryptToken } from "../App";
 
 const modalStyle = {
   position: 'fixed',
@@ -84,6 +85,25 @@ const VideoPopUp = ({ initialLink, onCancel, onAdd }) => {
   const [link, setLink] = useState(initialLink || "");
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+
+  useEffect(() => {
+    if (initialLink) {
+      const id = initialLink.split('v=')[1];
+      const token = useDecryptToken(localStorage.getItem('authToken'));
+      const API_URL = import.meta.env.VITE_API_URL;
+      fetch(`${API_URL}/api/youtube/video?id=${id}`, {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+          }
+      }).then(res => res.json())
+      .then(data => {
+          setNombre(data.snippet.title);
+          setDescripcion(data.snippet.description);
+      })
+    }
+  },[]);
 
   const handleAdd = () => {
     if (link.trim() && nombre.trim()) {
