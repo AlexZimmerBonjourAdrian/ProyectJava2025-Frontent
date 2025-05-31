@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import carritoService from "../services/carrito";
 import useAuth from "../hooks/useAuth";
 import { Toast } from 'primereact/toast';
+import { crearArticuloClienteDesdeDTO } from '../services/ArticuloCliente';
+import { useDecryptToken } from '../App';
 
 const primaryColor = "#e98fae";
 const accentColor = "#bfa046";
@@ -17,6 +19,7 @@ const CarritoComponent = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const toast = React.useRef(null);
+  const userId = useDecryptToken(localStorage.getItem('authToken'))?.userId;
 
   useEffect(() => {
     const cargarCarrito = async () => {
@@ -120,22 +123,84 @@ const CarritoComponent = () => {
   };
 
   const handlePagar = async (metodo) => {
-    try {
-      // Aquí iría la lógica de pago según el método seleccionado
-      await carritoService.cerrarCarrito(carrito.id, token);
-      toast.current.show({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Procesando pago...',
-        life: 3000
-      });
-    } catch (error) {
-      console.error('Error al procesar el pago:', error);
+    if (!userId) {
       toast.current.show({
         severity: 'error',
         summary: 'Error',
-        detail: 'No se pudo procesar el pago',
+        detail: 'Usuario no autenticado. No se pueden asignar artículos.',
         life: 3000
+      });
+      return;
+    }
+
+    if (!carrito || !carrito.items || carrito.items.length === 0) {
+       toast.current.show({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'El carrito está vacío.',
+        life: 3000
+      });
+      return;
+    }
+
+    try {
+      // Paso 1: Cerrar el carrito en el backend
+      // Podrías opcionalmente guardar los items antes de cerrar si el backend los elimina inmediatamente de la respuesta de obtenerCarritoUsuario
+      const itemsToAssign = [...carrito.items]; // Clonar los items por si el estado cambia antes de asignarlos
+      
+      await carritoService.cerrarCarrito(carrito.id, token);
+      
+      // Paso 2: Asignar los artículos al usuario
+      // Iterar sobre los items que estaban en el carrito y crear un ArticuloCliente para cada uno
+      for (const item of itemsToAssign) {
+        // Asumimos que el DTO necesita al menos el ID del artículo y el ID del usuario
+        // Ajusta 'item.articulo' y la estructura del dto si es diferente
+        if (item.articulo) {
+          try {
+            const articuloClienteDTO = {
+              articulo: item.articulo, // Propiedad que referencia al producto/curso en el item del carrito
+              usuario: userId, // ID del usuario logueado
+              // Agrega otras propiedades al DTO si son necesarias por el backend
+              // estado inicial, fecha de asignacion, etc. (aunque el backend podría ponerlas)
+            };
+            await crearArticuloClienteDesdeDTO(articuloClienteDTO, token);
+            console.log(`Artículo ${item.articulo} asignado al usuario ${userId}`);
+          } catch (assignError) {
+             console.error(`Error al asignar el artículo ${item.articulo} al usuario ${userId}:`, assignError);
+             // Manejar error de asignación (ej: mostrar toast, loggear)
+             toast.current.show({
+                severity: 'error',
+                summary: 'Error de asignación',
+                detail: `No se pudo asignar el artículo: ${item.nombre || item.articulo}`, // Muestra nombre o ID si el nombre no está
+                life: 5000
+              });
+          }
+        } else {
+           console.warn('Item en carrito sin referencia de artículo:', item);
+        }
+      }
+
+      // Paso 3: Mostrar éxito y actualizar UI (ej: vaciar carrito visualmente)
+      toast.current.show({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Pago procesado y artículos asignados.',
+        life: 5000
+      });
+
+      // Opcional: Vaciar el carrito en el frontend o recargar para reflejar los cambios
+      setCarrito({ ...carrito, items: [] }); // Vaciar visualmente el carrito
+      setTotal(0); // Resetear total
+      // O podrías llamar a cargarCarrito() nuevamente para obtener el estado fresco del backend
+      // cargarCarrito();
+
+    } catch (error) {
+      console.error('Error al procesar el pago o asignar artículos:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.response?.data?.message || 'No se pudo procesar el pago o asignar artículos',
+        life: 5000
       });
     }
   };
