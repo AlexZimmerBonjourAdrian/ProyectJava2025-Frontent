@@ -17,7 +17,6 @@ import Session11 from './pages/Session11';
 import Layout from './components/Layout';
 import Paquete from './pages/Paquete';
 
-import Index from './pages/Index';
 import PaqueteMenu from './pages/PaqueteMenu';
 import CursoMenu from './pages/CursoMenu';
 import PaqueteModificar from './pages/PaqueteModificar';
@@ -26,6 +25,7 @@ import Pago from './pages/Pago';
 import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
 import ListadoProductos from './pages/ListadoProductos';
+import { AuthProvider } from './context/AuthContext';
 
 import CryptoJS from 'crypto-js';
 
@@ -38,29 +38,34 @@ export function encryptToken(token) {
 
 // Función para desencriptar
 export function useDecryptToken(encryptedToken, location) {
-  if(!encryptedToken){
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  if(!encryptedToken || encryptedToken === 'null') {
+    return <Navigate to="/login" state={{ from: location?.pathname }} replace />;
   }
   const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
 const UserRoute = ({ children }) => {
+  const location = useLocation?.();
   const token = localStorage.getItem('authToken');
-  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  return token ? children : <Navigate to="/login" state={{ from: location?.pathname }} replace />;
 };
 
 const AdminRoute = ({ children }) => {
+  const location = useLocation?.();
   const token = localStorage.getItem('authToken');
-  console.log('Eres Admin?')
-  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  const isAdmin = token && JSON.parse(atob(useDecryptToken(token)?.split('.')[1])).authorities.find(
+      (element) => element === 'ADMIN'
+    );
+
+  return isAdmin ? children : <Navigate to="/login" state={{ from: location?.pathname }} replace />;
 };
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/session11" element={<Session11 />} />
@@ -88,7 +93,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />;
+    </AuthProvider>
+  );
 }
 
 export default App;

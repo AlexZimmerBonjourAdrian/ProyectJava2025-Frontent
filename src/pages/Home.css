@@ -1,6 +1,25 @@
+main .nav{
+    padding: 1rem;
+    position: fixed;
+    height: 4rem;
+    z-index: 100;
+    top:0;
+    right: 0;
+    margin-top: 0;
+}
 
+main .container{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-
+main .nav {
+    display: flex;
+    gap: 2rem;
+}
 
 main div p.sub-title {
     color: var(--secondary-color);
@@ -42,10 +61,11 @@ main div.rectangle-container div.sm {
 
 main.main{
     background-color: var(--background-color);
-    z-index: 10;
+    z-index: 10000;
     margin: 0;
     top: 0;
     position: relative;
+    margin-top: -4rem;
 }
 
 section.video-section {
@@ -143,22 +163,3 @@ h1.heading {
     font-weight: 700;
     color: var(--secondary-color);
 }
-
-.lato-light {
-    font-family: "Lato", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-  }
-
-.playfair-display{
-    font-family: "Playfair Display", serif;
-    font-optical-sizing: auto;
-    font-weight: extra-bold;
-    font-style: normal;
-  }
-
-
-
-
-
-  

@@ -9,18 +9,24 @@
     flex-direction: column;
     text-align: left;
 }
+
 .grid-pruducto-button{
     background-color: var(--secondary-color);
 }
+
 .grid-pruducto-precio{
     color: white;
 }
+
 .grid-pruducto-nombre{
     color: white;
 }
-.grid-pruducto-descrip{}
+
 .grid-pruducto-imagen{
     background-color: var(--background-color);
     height: 150px;
     width: 150px;
+}
+.card {
+    padding: 2em;
 }

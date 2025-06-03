@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/global.css';
+import './PagoComponent.css';
 
 const PagoComponent = ({
   articulos = [

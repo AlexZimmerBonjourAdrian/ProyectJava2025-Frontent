@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import VideoComponent from '../components/VideoComponent';
+import './VideoCurso.css'; // Assuming you have a CSS file for styling
 
 const VideoCurso = () => {
     const videoData = {

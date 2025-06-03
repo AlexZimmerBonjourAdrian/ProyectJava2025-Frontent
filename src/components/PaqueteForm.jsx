@@ -56,7 +56,7 @@ const PaqueteForm = () => {
 					if (data.id) {
 						msgs.current.clear();
 						msgs.current.show([
-						{ sticky: true, severity: 'success', summary: 'Éxito', detail: 'Curso creado exitosamente' },
+						{ sticky: true, severity: 'success', summary: 'Éxito', detail: 'Paquete creado exitosamente' },
 						]);
 						setNombre("");
 						setDescripcion("");

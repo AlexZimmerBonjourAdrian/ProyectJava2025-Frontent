@@ -1,0 +1,17 @@
+.curso-section {
+    background: #5B2333;
+    border-radius: 20px;
+    padding: 24px;
+    margin: 32px 0;
+}
+
+.curso-button {
+    background: #F29CA4;
+    color: #5B2333;
+}
+
+.curso-container {
+    background: #eaf0f1;
+    min-height: 100vh;
+    padding: 24px;
+}
