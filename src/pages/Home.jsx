@@ -49,11 +49,35 @@ const Home = () => {
                 <p className="sub-title lato-light text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 text-center max-w-2xl mx-auto">
                     Coaching que cambia la vida
                 </p>
-                <button className="compra-button p-button-primary text-md px-6 py-3">
-                    <Link to="/productos" >
-                        YA QUIERO EMPEZAR!
-                    </Link>
-                </button>
+                    {!isAdmin && (
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/productos" > YA QUIERO EMPEZAR! </Link>
+                        </button>
+                    )}
+                    {isAdmin && (
+                    <section className="admin-section">
+                        <h3 className="playfair-display">PAQUETES</h3>
+                        <h3 className="playfair-display">CURSOS</h3>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/productos"> LISTADO DE PAQUETES </Link>
+                        </button>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/productos"> LISTADO DE CURSOS </Link>
+                        </button>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/AgregarPaquete"> NUEVO PAQUETE </Link>
+                        </button>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/AgregarCurso"> NUEVO CURSO </Link>
+                        </button>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/ModificarPaquete"> MODIFICAR PAQUETE </Link>
+                        </button>
+                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                            <Link to="/ModificarCurso"> MODIFICAR CURSO </Link>
+                        </button>
+                    </section>
+                    )}
             </div>
         </main>
 
@@ -68,7 +92,7 @@ const Home = () => {
                 SESIONES PERSONALES<br /> CON UNA GENIO DEL COACHING
             </h2>
             <div className="compra-section">
-                <button className="compra-button p-button-primary text-md px-6 py-3">
+                <button className="boton-dorado p-button-primary text-md px-6 py-3">
                     ¡AGENDATE AHORA!
                 </button>
                 <p className="playfair-display">POR ÚNICAMENTE <span className="price">$145</span></p>
