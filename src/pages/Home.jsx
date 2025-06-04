@@ -50,32 +50,46 @@ const Home = () => {
                     Coaching que cambia la vida
                 </p>
                     {!isAdmin && (
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/productos" > YA QUIERO EMPEZAR! </Link>
-                        </button>
+                        <Link to="/productos"> 
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                YA QUIERO EMPEZAR!
+                            </button>
+                        </Link>
                     )}
                     {isAdmin && (
                     <section className="admin-section">
                         <h3 className="playfair-display">PAQUETES</h3>
                         <h3 className="playfair-display">CURSOS</h3>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/productos"> LISTADO DE PAQUETES </Link>
-                        </button>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/productos"> LISTADO DE CURSOS </Link>
-                        </button>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/AgregarPaquete"> NUEVO PAQUETE </Link>
-                        </button>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/AgregarCurso"> NUEVO CURSO </Link>
-                        </button>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/ModificarPaquete"> MODIFICAR PAQUETE </Link>
-                        </button>
-                        <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                            <Link to="/ModificarCurso"> MODIFICAR CURSO </Link>
-                        </button>
+                        <Link to="/productos"> 
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                LISTADO DE PAQUETES 
+                            </button>
+                        </Link>
+                        <Link to="/productos">
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                LISTADO DE CURSOS
+                            </button>
+                        </Link>
+                        <Link to="/AgregarPaquete">
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                NUEVO PAQUETE
+                            </button>
+                        </Link>
+                        <Link to="/AgregarCurso">
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                NUEVO CURSO
+                            </button>
+                        </Link>
+                        <Link to="/ModificarPaquete">
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                MODIFICAR PAQUETE
+                            </button>
+                        </Link>
+                        <Link to="/ModificarCurso">
+                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                                MODIFICAR CURSO
+                            </button>
+                        </Link>
                     </section>
                     )}
             </div>

@@ -67,6 +67,10 @@ main section.admin-section h3.playfair-display{
     font-size: 1.5rem;
 }
 
+main .boton-dorado {
+    width: 25vw;
+}
+
 section.video-section {
     display: flex;
     padding: 20vw 0;
