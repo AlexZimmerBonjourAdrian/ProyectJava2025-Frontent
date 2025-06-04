@@ -106,9 +106,11 @@ const Home = () => {
                 SESIONES PERSONALES<br /> CON UNA GENIO DEL COACHING
             </h2>
             <div className="compra-section">
-                <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                    ¡AGENDATE AHORA!
-                </button>
+                <Link to="session11">
+                    <button className="boton-dorado p-button-primary text-md px-6 py-3">
+                        ¡AGENDATE AHORA!
+                    </button>
+                </Link>
                 <p className="playfair-display">POR ÚNICAMENTE <span className="price">$145</span></p>
             </div>
 

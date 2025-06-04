@@ -166,3 +166,7 @@ h1.heading {
     font-weight: 700;
     color: var(--secondary-color);
 }
+
+section.services-section div.compra-section .boton-dorado:hover{
+    background-color: var(--primary-color);
+}

@@ -1,13 +1,36 @@
+.data-view{
+    margin-left: max(30vw, 300px);
+}
+
+div.grid-nogutter{
+    grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 1000px) {
+    div.grid-nogutter{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 780px) {
+    div.grid-nogutter{
+        grid-template-columns: 1fr;
+    }
+}
 .grid-producto{
     background-color: var(--primary-color);
-    margin: 20px;
-    max-width: 200px;
+    margin: 15px;
+    max-width: 50vw;
+    min-width: 200px;
     border-radius: 20px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-direction: column;
     text-align: left;
+
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 .grid-pruducto-button{
@@ -27,6 +50,30 @@
     height: 150px;
     width: 150px;
 }
-.card {
-    padding: 2em;
+
+div.grid-pruducto-precio{
+    max-width: 200px;
+    min-width: 20vw;   
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.grid-pruducto-precio button{
+    width: auto;
+}
+
+.grid-pruducto-precio button .p-button-icon{
+    color: var(--dark-color);
+}
+
+section.filters{
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 30vw;
+    min-width: 300px;
+    background-color: var(--dark-color);
+    position: fixed;
+    z-index: 100;
 }

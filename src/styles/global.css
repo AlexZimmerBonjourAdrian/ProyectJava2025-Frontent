@@ -36,7 +36,7 @@ body {
 }
 
 /* Botones */
-main div button.boton-dorado {
+button.boton-dorado {
     background-color: var(--secondary-color);
     color: white;
     font-weight: 100;
@@ -44,7 +44,7 @@ main div button.boton-dorado {
     padding: 6px 20px;
 }
 
-main div button.boton-dorado:hover {
+button.boton-dorado:hover {
     background-color: var(--dark-color);
     color: white;
 }
