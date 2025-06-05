@@ -109,12 +109,14 @@ const CursoForm = () => {
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          required
         />
         <label className="paquete-form-label">Descripción</label>
         <textarea
           className="paquete-form-textarea"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
+          required
         />
         <label className="paquete-form-label">Link video:</label>
         <div className="paquete-form-cursos-select-row">
@@ -124,6 +126,7 @@ const CursoForm = () => {
             placeholder="https://www.youtube.com/watch?"
             value={videoLink}
             onChange={(e) => setVideoLink(e.target.value)}
+            required
           />
           <button
             type="button"
@@ -157,6 +160,7 @@ const CursoForm = () => {
           placeholder="https://www.youtube.com/watch?"
           value={linkPresentacion}
           onChange={(e) => setLinkPresentacion(e.target.value)}
+          required
         />
         <label className="paquete-form-label">Precio</label>
         <input
@@ -164,6 +168,8 @@ const CursoForm = () => {
           type="number"
           value={precio}
           onChange={(e) => setPrecio(e.target.value)}
+          required
+          min="1"
         />
         <button className="paquete-form-submit" type="submit">
           Crear Curso
