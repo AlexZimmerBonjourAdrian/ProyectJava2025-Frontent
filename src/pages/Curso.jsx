@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { getArticuloClienteUsuario } from "../services/ArticuloCliente";
 import { useDecryptToken } from "../App";
 import "../styles/global.css";
+import "./Curso.css";
 
 export default function Curso() {
   const location = useLocation();

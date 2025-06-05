@@ -49,7 +49,7 @@ const PaqueteModificarForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!nombre || !descripcion || !link || precio <= 0 || cursos.length === 0) {
+    if (!nombre || !descripcion || !link || precio <= 0 || cursos.length === 0 || !paqueteSeleccionado) {
       msgs.current.clear();
       msgs.current.show([
         { sticky: true, severity: 'error', summary: 'Error', detail: 'Rellene todos los campos' },

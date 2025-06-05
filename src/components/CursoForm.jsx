@@ -57,8 +57,9 @@ const CursoForm = () => {
         nombre: nombre,
         descripcion: descripcion,
         videos: videos,
-        linkPresentacion: linkPresentacion,
-        precio: precio
+        videoPresentacion: linkPresentacion,
+        precio: precio,
+				activo: true
       }
       fetch(`${API_URL}/api/curso`, {
           method: 'POST',

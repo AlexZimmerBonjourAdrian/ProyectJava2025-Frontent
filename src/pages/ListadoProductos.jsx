@@ -2,24 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { Paginator } from 'primereact/paginator';
-import { getAllPaquetes } from '../services/paquete';
-import carritoService from '../services/carrito.js';
-import useAuth from '../hooks/useAuth';
-import { Toast } from 'primereact/toast';
-import CursoHeader from '../components/CursoHeader';
-import { useNavigate } from 'react-router-dom';
+import { Dropdown } from 'primereact/dropdown';
 import './ListadoProductos.css';
 
 export default function ListadoProductos() {
     const { token, isLoading } = useAuth();
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(12);
-    const [carritoId, setCarritoId] = useState(null);
-    const toast = useRef(null);
-    const navigate = useNavigate();
+
+    const [sortKey, setSortKey] = useState('');
+    const [sortOrder, setSortOrder] = useState(0);
+    const [sortField, setSortField] = useState('');
+    const sortOptions = [
+        { label: 'Price High to Low', value: '!precio' },
+        { label: 'Price Low to High', value: 'precio' }
+    ];
     
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -142,83 +139,58 @@ export default function ListadoProductos() {
         }
     };
 
-    const handleIrAlCarrito = () => {
-        navigate('/carrito');
+    const onSortChange = (event) => {
+        const value = event.value;
+
+        if (value.indexOf('!') === 0) {
+            setSortOrder(-1);
+            setSortField(value.substring(1, value.length));
+            setSortKey(value);
+        } else {
+            setSortOrder(1);
+            setSortField(value);
+            setSortKey(value);
+        }
     };
 
-    const gridItem = (product) => {
+    const gridItem = (product, index) => {
         return (
-            <div className="grid-producto-card" key={product.id}>
-                <div className="grid-producto-img-placeholder">
-                    {product.imagen ? (
-                        <img src={product.imagen} alt={product.nombre} className="grid-producto-img" />
-                    ) : (
-                        <svg width="100%" height="100%" viewBox="0 0 180 180" style={{background:'#ddd',borderRadius:16}}>
-                            <line x1="0" y1="0" x2="180" y2="180" stroke="#aaa" strokeWidth="4" />
-                            <line x1="180" y1="0" x2="0" y2="180" stroke="#aaa" strokeWidth="4" />
-                        </svg>
-                    )}
+            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2 grid-producto" key={index}>
+                <img src='' className='grid-pruducto-imagen'/>
+                <div className="p-4 border-1 surface-border surface-card border-round">
+                    <h3 className="text-2xl font-bold text-900 grid-pruducto-nombre">{product.nombre}</h3>
+                    <p className="text-2xl font-bold text-900 grid-pruducto-descrip">{product.descripcion}</p>                        
                 </div>
-                <div className="grid-producto-content">
-                    <div className="grid-producto-nombre">{product.nombre || 'NOMBRE DEL PAQUETE'}</div>
-                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</div>
-                    <div className="grid-producto-precio-btn">
-                        <span className="grid-producto-precio">${product.precio || '0.00'}</span>
-                        <Button 
-                            label="Añadir al carrito" 
-                            className="grid-producto-btn" 
-                            disabled={!product.activo}
-                            onClick={() => handleAgregarAlCarrito(product.id)}
-                        />
-                    </div>
+                <div className="grid-pruducto-precio">
+                    <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
+                    <Button icon="pi pi-shopping-cart" className="boton-dorado p-button-rounded grid-pruducto-button" disabled={!product.activo}>Añadir</Button>
                 </div>
             </div>
         );
     };
 
-    const itemTemplate = (product, layout, index) => {
-        if (!product) return null;
-        return layout === 'grid' ? gridItem(product) : null;
-    };
-
-    const paginatedProducts = products.slice(first, first + rows);
-
     const listTemplate = (products, layout) => {
-        return <div className="grid-producto-container">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
+        return <div className="grid grid-nogutter">{products.map((product, index) => gridItem(product, index))}</div>;
     };
 
     const header = () => {
         return (
-            <div className="flex justify-content-between align-items-center">
-                <Button 
-                    icon="pi pi-shopping-cart" 
-                    label="Ver Carrito" 
-                    onClick={handleIrAlCarrito}
-                    className="p-button-outlined"
-                />
-                <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+            <div className="flex justify-content-end">
+                <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="w-full sm:w-14rem" />
+                {/* <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} /> */}
             </div>
         );
     };
 
     return (
-        <div className="listado-productos-container">
-            <CursoHeader />
-            <div className="listado-productos-bg" style={{paddingBottom: '40px'}}>
-                <Toast ref={toast} />
-                <DataView 
-                    value={paginatedProducts} 
-                    listTemplate={listTemplate} 
-                    layout={layout} 
-                    header={header()} 
-                />
-                <Paginator 
-                    first={first} 
-                    rows={rows} 
-                    totalRecords={products.length} 
-                    onPageChange={(e) => { setFirst(e.first); setRows(e.rows); }}
-                />
-            </div>
+        <div>
+            <section className='filters'>
+                {header()}
+            </section>
+            <section className='data-view'>
+                <DataView value={products} sortField={sortField} sortOrder={sortOrder} listTemplate={listTemplate} layout='grid' />
+
+            </section>
         </div>
     );
 }

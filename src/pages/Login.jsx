@@ -13,13 +13,15 @@ fetch(`${API_URL}/api/profile`, {
 })
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { encryptToken } from '../App';
+import { use } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,6 +34,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
+    const { login } = useAuth();
 
     const handleFieldChange = (fieldName, value) => {
         setFormData(prev => ({
@@ -39,6 +42,11 @@ const Login = () => {
             [fieldName]: value
         }));
     };
+
+    useEffect(() => {
+        localStorage.removeItem('authToken');
+        console.log('logged out');
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -61,6 +69,7 @@ const Login = () => {
                 if (data.nombre) {
                     const token = data.token;
                     localStorage.setItem('authToken', encryptToken(token));
+                    login(data.token);
                     navigate(from, { replace: true });
                 }
             })
