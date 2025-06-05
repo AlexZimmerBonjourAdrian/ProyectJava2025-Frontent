@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Dropdown } from 'primereact/dropdown';
-import { useAuth } from '../context/AuthContext';
 import './ListadoProductos.css';
 
+
 export default function ListadoProductos() {
-    const { token, isLoading } = useAuth();
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
 
@@ -22,121 +21,30 @@ export default function ListadoProductos() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (isLoading) return;
-            
-            if (!token) {
-                toast.current.show({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: 'Debe iniciar sesión para ver y agregar productos al carrito.',
-                    life: 5000
-                });
-                setProducts([]);
-                return;
+        fetch(`${API_URL}/api/curso`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        }).then(res => res.json())
+        .then(data => {
+            setProducts(data)
+        })
+    }, []);
 
-            try {
-                let carrito = await carritoService.obtenerCarritoUsuario(token);
-                setCarritoId(carrito.id);
-            } catch (error) {
-                console.error('Error al obtener carrito:', error);
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudo cargar el carrito.',
-                    life: 3000
-                });
-            }
+    const getSeverity = (product) => {
+        switch (product.inventoryStatus) {
+            case 'INSTOCK':
+                return 'success';
 
-            // Traer cursos
-            const cursos = await fetch(`${API_URL}/api/curso`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => res.json()).catch(err => { 
-                console.error('Error fetching cursos:', err); 
-                return []; 
-            });
+            case 'LOWSTOCK':
+                return 'warning';
 
-            // Traer paquetes
-            let paquetes = [];
-            try {
-                paquetes = await getAllPaquetes(token);
-            } catch (e) { 
-                console.error('Error fetching paquetes:', e);
-                paquetes = [];
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudieron cargar los paquetes.',
-                    life: 3000
-                });
-            }
+            case 'OUTOFSTOCK':
+                return 'danger';
 
-            const paquetesNormalizados = (paquetes || []).map(p => ({
-                ...p,
-                nombre: p.nombre || 'Paquete',
-                descripcion: p.descripcion || '',
-                precio: p.precio || 0,
-                imagen: p.imagen || '',
-                activo: p.activo !== false
-            }));
-
-            const cursosNormalizados = (cursos || []).map(c => ({
-                ...c,
-                nombre: c.nombre || 'Curso',
-                descripcion: c.descripcion || '',
-                precio: c.precio || 0,
-                imagen: c.imagen || '',
-                activo: c.activo !== false
-            }));
-
-            setProducts([...paquetesNormalizados, ...cursosNormalizados]);
-        };
-        fetchData();
-    }, [token, isLoading, API_URL]);
-
-    const handleAgregarAlCarrito = async (productId) => {
-        if (!carritoId) {
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'No se pudo acceder al carrito. Intente recargar la página.',
-                life: 3000
-            });
-            return;
-        }
-
-        if (!token) {
-            toast.current.show({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe iniciar sesión para agregar productos al carrito.',
-                life: 5000
-            });
-            return;
-        }
-
-        try {
-            await carritoService.agregarArticulo(carritoId, productId, token);
-            toast.current.show({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Producto agregado al carrito',
-                life: 3000
-            });
-        } catch (error) {
-            console.error('Error al agregar item al carrito:', error);
-            const errorMessage = error.response?.data?.message || 'No se pudo agregar el producto al carrito';
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: errorMessage,
-                life: 3000
-            });
+            default:
+                return null;
         }
     };
 
@@ -193,5 +101,5 @@ export default function ListadoProductos() {
 
             </section>
         </div>
-    );
+    )
 }
