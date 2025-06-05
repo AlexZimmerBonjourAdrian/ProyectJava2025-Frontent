@@ -3,6 +3,7 @@ import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Dropdown } from 'primereact/dropdown';
+import { useAuth } from '../context/AuthContext';
 import './ListadoProductos.css';
 
 export default function ListadoProductos() {

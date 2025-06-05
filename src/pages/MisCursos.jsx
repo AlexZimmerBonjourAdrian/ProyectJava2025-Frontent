@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getMisCursosUsuario } from "../services/ArticuloCliente";
-import { useDecryptToken } from '../App';
+import { useAuth } from '../context/AuthContext';
 import CursoHeader from "../components/CursoHeader";
 import Footer from "../components/Footer";
 import "../styles/global.css";
@@ -8,23 +8,35 @@ import { useNavigate } from 'react-router-dom';
 
 export default function MisCursos() {
   const [cursos, setCursos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const { isLoggedIn } = useAuth();
+  
   useEffect(() => {
+    // Verificar si el usuario está logueado
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+    
     const fetchCursos = async () => {
+      setIsLoading(true);
       try {
-        const token = useDecryptToken(localStorage.getItem('authToken'));
+        const token = localStorage.getItem('authToken');
         if (!token) {
           console.error('No se encontró token de autenticación');
           navigate('/login');
           return;
         }
         
+        // Obtener los artículos del cliente (cursos asignados)
         const articulos = await getMisCursosUsuario(token);
         
         if (!articulos || articulos.length === 0) {
           console.log('No se encontraron cursos para este usuario');
           setCursos([]);
+          setIsLoading(false);
           return;
         }
         
@@ -52,12 +64,15 @@ export default function MisCursos() {
         setCursos(cursosFiltrados);
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
+        setError('No se pudieron cargar tus cursos. Por favor, intenta de nuevo más tarde.');
         setCursos([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     
     fetchCursos();
-  }, [navigate]);
+  }, [navigate, isLoggedIn]);
 
   return (
     <div style={{ background: '#f5f7fa', minHeight: '100vh' }}>
@@ -67,7 +82,50 @@ export default function MisCursos() {
           Mis Cursos
         </h1>
         
-        {cursos.length === 0 && (
+        {isLoading && (
+          <div style={{
+            textAlign: 'center',
+            color: '#6d2941',
+            padding: '40px',
+            background: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+          }}>
+            <div style={{ fontSize: '20px', marginBottom: '10px' }}>Cargando tus cursos...</div>
+            <div style={{ 
+              width: '50px', 
+              height: '50px', 
+              border: '5px solid #e98fae',
+              borderTopColor: '#5a2236',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto'
+            }}></div>
+            <style>{`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}</style>
+          </div>
+        )}
+        
+        {!isLoading && error && (
+          <div style={{
+            textAlign: 'center',
+            color: '#d32f2f',
+            fontWeight: 700,
+            fontSize: 18,
+            padding: '40px',
+            background: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+          }}>
+            {error}
+          </div>
+        )}
+        
+        {!isLoading && !error && cursos.length === 0 && (
           <div style={{
             textAlign: 'center',
             color: '#6d2941',
