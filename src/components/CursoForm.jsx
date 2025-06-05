@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import VideoPopUp from "./VideoPopUp";
 import { Messages } from 'primereact/messages';
-import { useDecryptToken } from "../App";
+import CryptoJS from 'crypto-js';
 
 const CursoForm = () => {
   const msgs = useRef(null);
@@ -51,7 +51,27 @@ const CursoForm = () => {
         }
 
      try{
-      const token = useDecryptToken(localStorage.getItem('authToken'));
+      const encryptedToken = localStorage.getItem('authToken');
+      if (!encryptedToken) {
+        msgs.current.clear();
+        msgs.current.show([
+          { sticky: true, severity: 'error', summary: 'Error', detail: 'No se encontró token de autenticación. Por favor, inicie sesión nuevamente.' },
+        ]);
+        return;
+      }
+      
+      // Decrypt the token
+      const bytes = CryptoJS.AES.decrypt(encryptedToken, import.meta.env.VITE_SECRET_KEY);
+      const token = bytes.toString(CryptoJS.enc.Utf8);
+      
+      if (!token) {
+        msgs.current.clear();
+        msgs.current.show([
+          { sticky: true, severity: 'error', summary: 'Error', detail: 'Token inválido. Por favor, inicie sesión nuevamente.' },
+        ]);
+        return;
+      }
+      
       const API_URL = import.meta.env.VITE_API_URL;
       const body = {
         nombre: nombre,
@@ -59,7 +79,7 @@ const CursoForm = () => {
         videos: videos,
         videoPresentacion: linkPresentacion,
         precio: precio,
-				activo: true
+        activo: true
       }
       fetch(`${API_URL}/api/curso`, {
           method: 'POST',
@@ -90,6 +110,10 @@ const CursoForm = () => {
       })
     }catch(error){
       console.log(error);
+      msgs.current.clear();
+      msgs.current.show([
+        { sticky: true, severity: 'error', summary: 'Error', detail: 'Error al procesar la solicitud: ' + error.message },
+      ]);
     }
   };
 

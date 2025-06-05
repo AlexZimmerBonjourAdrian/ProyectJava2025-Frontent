@@ -5,6 +5,7 @@ import CursoHeader from "../components/CursoHeader";
 import Footer from "../components/Footer";
 import "../styles/global.css";
 import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 
 export default function MisCursos() {
   const [cursos, setCursos] = useState([]);
@@ -23,9 +24,19 @@ export default function MisCursos() {
     const fetchCursos = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
+        const encryptedToken = localStorage.getItem('authToken');
+        if (!encryptedToken) {
           console.error('No se encontró token de autenticación');
+          navigate('/login');
+          return;
+        }
+        
+        // Decrypt the token
+        const bytes = CryptoJS.AES.decrypt(encryptedToken, import.meta.env.VITE_SECRET_KEY);
+        const token = bytes.toString(CryptoJS.enc.Utf8);
+        
+        if (!token) {
+          console.error('Token inválido');
           navigate('/login');
           return;
         }

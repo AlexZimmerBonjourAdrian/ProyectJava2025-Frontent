@@ -41,12 +41,12 @@ export const AuthProvider = ({ children }) => {
   }, [isLoggedIn]);
 
   const login = (token) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem('authToken', token);
     setIsLoggedIn(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     setIsLoggedIn(false);
     setIsAdmin(false);
   };
