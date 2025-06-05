@@ -53,9 +53,27 @@ export default function MisCursos() {
         
         // Traer datos completos de cada curso asignado
         const { getCursoById } = await import('../services/curso');
+        
+        // Log the articulos to debug
+        console.log('Artículos recibidos:', articulos);
+        
         const cursosCompletos = await Promise.all(
           articulos.map(async (art) => {
             try {
+              // Check if art.articulo is valid
+              if (!art.articulo) {
+                console.error('ID de artículo no válido:', art);
+                return {
+                  nombre: 'Curso no disponible',
+                  descripcion: 'No se pudo cargar la información del curso.',
+                  autor: 'Desconocido',
+                  articuloClienteId: art.id,
+                  estado: art.estado || 'Desconocido',
+                  caducidad: art.caducidad || new Date().toISOString()
+                };
+              }
+              
+              // Try to get the course details
               const curso = await getCursoById(art.articulo, token);
               return {
                 ...curso,
@@ -65,14 +83,22 @@ export default function MisCursos() {
               };
             } catch (error) {
               console.error(`Error al obtener el curso ${art.articulo}:`, error);
-              return null;
+              // Return a placeholder object instead of null
+              return {
+                nombre: 'Curso no disponible',
+                descripcion: 'No se pudo cargar la información del curso.',
+                autor: 'Desconocido',
+                articuloClienteId: art.id,
+                estado: art.estado || 'Desconocido',
+                caducidad: art.caducidad || new Date().toISOString()
+              };
             }
           })
         );
         
-        // Filtrar cualquier curso nulo (que falló al cargar)
-        const cursosFiltrados = cursosCompletos.filter(curso => curso !== null);
-        setCursos(cursosFiltrados);
+        // No filtramos cursos nulos, ya que ahora devolvemos objetos de placeholder
+        // en lugar de null cuando hay un error
+        setCursos(cursosCompletos);
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
         setError('No se pudieron cargar tus cursos. Por favor, intenta de nuevo más tarde.');
@@ -177,7 +203,7 @@ export default function MisCursos() {
             <div style={{ 
               width: 140, 
               height: 140, 
-              background: curso.imagen ? `url(${curso.imagen})` : '#eee', 
+              background: curso.imagen ? `url(${curso.imagen})` : (curso.nombre === 'Curso no disponible' ? '#f8d7da' : '#eee'), 
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               borderRadius: 8, 
@@ -187,7 +213,11 @@ export default function MisCursos() {
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
             }}>
-              {!curso.imagen && <span style={{ color: '#aaa', fontSize: 22 }}>IMG</span>}
+              {!curso.imagen && (
+                curso.nombre === 'Curso no disponible' 
+                  ? <span style={{ color: '#721c24', fontSize: 16, textAlign: 'center', padding: '0 10px' }}>Curso no disponible</span>
+                  : <span style={{ color: '#aaa', fontSize: 22 }}>IMG</span>
+              )}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 24, color: '#fff', marginBottom: 8 }}>
@@ -221,23 +251,36 @@ export default function MisCursos() {
               </div>
               <button 
                 style={{ 
-                  background: '#e98fae', 
+                  background: curso.nombre === 'Curso no disponible' ? '#6c757d' : '#e98fae', 
                   color: '#fff', 
                   fontWeight: 700, 
                   fontSize: 16, 
                   border: 'none', 
                   borderRadius: 8, 
                   padding: '12px 32px', 
-                  cursor: 'pointer', 
+                  cursor: curso.nombre === 'Curso no disponible' ? 'not-allowed' : 'pointer', 
                   marginTop: 8,
                   transition: 'background 0.2s ease',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = '#d47a99'}
-                onMouseOut={(e) => e.currentTarget.style.background = '#e98fae'}
-                onClick={() => navigate('/curso', { state: { cursoId: curso.articuloClienteId } })}
+                onMouseOver={(e) => {
+                  if (curso.nombre !== 'Curso no disponible') {
+                    e.currentTarget.style.background = '#d47a99';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (curso.nombre !== 'Curso no disponible') {
+                    e.currentTarget.style.background = '#e98fae';
+                  }
+                }}
+                onClick={() => {
+                  if (curso.nombre !== 'Curso no disponible') {
+                    navigate('/curso', { state: { cursoId: curso.articuloClienteId } });
+                  }
+                }}
+                disabled={curso.nombre === 'Curso no disponible'}
               >
-                IR AL CURSO
+                {curso.nombre === 'Curso no disponible' ? 'NO DISPONIBLE' : 'IR AL CURSO'}
               </button>
             </div>
           </div>
