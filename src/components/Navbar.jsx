@@ -38,9 +38,9 @@ const Navbar = () => {
           
           {isLoggedIn && (
             <>
-              <Link to="/MisCursos">
-                <section className='container'>
-                  Mi Curso
+              <Link to="/MisCursos" className="mis-cursos-link">
+                <section className='container mis-cursos-container'>
+                  Mis Cursos
                   <i className="pi pi-book"></i>
                 </section>
               </Link>
