@@ -3,15 +3,26 @@ import api from './api';
 const carritoService = {
     // Crear un carrito nuevo
     crearCarrito: async(request, token) => {
+        if (!token) {
+            console.error('No token provided to crearCarrito');
+            throw new Error('Authentication token is required');
+        }
+        
         try {
             console.log('Creando nuevo carrito:', request);
+            console.log('Using token:', token ? 'Token provided' : 'No token');
+            
             const response = await api.post('/api/carrito', request, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                headers: { Authorization: `Bearer ${token}` },
             });
+            
             console.log('Carrito creado exitosamente:', response.data);
             return response.data;
         } catch (error) {
             console.error('Error al crear carrito:', error);
+            if (error.response && error.response.status === 403) {
+                console.error('Access forbidden. Token may be invalid or expired.');
+            }
             throw error;
         }
     },
@@ -48,15 +59,36 @@ const carritoService = {
 
     // Agregar un artículo al carrito
     agregarArticulo: async(carritoId, articuloId, token) => {
+        if (!token) {
+            console.error('No token provided to agregarArticulo');
+            throw new Error('Authentication token is required');
+        }
+        
+        if (!carritoId) {
+            console.error('No carritoId provided to agregarArticulo');
+            throw new Error('Cart ID is required');
+        }
+        
+        if (!articuloId) {
+            console.error('No articuloId provided to agregarArticulo');
+            throw new Error('Article ID is required');
+        }
+        
         try {
             console.log(`Agregando artículo ${articuloId} al carrito ${carritoId}`);
+            console.log('Using token:', token ? 'Token provided' : 'No token');
+            
             const response = await api.post(`/api/carrito/${carritoId}/items/${articuloId}`, {}, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                headers: { Authorization: `Bearer ${token}` },
             });
+            
             console.log('Artículo agregado exitosamente:', response.data);
             return response.data;
         } catch (error) {
             console.error(`Error al agregar artículo ${articuloId} al carrito ${carritoId}:`, error);
+            if (error.response && error.response.status === 403) {
+                console.error('Access forbidden. Token may be invalid or expired.');
+            }
             throw error;
         }
     },
@@ -93,28 +125,40 @@ const carritoService = {
 
     // Obtener el carrito del usuario logueado
     obtenerCarritoUsuario: async(token) => {
+        if (!token) {
+            console.error('No token provided to obtenerCarritoUsuario');
+            throw new Error('Authentication token is required');
+        }
+        
         try {
             console.log('Obteniendo carrito del usuario logueado');
+            console.log('Using token:', token ? 'Token provided' : 'No token');
+            
             const response = await api.get('/api/carrito/me', {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                headers: { Authorization: `Bearer ${token}` },
             });
+            
             console.log('Carrito del usuario obtenido exitosamente:', response.data);
             return response.data;
         } catch (error) {
             console.error('Error al obtener carrito del usuario:', error);
+            
             // Check if the error is a 404
             if (error.response && error.response.status === 404) {
                 console.log('Carrito no encontrado, intentando crear uno nuevo.');
                 try {
-                    const nuevoCarrito = await carritoService.crearCarrito({}, token); // Use the existing crearCarrito function
+                    const nuevoCarrito = await carritoService.crearCarrito({}, token);
                     console.log('Nuevo carrito creado exitosamente:', nuevoCarrito);
                     return nuevoCarrito;
                 } catch (createError) {
                     console.error('Error al crear carrito después de 404:', createError);
-                    throw createError; // Re-throw the creation error
+                    throw createError;
                 }
+            } else if (error.response && error.response.status === 403) {
+                console.error('Access forbidden. Token may be invalid or expired.');
+                throw new Error('No tienes permiso para acceder a este recurso. Por favor, inicia sesión nuevamente.');
             } else {
-                throw error; // Re-throw other errors
+                throw error;
             }
         }
     },

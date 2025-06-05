@@ -19,6 +19,7 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Messages } from 'primereact/messages';
 import { Button } from 'primereact/button';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -31,14 +32,19 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const msgs = useRef(null);
-    
-    
+    const { login } = useAuth();
+
     const handleFieldChange = (fieldName, value) => {
         setFormData(prev => ({
             ...prev,
             [fieldName]: value
         }));
     };
+    
+    useEffect(() => {
+        localStorage.removeItem('authToken');
+        console.log('logged out');
+    }, []);
     
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -82,6 +88,7 @@ const Register = () => {
                         password: '',
                         confirmPassword: ''
                     })
+                    login(data.token);
                     navigate('/');
                 }else{
                     msgs.current.clear();

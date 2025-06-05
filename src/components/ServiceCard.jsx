@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './ServiceCard.css';
 
 const ServiceCard = ({ title, description, modalidad, imageUrl }) => {
     return (

@@ -17,7 +17,6 @@ import Session11 from './pages/Session11';
 import Layout from './components/Layout';
 import Paquete from './pages/Paquete';
 
-import Index from './pages/Index';
 import PaqueteMenu from './pages/PaqueteMenu';
 import CursoMenu from './pages/CursoMenu';
 import PaqueteModificar from './pages/PaqueteModificar';
@@ -26,6 +25,7 @@ import Pago from './pages/Pago';
 import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
 import ListadoProductos from './pages/ListadoProductos';
+import { AuthProvider } from './context/AuthContext';
 import MisCursos from './pages/MisCursos';
 import VentaCurso from './pages/VentaCurso';
 
@@ -38,10 +38,10 @@ export function encryptToken(token) {
   return CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
 }
 
-// Función para desencriptar (solo desencripta, la lógica de redirección se mueve a useAuth)
-export function useDecryptToken(encryptedToken) {
-  if(!encryptedToken) {
-    return null; // Retorna null si no hay token encriptado
+// Función para desencriptar
+export function useDecryptToken(encryptedToken, location) {
+  if(!encryptedToken || encryptedToken === 'null') {
+    return <Navigate to="/login" state={{ from: location?.pathname }} replace />;
   }
   try {
     const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
@@ -58,27 +58,26 @@ export function useDecryptToken(encryptedToken) {
 }
 
 const UserRoute = ({ children }) => {
+  const location = useLocation?.();
   const token = localStorage.getItem('authToken');
-  const location = useLocation(); // Obtener location aquí
-  // La lógica de validación y redirección se moverá al componente que usa el token o a un hook de autenticación
-   // Por ahora, solo verificamos si hay token para la navegación básica de rutas privadas
-  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  return token ? children : <Navigate to="/login" state={{ from: location?.pathname }} replace />;
 };
 
 const AdminRoute = ({ children }) => {
+  const location = useLocation?.();
   const token = localStorage.getItem('authToken');
-   const location = useLocation(); // Obtener location aquí
-  console.log('Eres Admin?')
-  // La lógica de validación y redirección se moverá al componente que usa el token o a un hook de autenticación
-  // Por ahora, solo verificamos si hay token para la navegación básica de rutas privadas
-  return token ? children : <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  const isAdmin = token && JSON.parse(atob(useDecryptToken(token)?.split('.')[1])).authorities.find(
+      (element) => element === 'ADMIN'
+    );
+
+  return isAdmin ? children : <Navigate to="/login" state={{ from: location?.pathname }} replace />;
 };
 
 // Configurar las rutas con las nuevas banderas
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/session11" element={<Session11 />} />
@@ -108,7 +107,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />;
+    </AuthProvider>
+  );
 }
 
 export default App;

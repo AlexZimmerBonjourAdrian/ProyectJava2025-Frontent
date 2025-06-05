@@ -1,23 +1,29 @@
+main .nav{
+    padding: 1rem;
+    position: fixed;
+    height: 4rem;
+    z-index: 100;
+    top:0;
+    right: 0;
+    margin-top: 0;
+}
 
+main .container{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-
+main .nav {
+    display: flex;
+    gap: 2rem;
+}
 
 main div p.sub-title {
     color: var(--secondary-color);
     font-size: 2rem;
-}
-
-main div button.compra-button {
-    background-color: var(--secondary-color);
-    color: white;
-    font-weight: 100;
-    border-radius: 20px;
-    padding: 6px 20px;
-}
-
-main div button.compra-button:hover {
-    background-color: var(--primary-color);
-    color: white;
 }
 
 main div.rectangle-container {
@@ -42,10 +48,27 @@ main div.rectangle-container div.sm {
 
 main.main{
     background-color: var(--background-color);
-    z-index: 10;
+    z-index: 10000;
     margin: 0;
     top: 0;
     position: relative;
+    margin-top: -4rem;
+}
+
+main section.admin-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 1rem 3rem;
+}
+main section.admin-section h3.playfair-display{
+    color: var(--secondary-color);
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+main .boton-dorado {
+    width: 25vw;
 }
 
 section.video-section {
@@ -144,21 +167,6 @@ h1.heading {
     color: var(--secondary-color);
 }
 
-.lato-light {
-    font-family: "Lato", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-  }
-
-.playfair-display{
-    font-family: "Playfair Display", serif;
-    font-optical-sizing: auto;
-    font-weight: extra-bold;
-    font-style: normal;
-  }
-
-
-
-
-
-  
+section.services-section div.compra-section .boton-dorado:hover{
+    background-color: var(--primary-color);
+}

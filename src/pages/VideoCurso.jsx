@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getVideoById } from '../services/video';
 import { useDecryptToken } from '../App';
 import VideoComponent from '../components/VideoComponent';
+import './VideoCurso.css'; // Assuming you have a CSS file for styling
 
 const VideoCurso = () => {
   const location = useLocation();

@@ -123,7 +123,7 @@ const CarritoComponent = () => {
   };
 
   const handlePagar = async (metodo) => {
-    if (!userId) {
+    if (!token) {
       toast.current.show({
         severity: 'error',
         summary: 'Error',
@@ -148,7 +148,6 @@ const CarritoComponent = () => {
       // Podrías opcionalmente guardar los items antes de cerrar si el backend los elimina inmediatamente de la respuesta de obtenerCarritoUsuario
       const itemsToAssign = [...carrito.items]; // Clonar los items por si el estado cambia antes de asignarlos
       
-      await carritoService.cerrarCarrito(carrito.id, token);
       
       // Paso 2: Asignar los artículos al usuario
       // Iterar sobre los items que estaban en el carrito y crear un ArticuloCliente para cada uno
@@ -159,7 +158,7 @@ const CarritoComponent = () => {
           try {
             const articuloClienteDTO = {
               articulo: item.articulo, // Propiedad que referencia al producto/curso en el item del carrito
-              usuario: userId, // ID del usuario logueado
+              
               // Agrega otras propiedades al DTO si son necesarias por el backend
               // estado inicial, fecha de asignacion, etc. (aunque el backend podría ponerlas)
             };
@@ -181,6 +180,10 @@ const CarritoComponent = () => {
       }
 
       // Paso 3: Mostrar éxito y actualizar UI (ej: vaciar carrito visualmente)
+      // Paso 3: Cerrar el carrito en el backend (ahora después de asignar artículos)
+      await carritoService.cerrarCarrito(carrito.id, token);
+
+      // Paso 4: Mostrar éxito y actualizar UI (ej: vaciar carrito visualmente)
       toast.current.show({
         severity: 'success',
         summary: 'Éxito',

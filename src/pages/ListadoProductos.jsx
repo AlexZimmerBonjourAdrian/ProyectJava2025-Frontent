@@ -2,223 +2,203 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { Paginator } from 'primereact/paginator';
-import { getAllPaquetes } from '../services/paquete';
-import carritoService from '../services/carrito.js';
-import useAuth from '../hooks/useAuth';
+import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
-import CursoHeader from '../components/CursoHeader';
 import { useNavigate } from 'react-router-dom';
+import carritoService from '../services/carrito';
+import useAuth from '../hooks/useAuth';
 import './ListadoProductos.css';
 
+
 export default function ListadoProductos() {
-    const { token, isLoading } = useAuth();
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(12);
-    const [carritoId, setCarritoId] = useState(null);
+    const [carrito, setCarrito] = useState(null);
+    const [loading, setLoading] = useState(false);
     const toast = useRef(null);
+    const { token } = useAuth();
     const navigate = useNavigate();
+
+    const [sortKey, setSortKey] = useState('');
+    const [sortOrder, setSortOrder] = useState(0);
+    const [sortField, setSortField] = useState('');
+    const sortOptions = [
+        { label: 'Price High to Low', value: '!precio' },
+        { label: 'Price Low to High', value: 'precio' }
+    ];
     
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (isLoading) return;
-            
-            if (!token) {
-                toast.current.show({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: 'Debe iniciar sesión para ver y agregar productos al carrito.',
-                    life: 5000
-                });
-                setProducts([]);
-                return;
+        fetch(`${API_URL}/api/curso`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        }).then(res => res.json())
+        .then(data => {
+            setProducts(data)
+        })
+    }, []);
 
-            try {
-                let carrito = await carritoService.obtenerCarritoUsuario(token);
-                setCarritoId(carrito.id);
-            } catch (error) {
-                console.error('Error al obtener carrito:', error);
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudo cargar el carrito.',
-                    life: 3000
-                });
-            }
-
-            // Traer cursos
-            const cursos = await fetch(`${API_URL}/api/curso`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+    // Obtener el carrito del usuario
+    useEffect(() => {
+        const obtenerCarrito = async () => {
+            if (token) {
+                try {
+                    const carritoData = await carritoService.obtenerCarritoUsuario(token);
+                    setCarrito(carritoData);
+                } catch (error) {
+                    console.error('Error al obtener el carrito:', error);
                 }
-            }).then(res => res.json()).catch(err => { 
-                console.error('Error fetching cursos:', err); 
-                return []; 
-            });
-
-            // Traer paquetes
-            let paquetes = [];
-            try {
-                paquetes = await getAllPaquetes(token);
-            } catch (e) { 
-                console.error('Error fetching paquetes:', e);
-                paquetes = [];
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudieron cargar los paquetes.',
-                    life: 3000
-                });
             }
-
-            const paquetesNormalizados = (paquetes || []).map(p => ({
-                ...p,
-                nombre: p.nombre || 'Paquete',
-                descripcion: p.descripcion || '',
-                precio: p.precio || 0,
-                imagen: p.imagen || '',
-                activo: p.activo !== false
-            }));
-
-            const cursosNormalizados = (cursos || []).map(c => ({
-                ...c,
-                nombre: c.nombre || 'Curso',
-                descripcion: c.descripcion || '',
-                precio: c.precio || 0,
-                imagen: c.imagen || '',
-                activo: c.activo !== false
-            }));
-
-            setProducts([...paquetesNormalizados, ...cursosNormalizados]);
         };
-        fetchData();
-    }, [token, isLoading, API_URL]);
 
-    const handleAgregarAlCarrito = async (productId) => {
-        if (!carritoId) {
+        obtenerCarrito();
+    }, [token]);
+
+    // Función para añadir un curso al carrito
+    const handleAddToCart = async (product) => {
+        if (!token) {
             toast.current.show({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'No se pudo acceder al carrito. Intente recargar la página.',
+                detail: 'Debes iniciar sesión para añadir cursos al carrito',
                 life: 3000
             });
+            navigate('/login');
             return;
         }
 
-        if (!token) {
-            toast.current.show({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe iniciar sesión para agregar productos al carrito.',
-                life: 5000
-            });
-            return;
-        }
-
+        setLoading(true);
         try {
-            await carritoService.agregarArticulo(carritoId, productId, token);
+            console.log('Adding product to cart:', product.id);
+            console.log('Token available:', !!token);
+            
+            // Si no hay carrito, crear uno nuevo
+            if (!carrito) {
+                console.log('No cart found, creating a new one');
+                const nuevoCarrito = await carritoService.crearCarrito({}, token);
+                console.log('New cart created:', nuevoCarrito);
+                setCarrito(nuevoCarrito);
+                
+                // Añadir el curso al carrito recién creado
+                console.log(`Adding product ${product.id} to new cart ${nuevoCarrito.id}`);
+                await carritoService.agregarArticulo(nuevoCarrito.id, product.id, token);
+            } else {
+                // Añadir el curso al carrito existente
+                console.log(`Adding product ${product.id} to existing cart ${carrito.id}`);
+                await carritoService.agregarArticulo(carrito.id, product.id, token);
+            }
+            
             toast.current.show({
                 severity: 'success',
                 summary: 'Éxito',
-                detail: 'Producto agregado al carrito',
+                detail: `${product.nombre} añadido al carrito`,
                 life: 3000
             });
         } catch (error) {
-            console.error('Error al agregar item al carrito:', error);
-            const errorMessage = error.response?.data?.message || 'No se pudo agregar el producto al carrito';
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: errorMessage,
-                life: 3000
-            });
+            console.error('Error al añadir al carrito:', error);
+            
+            // Check if it's a 403 error
+            if (error.response && error.response.status === 403) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error de autenticación',
+                    detail: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+                    life: 3000
+                });
+                // Redirect to login
+                navigate('/login');
+            } else {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo añadir el curso al carrito',
+                    life: 3000
+                });
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleIrAlCarrito = () => {
-        navigate('/carrito');
+    const getSeverity = (product) => {
+        switch (product.inventoryStatus) {
+            case 'INSTOCK':
+                return 'success';
+
+            case 'LOWSTOCK':
+                return 'warning';
+
+            case 'OUTOFSTOCK':
+                return 'danger';
+
+            default:
+                return null;
+        }
     };
 
-    const gridItem = (product) => {
+    const onSortChange = (event) => {
+        const value = event.value;
+
+        if (value.indexOf('!') === 0) {
+            setSortOrder(-1);
+            setSortField(value.substring(1, value.length));
+            setSortKey(value);
+        } else {
+            setSortOrder(1);
+            setSortField(value);
+            setSortKey(value);
+        }
+    };
+
+    const gridItem = (product, index) => {
         return (
-            <div className="grid-producto-card" key={product.id}>
-                <div className="grid-producto-img-placeholder">
-                    {product.imagen ? (
-                        <img src={product.imagen} alt={product.nombre} className="grid-producto-img" />
-                    ) : (
-                        <svg width="100%" height="100%" viewBox="0 0 180 180" style={{background:'#ddd',borderRadius:16}}>
-                            <line x1="0" y1="0" x2="180" y2="180" stroke="#aaa" strokeWidth="4" />
-                            <line x1="180" y1="0" x2="0" y2="180" stroke="#aaa" strokeWidth="4" />
-                        </svg>
-                    )}
+            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2 grid-producto" key={index}>
+                <img src='' className='grid-pruducto-imagen'/>
+                <div className="p-4 border-1 surface-border surface-card border-round">
+                    <h3 className="text-2xl font-bold text-900 grid-pruducto-nombre">{product.nombre}</h3>
+                    <p className="text-2xl font-bold text-900 grid-pruducto-descrip">{product.descripcion}</p>                        
                 </div>
-                <div className="grid-producto-content">
-                    <div className="grid-producto-nombre">{product.nombre || 'NOMBRE DEL PAQUETE'}</div>
-                    <div className="grid-producto-descrip">{product.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</div>
-                    <div className="grid-producto-precio-btn">
-                        <span className="grid-producto-precio">${product.precio || '0.00'}</span>
-                        <Button 
-                            label="Añadir al carrito" 
-                            className="grid-producto-btn" 
-                            disabled={!product.activo}
-                            onClick={() => handleAgregarAlCarrito(product.id)}
-                        />
-                    </div>
+                <div className="grid-pruducto-precio">
+                    <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
+                    <Button 
+                        icon="pi pi-shopping-cart" 
+                        className="boton-dorado p-button-rounded grid-pruducto-button" 
+                        disabled={!product.activo || loading}
+                        onClick={() => handleAddToCart(product)}
+                        loading={loading}
+                    >
+                        Añadir
+                    </Button>
                 </div>
             </div>
         );
     };
 
-    const itemTemplate = (product, layout, index) => {
-        if (!product) return null;
-        return layout === 'grid' ? gridItem(product) : null;
-    };
-
-    const paginatedProducts = products.slice(first, first + rows);
-
     const listTemplate = (products, layout) => {
-        return <div className="grid-producto-container">{products.map((product, index) => itemTemplate(product, layout, index))}</div>;
+        return <div className="grid grid-nogutter">{products.map((product, index) => gridItem(product, index))}</div>;
     };
 
     const header = () => {
         return (
-            <div className="flex justify-content-between align-items-center">
-                <Button 
-                    icon="pi pi-shopping-cart" 
-                    label="Ver Carrito" 
-                    onClick={handleIrAlCarrito}
-                    className="p-button-outlined"
-                />
-                <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+            <div className="flex justify-content-end">
+                <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="w-full sm:w-14rem" />
+                {/* <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} /> */}
             </div>
         );
     };
 
     return (
-        <div className="listado-productos-container">
-            <CursoHeader />
-            <div className="listado-productos-bg" style={{paddingBottom: '40px'}}>
-                <Toast ref={toast} />
-                <DataView 
-                    value={paginatedProducts} 
-                    listTemplate={listTemplate} 
-                    layout={layout} 
-                    header={header()} 
-                />
-                <Paginator 
-                    first={first} 
-                    rows={rows} 
-                    totalRecords={products.length} 
-                    onPageChange={(e) => { setFirst(e.first); setRows(e.rows); }}
-                />
-            </div>
+        <div>
+            <Toast ref={toast} />
+            <section className='filters'>
+                {header()}
+            </section>
+            <section className='data-view'>
+                <DataView value={products} sortField={sortField} sortOrder={sortOrder} listTemplate={listTemplate} layout='grid' />
+            </section>
         </div>
-    );
+    )
 }

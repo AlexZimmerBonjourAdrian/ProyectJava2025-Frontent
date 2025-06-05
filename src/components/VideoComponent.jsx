@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './VideoComponent.css';
 
 // Extrae el ID de YouTube de una URL
 function getYoutubeId(url) {
