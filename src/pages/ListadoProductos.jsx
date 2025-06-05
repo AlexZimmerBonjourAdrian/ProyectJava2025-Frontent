@@ -72,15 +72,22 @@ export default function ListadoProductos() {
 
         setLoading(true);
         try {
+            console.log('Adding product to cart:', product.id);
+            console.log('Token available:', !!token);
+            
             // Si no hay carrito, crear uno nuevo
             if (!carrito) {
+                console.log('No cart found, creating a new one');
                 const nuevoCarrito = await carritoService.crearCarrito({}, token);
+                console.log('New cart created:', nuevoCarrito);
                 setCarrito(nuevoCarrito);
                 
                 // Añadir el curso al carrito recién creado
+                console.log(`Adding product ${product.id} to new cart ${nuevoCarrito.id}`);
                 await carritoService.agregarArticulo(nuevoCarrito.id, product.id, token);
             } else {
                 // Añadir el curso al carrito existente
+                console.log(`Adding product ${product.id} to existing cart ${carrito.id}`);
                 await carritoService.agregarArticulo(carrito.id, product.id, token);
             }
             
@@ -92,12 +99,25 @@ export default function ListadoProductos() {
             });
         } catch (error) {
             console.error('Error al añadir al carrito:', error);
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'No se pudo añadir el curso al carrito',
-                life: 3000
-            });
+            
+            // Check if it's a 403 error
+            if (error.response && error.response.status === 403) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error de autenticación',
+                    detail: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+                    life: 3000
+                });
+                // Redirect to login
+                navigate('/login');
+            } else {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo añadir el curso al carrito',
+                    life: 3000
+                });
+            }
         } finally {
             setLoading(false);
         }

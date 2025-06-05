@@ -1,6 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDecryptToken } from '../App';
+import CryptoJS from 'crypto-js';
+
+// Function to decrypt token
+const decryptToken = (encryptedToken) => {
+  if(!encryptedToken || encryptedToken === 'null') {
+    return null;
+  }
+  try {
+    const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
+    const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+    const originalToken = bytes.toString(CryptoJS.enc.Utf8);
+    if (!originalToken) {
+      console.error("Error al desencriptar el token: resultado vacío");
+      return null;
+    }
+    return originalToken;
+  } catch (error) {
+    console.error("Error al desencriptar el token:", error);
+    return null;
+  }
+};
 
 const useAuth = () => {
     const [token, setToken] = useState(null);
@@ -13,29 +33,32 @@ const useAuth = () => {
             try {
                 const encryptedToken = localStorage.getItem('authToken');
                 if (!encryptedToken) {
-                    // No token found, redirect to login
-                    navigate('/login', { state: { from: location.pathname }, replace: true });
+                    // No token found, set loading to false but don't redirect
+                    setIsLoading(false);
                     return;
                 }
-                const decryptedToken = useDecryptToken(encryptedToken); // Assuming useDecryptToken now just decrypts
+                
+                const decryptedToken = decryptToken(encryptedToken);
                 if (!decryptedToken) {
-                    // Token found but decryption failed, redirect to login
-                    localStorage.removeItem('authToken'); // Clear invalid token
-                    navigate('/login', { state: { from: location.pathname }, replace: true });
+                    // Token found but decryption failed, clear token
+                    console.error('Token decryption failed');
+                    localStorage.removeItem('authToken');
+                    setIsLoading(false);
                     return;
                 }
+                
+                // Set the decrypted token
                 setToken(decryptedToken);
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error during authentication initialization:', error);
                 localStorage.removeItem('authToken'); // Clear token on error
-                navigate('/login', { state: { from: location.pathname }, replace: true });
-            } finally {
                 setIsLoading(false);
             }
         };
 
         initializeAuth();
-    }, [navigate, location]);
+    }, []);
 
     return { token, isLoading };
 };
