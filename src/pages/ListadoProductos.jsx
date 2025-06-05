@@ -1,14 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Dropdown } from 'primereact/dropdown';
+import { Toast } from 'primereact/toast';
+import { useNavigate } from 'react-router-dom';
+import carritoService from '../services/carrito';
+import useAuth from '../hooks/useAuth';
 import './ListadoProductos.css';
 
 
 export default function ListadoProductos() {
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
+    const [carrito, setCarrito] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const toast = useRef(null);
+    const { token } = useAuth();
+    const navigate = useNavigate();
 
     const [sortKey, setSortKey] = useState('');
     const [sortOrder, setSortOrder] = useState(0);
@@ -31,6 +40,68 @@ export default function ListadoProductos() {
             setProducts(data)
         })
     }, []);
+
+    // Obtener el carrito del usuario
+    useEffect(() => {
+        const obtenerCarrito = async () => {
+            if (token) {
+                try {
+                    const carritoData = await carritoService.obtenerCarritoUsuario(token);
+                    setCarrito(carritoData);
+                } catch (error) {
+                    console.error('Error al obtener el carrito:', error);
+                }
+            }
+        };
+
+        obtenerCarrito();
+    }, [token]);
+
+    // Función para añadir un curso al carrito
+    const handleAddToCart = async (product) => {
+        if (!token) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Debes iniciar sesión para añadir cursos al carrito',
+                life: 3000
+            });
+            navigate('/login');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // Si no hay carrito, crear uno nuevo
+            if (!carrito) {
+                const nuevoCarrito = await carritoService.crearCarrito({}, token);
+                setCarrito(nuevoCarrito);
+                
+                // Añadir el curso al carrito recién creado
+                await carritoService.agregarArticulo(nuevoCarrito.id, product.id, token);
+            } else {
+                // Añadir el curso al carrito existente
+                await carritoService.agregarArticulo(carrito.id, product.id, token);
+            }
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: `${product.nombre} añadido al carrito`,
+                life: 3000
+            });
+        } catch (error) {
+            console.error('Error al añadir al carrito:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudo añadir el curso al carrito',
+                life: 3000
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getSeverity = (product) => {
         switch (product.inventoryStatus) {
@@ -72,7 +143,15 @@ export default function ListadoProductos() {
                 </div>
                 <div className="grid-pruducto-precio">
                     <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
-                    <Button icon="pi pi-shopping-cart" className="boton-dorado p-button-rounded grid-pruducto-button" disabled={!product.activo}>Añadir</Button>
+                    <Button 
+                        icon="pi pi-shopping-cart" 
+                        className="boton-dorado p-button-rounded grid-pruducto-button" 
+                        disabled={!product.activo || loading}
+                        onClick={() => handleAddToCart(product)}
+                        loading={loading}
+                    >
+                        Añadir
+                    </Button>
                 </div>
             </div>
         );
@@ -93,12 +172,12 @@ export default function ListadoProductos() {
 
     return (
         <div>
+            <Toast ref={toast} />
             <section className='filters'>
                 {header()}
             </section>
             <section className='data-view'>
                 <DataView value={products} sortField={sortField} sortOrder={sortOrder} listTemplate={listTemplate} layout='grid' />
-
             </section>
         </div>
     )
