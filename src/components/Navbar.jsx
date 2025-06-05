@@ -38,6 +38,12 @@ const Navbar = () => {
           
           {isLoggedIn && (
             <>
+              <Link to="/MisCursos">
+                <section className='container'>
+                  Mi Curso
+                  <i className="pi pi-book"></i>
+                </section>
+              </Link>
               <Link to="/Carrito">
                 <i className="pi pi-shopping-cart"></i>
               </Link>
@@ -49,6 +55,7 @@ const Navbar = () => {
               </Link>
             </>
           )}
+       
 
           {!isLoggedIn && (
             <>
