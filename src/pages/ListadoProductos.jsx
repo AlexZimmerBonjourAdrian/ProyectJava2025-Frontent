@@ -98,19 +98,17 @@ export default function ListadoProductos() {
                 life: 3000
             });
         } catch (error) {
-            console.error('Error al añadir al carrito:', error);
-            
-            // Check if it's a 403 error
-            if (error.response && error.response.status === 403) {
+            // Manejar el caso específico de artículo duplicado
+            if (error.response?.data?.message?.includes('ya está en el carrito')) {
                 toast.current.show({
-                    severity: 'error',
-                    summary: 'Error de autenticación',
-                    detail: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+                    severity: 'warn',
+                    summary: 'Artículo duplicado',
+                    detail: 'Este curso ya está en tu carrito',
                     life: 3000
                 });
-                // Redirect to login
-                navigate('/login');
             } else {
+                // Solo registrar en consola y mostrar error para otros tipos de errores
+                console.error('Error al añadir al carrito:', error);
                 toast.current.show({
                     severity: 'error',
                     summary: 'Error',
