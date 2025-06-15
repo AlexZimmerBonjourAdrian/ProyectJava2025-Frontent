@@ -22,6 +22,7 @@ import CursoMenu from './pages/CursoMenu';
 import PaqueteModificar from './pages/PaqueteModificar';
 import CursoModificacion from './pages/CursoModificacion';
 import Pago from './pages/Pago';
+import PagoPaypal from './pages/PagoPaypal';
 import Carrito from './pages/Carrito';
 import Curso from './pages/Curso';
 import ListadoProductos from './pages/ListadoProductos';
@@ -88,6 +89,7 @@ const router = createBrowserRouter(
 
       <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
       <Route path="/Pago" element={<UserRoute><Pago /></UserRoute>} />
+      <Route path="/pago-paypal" element={<UserRoute><PagoPaypal /></UserRoute>} />
       <Route path="/Carrito" element={<UserRoute><Carrito /></UserRoute>} />
 
       <Route path="/AgregarPaquete" element={<AdminRoute><PaqueteMenu /></AdminRoute>} />

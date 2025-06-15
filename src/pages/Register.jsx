@@ -12,7 +12,7 @@ fetch(`${API_URL}/profile`, {
 })
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useDecryptToken } from "../App";
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
@@ -89,11 +89,14 @@ const Register = () => {
                         confirmPassword: ''
                     })
                     login(data.token);
-                    navigate('/');
+                    useEffect(() => {
+                        navigate('/');
+                    }, []);
+                    // navigate('/');
                 }else{
                     msgs.current.clear();
                     msgs.current.show([
-                        { sticky: true, severity: 'error', summary: 'Error', detail: 'Error al crear el curso' },
+                        { sticky: true, severity: 'error', summary: 'Error', detail: 'Error al crear el usuario' },
                     ]);
                 }
             })
@@ -242,6 +245,7 @@ const Register = () => {
                             value={formData.email}
                             onChange={(e) => handleFieldChange('email', e.target.value)}
                             className="w-full"
+                            type='email'
                             style={styles.input}
                         />
                     </div>
