@@ -32,7 +32,7 @@ import VentaCurso from './pages/VentaCurso';
 
 import CryptoJS from 'crypto-js';
 
-const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
+const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'clave-secreta-123';
 
 // Función para encriptar
 export function encryptToken(token) {
