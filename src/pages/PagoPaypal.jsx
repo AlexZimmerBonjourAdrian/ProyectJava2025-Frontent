@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export default function PagoPaypal(){
     const { user } = useAuth();
