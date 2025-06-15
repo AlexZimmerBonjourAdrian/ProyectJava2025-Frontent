@@ -8,9 +8,10 @@ export default function PagoPaypal(){
     useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
+    const API_URL = import.meta.env.VITE_API_URL;
 
     if (token) {
-        fetch(`/api/paypal/capturar?orderId=${token}`, {
+        fetch(`${API_URL}/api/paypal/capturar?orderId=${token}`, {
             method: "POST",
             credentials: 'include'
         })
