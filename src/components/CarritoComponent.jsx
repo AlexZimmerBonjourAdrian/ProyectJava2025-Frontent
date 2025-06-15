@@ -187,7 +187,7 @@ const CarritoComponent = () => {
         }).then(res => res.text())
           .then(url =>{
             console.log(url);
-            window.open(url, '_blank');
+            window.open(url);
           });
       }
 
