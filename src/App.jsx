@@ -31,6 +31,7 @@ import MisCursos from './pages/MisCursos';
 import VentaCurso from './pages/VentaCurso';
 
 import CryptoJS from 'crypto-js';
+import PagoMercadoPago from './pages/PagoMercadoPago';
 
 const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'clave-secreta-123';
 
@@ -88,8 +89,9 @@ const router = createBrowserRouter(
       <Route path="/productos" element={<UserRoute><ListadoProductos /></UserRoute>} />
 
       <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
-      <Route path="/Pago" element={<UserRoute><Pago /></UserRoute>} />
+      <Route path="/resumen-pago" element={<UserRoute><Pago /></UserRoute>} />
       <Route path="/pago-paypal" element={<UserRoute><PagoPaypal /></UserRoute>} />
+      <Route path="/pago-mercado-pago" element={<UserRoute><PagoMercadoPago /></UserRoute>} />
       <Route path="/Carrito" element={<UserRoute><Carrito /></UserRoute>} />
 
       <Route path="/AgregarPaquete" element={<AdminRoute><PaqueteMenu /></AdminRoute>} />

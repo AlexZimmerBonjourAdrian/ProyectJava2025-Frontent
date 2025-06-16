@@ -10,37 +10,15 @@ export default function PagoPaypal() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        const token = useDecryptToken(localStorage.getItem('authToken'));
-        const orden = params.get("token");
+        const paymentId = params.get("payment_id");
         const API_URL = import.meta.env.VITE_API_URL;
 
-        if (token && orden) {
-            fetch(`${API_URL}/api/paypal/capturar?orderId=${orden}`, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(res => {
-                if (!res.ok) throw new Error("Falló la captura");
-                return res.text();
-            })
-            .then(data => {
-                console.log("Pago capturado:", data);
-                setEstadoPago("completado");
-
-                // Redirige al carrito después de 3 segundos
-                setTimeout(() => {
-                    navigate("/Carrito");
-                }, 3000);
-            })
-            .catch(err => {
-                console.error("Error al capturar orden:", err);
-                setEstadoPago("error");
-            });
-        } else {
-            setEstadoPago("error");
+        if (paymentId) {
+            fetch(`${API_URL}/api/compras/by-payment-id/${paymentId}`)
+                .then(res => res.json())
+                .then(compra => {
+                    navigate("/resumen", { state: { compra } });
+                });
         }
     }, []);
 
