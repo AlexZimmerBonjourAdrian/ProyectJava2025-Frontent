@@ -83,176 +83,58 @@ const Login = () => {
         }
     };
 
-    const styles = {
-        mainContainer: {
-            minHeight: '100vh',
-            backgroundColor: '#F5F7FA',
-            display: 'flex',
-            flexDirection: 'column'
-        },
-        header: {
-            backgroundColor: '#FFFFFF',
-            padding: '1rem',
-            borderBottom: '1px solid #E0E0E0'
-        },
-        headerContent: {
-            maxWidth: '1200px',
-            margin: '0 auto',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-        },
-        logo: {
-            color: '#D4AF37',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            textDecoration: 'none'
-        },
-        homeIcon: {
-            color: '#D4AF37',
-            cursor: 'pointer',
-            fontSize: '1.5rem'
-        },
-        mainContent: {
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2rem 1rem'
-        },
-        formContainer: {
-            width: '100%',
-            maxWidth: '400px',
-            margin: '0 auto'
-        },
-        card: {
-            backgroundColor: '#FFFFFF',
-            border: '1px solid #D4AF37',
-            borderRadius: '20px',
-            padding: '2rem'
-        },
-        title: {
-            color: '#D4AF37',
-            textAlign: 'center',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            marginBottom: '2rem'
-        },
-        inputGroup: {
-            marginBottom: '1.5rem'
-        },
-        label: {
-            display: 'block',
-            marginBottom: '0.5rem',
-            color: '#333333'
-        },
-        input: {
-            width: '100%',
-            padding: '0.75rem',
-            borderRadius: '8px',
-            border: '1px solid #E0E0E0'
-        },
-        loginButton: {
-            width: '100%',
-            padding: '0.75rem',
-            backgroundColor: '#D4AF37',
-            border: 'none',
-            borderRadius: '8px',
-            color: '#FFFFFF',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-        },
-        registerLink: {
-            textAlign: 'center',
-            marginTop: '1rem'
-        },
-        googleButton: {
-            width: '100%',
-            marginTop: '1.5rem',
-            padding: '0.75rem',
-            backgroundColor: '#FFFFFF',
-            border: '1px solid #E0E0E0',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem'
-        },
-        footer: {
-            textAlign: 'center',
-            padding: '1rem',
-            backgroundColor: '#FFFFFF',
-            borderTop: '1px solid #E0E0E0'
-        }
-    };
-
     return (
-        <div style={styles.mainContainer}>
-            <header style={styles.header}>
-               
-            </header>
-
-            <main style={styles.mainContent}>
-                <div style={styles.formContainer}>
-                    <Card className="shadow-none" style={styles.card}>
-                        <h1 style={styles.title}>INICIAR SESIÓN</h1>
-                        <form onSubmit={handleLogin}>
-                            <div style={styles.inputGroup}>
-                                <label htmlFor="email" style={styles.label}>Email</label>
-                                <InputText
-                                    id="email"
-                                    value={formData.email}
-                                    onChange={(e) => handleFieldChange('email', e.target.value)}
-                                    className="w-full"
-                                    style={styles.input}
-                                    required
-                                />
-                            </div>
-
-                            <div style={styles.inputGroup}>
-                                <label htmlFor="password" style={styles.label}>Contraseña</label>
-                                <Password
-                                    id="password"
-                                    value={formData.password}
-                                    onChange={(e) => handleFieldChange('password', e.target.value)}
-                                    toggleMask
-                                    feedback={false}
-                                    className="w-full"
-                                    inputClassName="w-full"
-                                    required
-                                    style={styles.input}
-                                />
-                            </div>
-
-                            <Button
-                                type="submit"
-                                label="Login"
-                                loading={loading}
-                                style={styles.loginButton}
-                            />
-
-                            <div style={styles.registerLink}>
-                                <span>¿No tienes una cuenta? </span>
-                                <a 
-                                    href="#" 
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        navigate('/register');
-                                    }}
-                                    style={{ color: '#D4AF37', textDecoration: 'none' }}
-                                >
-                                    Registrarse
-                                </a>
-                            </div>
-                        </form>
-                    </Card>
+        <div className="flex justify-content-center align-items-center min-h-screen bg-gray-100">
+            <Card className="border-gold" style={{ borderRadius: '20px', maxWidth: '400px', width: '100%', margin: 'auto' }}>
+                <div className="text-center mb-4">
+                    <h1 className="text-2xl font-bold text-gold mb-4">INICIAR SESIÓN</h1>
                 </div>
-            </main>
-
-            <footer style={styles.footer}>
-                <p style={{ margin: 0, color: '#666666' }}>© Solariana 2025</p>
-            </footer>
+                <form onSubmit={handleLogin} className="p-fluid">
+                    <div className="field mb-3">
+                        <label htmlFor="email" className="block mb-2 text-gold">Email</label>
+                        <InputText
+                            id="email"
+                            value={formData.email}
+                            onChange={(e) => handleFieldChange('email', e.target.value)}
+                            className="w-full p-inputtext-custom"
+                            required
+                        />
+                    </div>
+                    <div className="field mb-3">
+                        <label htmlFor="password" className="block mb-2 text-gold">Contraseña</label>
+                        <Password
+                            id="password"
+                            value={formData.password}
+                            onChange={(e) => handleFieldChange('password', e.target.value)}
+                            toggleMask
+                            feedback={false}
+                            className="w-full"
+                            inputClassName="p-inputtext-custom"
+                            required
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        label="Login"
+                        loading={loading}
+                        className="boton-dorado p-button-rounded mt-3 text-lg"
+                        style={{ width: '100%' }}
+                    />
+                    <div className="text-center mt-4">
+                        <span>¿No tienes una cuenta? </span>
+                        <a 
+                            href="#" 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navigate('/register');
+                            }}
+                            className="text-gold font-medium"
+                        >
+                            Registrarse
+                        </a>
+                    </div>
+                </form>
+            </Card>
         </div>
     );
 };

@@ -1,7 +1,5 @@
 @tailwind base;
 @tailwind utilities;
-
-
 #root {
     margin: 0;
     padding: 0;
@@ -35,7 +33,9 @@ body {
     font-style: normal;
 }
 
+
 /* Botones */
+
 button.boton-dorado {
     background-color: var(--secondary-color);
     color: white;
@@ -51,6 +51,7 @@ button.boton-dorado:hover {
 
 
 /* Formularios */
+
 .paquete-form-container {
     background: #e9eff3;
     border: 3px solid #c7a740;
@@ -175,4 +176,28 @@ button.boton-dorado:hover {
 
 .paquete-form-submit:hover {
     background: #b89b2c;
+}
+
+.input-dorado {
+    border: 1.5px solid #c7a740 !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+    background: #fff !important;
+    color: #222 !important;
+}
+
+.border-gold {
+    border: 1.5px solid #D4AF37 !important;
+}
+
+.text-gold {
+    color: #D4AF37 !important;
+}
+
+.p-inputtext-custom {
+    border: 1.5px solid #c7a740 !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+    background: #fff !important;
+    color: #222 !important;
 }
