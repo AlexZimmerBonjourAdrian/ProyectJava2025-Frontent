@@ -1,6 +1,12 @@
 import React from "react";
 import VideoComponent from "../components/VideoComponent";
 import './Index.css';
+import CursosIncluidos from '../components/HomeSections/CursosIncluidos';
+import BeneficiosCoaching from '../components/HomeSections/BeneficiosCoaching';
+import Bienvenida from '../components/HomeSections/Bienvenida';
+import Testimonios from '../components/HomeSections/Testimonios';
+import PreguntasFrecuentes from '../components/HomeSections/PreguntasFrecuentes';
+import Footer from '../components/Footer';
 
 const Index = () => {
     return (
@@ -25,12 +31,18 @@ const Index = () => {
             </div>
         </main>
 
-
         <section className="video-section flex flex-col items-center justify-center mt-8">
             {/* Solo renderiza VideoComponent si tienes un videoUrl válido */}
             {/* <VideoComponent className="video" /> */}
         </section>
 
+        {/* HomeSections igual que en Home.jsx */}
+        <CursosIncluidos />
+        <BeneficiosCoaching />
+        <Bienvenida />
+        <Testimonios />
+        <PreguntasFrecuentes />
+        <Footer />
 
         <section className="services-section flex flex-col items-center justify-center mt-8">
             <h2 className="text-2xl mb-4 playfair-display">

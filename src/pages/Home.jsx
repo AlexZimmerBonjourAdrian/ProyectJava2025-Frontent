@@ -80,12 +80,17 @@ const Home = () => {
             <VideoComponent videoUrl="https://www.youtube.com/watch?v=Wx-fWmQkwOA" />
         </section>
 
-        <CursosIncluidos />
-        <BeneficiosCoaching />
-        <Bienvenida />
-        <Testimonios />
-        <PreguntasFrecuentes />
-        <Footer />
+        {/* Renderizar solo si NO es admin */}
+        {!isAdmin && (
+          <>
+            <CursosIncluidos />
+            <BeneficiosCoaching />
+            <Bienvenida />
+            <Testimonios />
+            <PreguntasFrecuentes />
+            <Footer />
+          </>
+        )}
 
         <section className="services-section flex flex-col items-center justify-center mt-8">
             <h2 className="text-2xl mb-4 playfair-display">
