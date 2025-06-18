@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import VideoComponent from "../components/VideoComponent";
 import './Home.css';
 import { useAuth } from '../context/AuthContext';
+import CursosIncluidos from '../components/HomeSections/CursosIncluidos';
+import BeneficiosCoaching from '../components/HomeSections/BeneficiosCoaching';
+import Testimonios from '../components/HomeSections/Testimonios';
+import PreguntasFrecuentes from '../components/HomeSections/PreguntasFrecuentes';
+import Bienvenida from '../components/HomeSections/Bienvenida';
+import Footer from '../components/Footer';
 
 const Home = () => {
     const { isLoggedIn, isAdmin, logout } = useAuth();
@@ -11,32 +17,6 @@ const Home = () => {
         <div>
 
         <main className="main min-h-screen bg-gray-50 flex items-center justify-right py-12 px-6 sm:px-8 lg:px-12">
-            <div className='container'>
-                <div className='nav'>
-                      
-                    {isLoggedIn && (
-                        <>
-                            <Link to="/Carrito">
-                                <i className="pi pi-shopping-cart"></i>
-                            </Link>
-                            <Link to="/login" onClick={logout}>
-                                <section className='container log-out'>
-                                    Cerrar Sesion
-                                    <i className="pi pi-sign-out"></i>
-                                </section>
-                            </Link>
-                        </>
-                    )}
-            
-                    {!isLoggedIn && (
-                        <>
-                            <Link to="/login">Iniciar Sesión</Link>
-                            <Link to="/register">Registrarse</Link>
-                        </>
-                    )}
-                </div>
-            </div>
-            
             <div className="rectangle-container top-0 left-0">
                 <div className="rect sm"></div>
                 <div className="rect bg"></div>
@@ -97,9 +77,15 @@ const Home = () => {
 
 
         <section className="video-section flex flex-col items-center justify-center mt-8">
-            <VideoComponent className="video"/>
+            <VideoComponent videoUrl="https://www.youtube.com/watch?v=Wx-fWmQkwOA" />
         </section>
 
+        <CursosIncluidos />
+        <BeneficiosCoaching />
+        <Bienvenida />
+        <Testimonios />
+        <PreguntasFrecuentes />
+        <Footer />
 
         <section className="services-section flex flex-col items-center justify-center mt-8">
             <h2 className="text-2xl mb-4 playfair-display">
