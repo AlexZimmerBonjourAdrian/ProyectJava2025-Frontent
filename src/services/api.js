@@ -14,7 +14,22 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('Error en la llamada a la API:', error);
+        if (error.response) {
+            // El servidor respondió con un código de estado fuera del rango 2xx
+            if (error.response.status === 403) {
+                console.error('Error de permisos:', error.response.data);
+            } else if (error.response.status === 401) {
+                console.error('Error de autenticación:', error.response.data);
+                // Limpiar el token si está expirado o es inválido
+                localStorage.removeItem('authToken');
+            }
+        } else if (error.request) {
+            // La petición fue hecha pero no se recibió respuesta
+            console.error('No se recibió respuesta del servidor:', error.request);
+        } else {
+            // Algo sucedió en la configuración de la petición
+            console.error('Error en la configuración de la petición:', error.message);
+        }
         return Promise.reject(error);
     }
 );

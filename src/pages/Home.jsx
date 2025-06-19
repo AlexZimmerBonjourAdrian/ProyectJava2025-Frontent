@@ -81,7 +81,7 @@ const Home = () => {
         </section>
 
         {/* Renderizar solo si NO es admin */}
-        {!isAdmin && (
+        {isAdmin && (
           <>
             <CursosIncluidos />
             <BeneficiosCoaching />

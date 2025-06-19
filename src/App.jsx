@@ -9,6 +9,8 @@ import {
   useLocation,
   redirect
 } from 'react-router-dom';
+import { PrimeReactProvider } from 'primereact/api';
+import { primeReactConfig } from './utils/primeReactConfig';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -112,9 +114,11 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />;
-    </AuthProvider>
+    <PrimeReactProvider value={primeReactConfig}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </PrimeReactProvider>
   );
 }
 

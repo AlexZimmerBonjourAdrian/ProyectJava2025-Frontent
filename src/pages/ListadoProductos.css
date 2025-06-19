@@ -1,79 +1,271 @@
-.data-view{
-    margin-left: max(30vw, 300px);
-}
-
-div.grid-nogutter{
-    grid-template-columns: 1fr 1fr 1fr;
-}
-@media (max-width: 1000px) {
-    div.grid-nogutter{
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 780px) {
-    div.grid-nogutter{
-        grid-template-columns: 1fr;
-    }
-}
-.grid-producto{
-    background-color: var(--primary-color);
-    margin: 15px;
-    max-width: 50vw;
-    min-width: 200px;
-    border-radius: 20px;
+.listado-productos-container {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 64px);
+    /* Ajusta esto según el alto de tu navbar */
+}
+
+.filters-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: #f8d7e3;
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 1rem;
+    height: fit-content;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-filters {
+    display: flex;
     flex-direction: column;
-    text-align: left;
-
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-all;
+    gap: 1.5rem;
 }
 
-.grid-pruducto-button{
-    background-color: var(--secondary-color);
+.filter-section {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.grid-pruducto-precio{
-    color: white;
+.filter-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-.grid-pruducto-nombre{
-    color: white;
+.filter-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
 }
 
-.grid-pruducto-imagen{
-    background-color: var(--background-color);
-    height: 150px;
-    width: 150px;
-}
-
-div.grid-pruducto-precio{
-    max-width: 200px;
-    min-width: 20vw;   
+.categories-list,
+.product-types {
     display: flex;
-    justify-content: space-around;
-
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-.grid-pruducto-precio button{
-    width: auto;
+.field-radiobutton,
+.field-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.grid-pruducto-precio button .p-button-icon{
-    color: var(--dark-color);
+.price-range {
+    padding: 0.5rem 0;
 }
 
-section.filters{
+.price-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    color: #666;
+}
+
+
+/* Grid de productos */
+
+.products-grid {
+    flex: 1;
+}
+
+.p-dataview .p-dataview-content {
+    background: transparent;
+}
+
+.p-dataview .p-grid {
     margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.product-grid-item {
+    padding: 0.5rem;
+}
+
+
+/* Tarjeta de producto */
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #f8d7e3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card .p-card-body {
     padding: 0;
-    height: 100vh;
-    width: 30vw;
-    min-width: 300px;
-    background-color: var(--dark-color);
-    position: fixed;
-    z-index: 100;
+}
+
+.product-card .p-card-content {
+    padding: 0;
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    /* Aspecto cuadrado */
+    background: #f5f5f5;
+}
+
+.product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #ff4081;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.875rem;
+}
+
+.product-type-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.product-content {
+    padding: 1rem;
+    background: white;
+    flex-grow: 1;
+}
+
+.product-title {
+    color: #ff69b4;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.product-description {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.product-category {
+    display: inline-block;
+    background: #f8d7e3;
+    color: #333;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.product-footer {
+    padding: 1rem;
+    background: white;
+    border-top: 1px solid #f8d7e3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 0.875rem;
+}
+
+.current-price {
+    color: #ff69b4;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.add-to-cart-button {
+    background: #ffd700 !important;
+    border: none !important;
+    color: #333 !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+}
+
+.add-to-cart-button:hover {
+    background: #ffed4a !important;
+}
+
+.add-to-cart-button .p-button-label {
+    font-weight: 600;
+}
+
+
+/* Responsive */
+
+@media screen and (max-width: 768px) {
+    .listado-productos-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    .filters-sidebar {
+        width: 100%;
+        position: static;
+    }
+    .p-dataview .p-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+
+/* DataView customization */
+
+.p-dataview .p-dataview-header {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.p-dataview .p-paginator {
+    background: transparent;
+    border: none;
+    padding: 1rem 0;
+}
+
+.p-dataview.p-dataview-grid .p-dataview-content {
+    background: transparent;
+    border: none;
+}
+
+.p-dataview .p-grid {
+    margin: -0.5rem;
 }

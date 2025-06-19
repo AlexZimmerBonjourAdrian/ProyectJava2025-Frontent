@@ -3,10 +3,13 @@ export default {
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
+        "./node_modules/primereact/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
         extend: {
             colors: {
+                'primary-color': 'var(--primary-color)',
+                'secondary-color': 'var(--secondary-color)',
                 primary: {
                     50: '#eef2ff',
                     100: '#e0e7ff',

@@ -10,6 +10,17 @@
     --secondary-color: #CCA43B;
     --background-color: #E8EEF2;
     --dark-color: #511730;
+    --primary-pink: #e98fae;
+    --primary-gold: #bfa046;
+    --dark-purple: #4a0d2c;
+    --light-pink: #f8d7e3;
+    --surface-ground: #f8f9fa;
+    --surface-section: #ffffff;
+    --surface-card: #ffffff;
+    --surface-overlay: #ffffff;
+    --surface-border: #dee2e6;
+    --text-color: var(--dark-purple);
+    --text-color-secondary: #6c757d;
 }
 
 body {
@@ -200,4 +211,31 @@ button.boton-dorado:hover {
     padding: 0.75rem !important;
     background: #fff !important;
     color: #222 !important;
+}
+
+
+/* Estilos globales para PrimeReact */
+
+.p-component {
+    font-family: 'Lato', sans-serif;
+}
+
+.p-button {
+    background: var(--primary-gold);
+    border-color: var(--primary-gold);
+}
+
+.p-button:hover {
+    background: var(--primary-gold);
+    border-color: var(--primary-gold);
+    opacity: 0.9;
+}
+
+
+/* Estilos para el tema rosa */
+
+.pink-theme {
+    --surface-a: var(--light-pink);
+    --surface-b: var(--primary-pink);
+    --surface-c: rgba(233, 143, 174, 0.1);
 }

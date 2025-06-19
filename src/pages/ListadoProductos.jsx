@@ -1,69 +1,150 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button } from 'primereact/button';
-import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
-import { classNames } from 'primereact/utils';
-import { Dropdown } from 'primereact/dropdown';
+import { DataView } from 'primereact/dataview';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
 import carritoService from '../services/carrito';
+import { getAllCursos } from '../services/curso';
+import { getAllPaquetes } from '../services/paquete';
 import useAuth from '../hooks/useAuth';
+import ProductFilter from '../components/productos/ProductFilter';
+import ProductCard from '../components/productos/ProductCard';
 import './ListadoProductos.css';
-
 
 export default function ListadoProductos() {
     const [products, setProducts] = useState([]);
-    const [layout, setLayout] = useState('grid');
-    const [carrito, setCarrito] = useState(null);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [category, setCategory] = useState('');
+    const [priceRange, setPriceRange] = useState([0, 100]);
+    const [selectedTypes, setSelectedTypes] = useState({
+        paquetes: true,
+        cursos: true
+    });
     const [loading, setLoading] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(true);
     const toast = useRef(null);
     const { token } = useAuth();
     const navigate = useNavigate();
-
-    const [sortKey, setSortKey] = useState('');
-    const [sortOrder, setSortOrder] = useState(0);
-    const [sortField, setSortField] = useState('');
-    const sortOptions = [
-        { label: 'Price High to Low', value: '!precio' },
-        { label: 'Price Low to High', value: 'precio' }
-    ];
     
     const API_URL = import.meta.env.VITE_API_URL;
 
+    // Cargar cursos y paquetes
     useEffect(() => {
-        fetch(`${API_URL}/api/curso`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-        .then(data => {
-            setProducts(data)
-        })
-    }, []);
+        const fetchProducts = async () => {
+            setIsLoadingData(true);
+            try {
+                let cursosData = [];
+                let paquetesData = [];
 
-    // Obtener el carrito del usuario
-    useEffect(() => {
-        const obtenerCarrito = async () => {
-            if (token) {
+                // Intentar obtener cursos
                 try {
-                    const carritoData = await carritoService.obtenerCarritoUsuario(token);
-                    setCarrito(carritoData);
+                    cursosData = await getAllCursos(token);
                 } catch (error) {
-                    console.error('Error al obtener el carrito:', error);
+                    console.error('Error al cargar cursos:', error);
                 }
+
+                // Intentar obtener paquetes
+                try {
+                    paquetesData = await getAllPaquetes(token);
+                } catch (error) {
+                    console.error('Error al cargar paquetes:', error);
+                }
+
+                // Si no hay datos y no hay token, redirigir al login
+                if (cursosData.length === 0 && paquetesData.length === 0 && !token) {
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Iniciar sesión',
+                        detail: 'Por favor, inicia sesión para ver los productos',
+                        life: 3000
+                    });
+                    navigate('/login');
+                    return;
+                }
+
+                // Formatear cursos
+                const formattedCursos = cursosData.map(curso => ({
+                    ...curso,
+                    tipo: 'curso',
+                    precio: parseFloat(curso.precio || 0),
+                    precioOriginal: parseFloat(curso.precioOriginal || curso.precio || 0)
+                }));
+
+                // Formatear paquetes
+                const formattedPaquetes = paquetesData.map(paquete => ({
+                    ...paquete,
+                    tipo: 'paquete',
+                    precio: parseFloat(paquete.precio || 0),
+                    precioOriginal: parseFloat(paquete.precioOriginal || paquete.precio || 0)
+                }));
+
+                // Combinar y establecer productos
+                const allProducts = [...formattedCursos, ...formattedPaquetes];
+                
+                if (allProducts.length > 0) {
+                    // Encontrar el rango de precios
+                    const prices = allProducts.map(p => p.precio).filter(p => !isNaN(p));
+                    const minPrice = Math.floor(Math.min(...prices));
+                    const maxPrice = Math.ceil(Math.max(...prices));
+                    setPriceRange([minPrice, maxPrice]);
+                }
+
+                setProducts(allProducts);
+                setFilteredProducts(allProducts);
+
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudieron cargar los productos',
+                    life: 3000
+                });
+            } finally {
+                setIsLoadingData(false);
             }
         };
 
-        obtenerCarrito();
-    }, [token]);
+        fetchProducts();
+    }, [token, navigate]);
 
-    // Función para añadir un curso al carrito
+    // Filtrar productos
+    useEffect(() => {
+        let result = [...products];
+
+        // Filtrar por búsqueda
+        if (searchQuery) {
+            result = result.filter(product => 
+                product.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                product.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        // Filtrar por categoría
+        if (category) {
+            result = result.filter(product => product.categoria === category);
+        }
+
+        // Filtrar por rango de precio
+        result = result.filter(product => 
+            product.precio >= priceRange[0] && product.precio <= priceRange[1]
+        );
+
+        // Filtrar por tipo
+        result = result.filter(product => 
+            (selectedTypes.paquetes && product.tipo === 'paquete') ||
+            (selectedTypes.cursos && product.tipo === 'curso')
+        );
+
+        setFilteredProducts(result);
+    }, [searchQuery, category, priceRange, selectedTypes, products]);
+
     const handleAddToCart = async (product) => {
         if (!token) {
             toast.current.show({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Debes iniciar sesión para añadir cursos al carrito',
+                detail: 'Debes iniciar sesión para añadir productos al carrito',
                 life: 3000
             });
             navigate('/login');
@@ -72,23 +153,12 @@ export default function ListadoProductos() {
 
         setLoading(true);
         try {
-            console.log('Adding product to cart:', product.id);
-            console.log('Token available:', !!token);
-            
-            // Si no hay carrito, crear uno nuevo
-            if (!carrito) {
-                console.log('No cart found, creating a new one');
+            const carritoData = await carritoService.obtenerCarritoUsuario(token);
+            if (!carritoData) {
                 const nuevoCarrito = await carritoService.crearCarrito({}, token);
-                console.log('New cart created:', nuevoCarrito);
-                setCarrito(nuevoCarrito);
-                
-                // Añadir el curso al carrito recién creado
-                console.log(`Adding product ${product.id} to new cart ${nuevoCarrito.id}`);
                 await carritoService.agregarArticulo(nuevoCarrito.id, product.id, token);
             } else {
-                // Añadir el curso al carrito existente
-                console.log(`Adding product ${product.id} to existing cart ${carrito.id}`);
-                await carritoService.agregarArticulo(carrito.id, product.id, token);
+                await carritoService.agregarArticulo(carritoData.id, product.id, token);
             }
             
             toast.current.show({
@@ -98,21 +168,18 @@ export default function ListadoProductos() {
                 life: 3000
             });
         } catch (error) {
-            // Manejar el caso específico de artículo duplicado
             if (error.response?.data?.message?.includes('ya está en el carrito')) {
                 toast.current.show({
                     severity: 'warn',
                     summary: 'Artículo duplicado',
-                    detail: 'Este curso ya está en tu carrito',
+                    detail: 'Este producto ya está en tu carrito',
                     life: 3000
                 });
             } else {
-                // Solo registrar en consola y mostrar error para otros tipos de errores
-                console.error('Error al añadir al carrito:', error);
                 toast.current.show({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'No se pudo añadir el curso al carrito',
+                    detail: 'No se pudo añadir el producto al carrito',
                     life: 3000
                 });
             }
@@ -121,82 +188,51 @@ export default function ListadoProductos() {
         }
     };
 
-    const getSeverity = (product) => {
-        switch (product.inventoryStatus) {
-            case 'INSTOCK':
-                return 'success';
-
-            case 'LOWSTOCK':
-                return 'warning';
-
-            case 'OUTOFSTOCK':
-                return 'danger';
-
-            default:
-                return null;
-        }
-    };
-
-    const onSortChange = (event) => {
-        const value = event.value;
-
-        if (value.indexOf('!') === 0) {
-            setSortOrder(-1);
-            setSortField(value.substring(1, value.length));
-            setSortKey(value);
-        } else {
-            setSortOrder(1);
-            setSortField(value);
-            setSortKey(value);
-        }
-    };
-
-    const gridItem = (product, index) => {
-        return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2 grid-producto" key={index}>
-                <img src='' className='grid-pruducto-imagen'/>
-                <div className="p-4 border-1 surface-border surface-card border-round">
-                    <h3 className="text-2xl font-bold text-900 grid-pruducto-nombre">{product.nombre}</h3>
-                    <p className="text-2xl font-bold text-900 grid-pruducto-descrip">{product.descripcion}</p>                        
-                </div>
-                <div className="grid-pruducto-precio">
-                    <span className="text-2xl font-semibold grid-pruducto-precio">${product.precio}</span>
-                    <Button 
-                        icon="pi pi-shopping-cart" 
-                        className="boton-dorado p-button-rounded grid-pruducto-button" 
-                        disabled={!product.activo || loading}
-                        onClick={() => handleAddToCart(product)}
-                        loading={loading}
-                    >
-                        Añadir
-                    </Button>
-                </div>
-            </div>
-        );
-    };
-
-    const listTemplate = (products, layout) => {
-        return <div className="grid grid-nogutter">{products.map((product, index) => gridItem(product, index))}</div>;
-    };
-
-    const header = () => {
-        return (
-            <div className="flex justify-content-end">
-                <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="w-full sm:w-14rem" />
-                {/* <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} /> */}
-            </div>
-        );
+    const handleTypeChange = (type, checked) => {
+        setSelectedTypes(prev => ({
+            ...prev,
+            [type]: checked
+        }));
     };
 
     return (
-        <div>
+        <div className="listado-productos-container">
             <Toast ref={toast} />
-            <section className='filters'>
-                {header()}
-            </section>
-            <section className='data-view'>
-                <DataView value={products} sortField={sortField} sortOrder={sortOrder} listTemplate={listTemplate} layout='grid' />
-            </section>
+            
+            {/* Sidebar de filtros */}
+            <aside className="filters-sidebar">
+                <ProductFilter 
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    category={category}
+                    onCategoryChange={setCategory}
+                    priceRange={priceRange}
+                    onPriceRangeChange={setPriceRange}
+                    selectedTypes={selectedTypes}
+                    onTypeChange={handleTypeChange}
+                />
+            </aside>
+
+            {/* Grid de productos */}
+            <main className="products-grid">
+                <DataView 
+                    value={filteredProducts} 
+                    itemTemplate={(product) => (
+                        <div className="product-grid-item">
+                            <ProductCard 
+                                product={product}
+                                onAddToCart={handleAddToCart}
+                                loading={loading}
+                            />
+                        </div>
+                    )}
+                    layout='grid'
+                    rows={9}
+                    paginator
+                    loading={isLoadingData}
+                    emptyMessage={token ? "No se encontraron productos" : "Inicia sesión para ver los productos"}
+                />
+            </main>
         </div>
-    )
+    );
 }
