@@ -7,6 +7,7 @@ import './Pago.css';
 
 export default function PagoPaypal() {
     const { user } = useAuth();
+    const token = useDecryptToken(localStorage.getItem('authToken'));
     const navigate = useNavigate();
     const [estadoPago, setEstadoPago] = useState("procesando"); // "procesando", "completado", "error"
     const toast = React.useRef(null);
@@ -19,7 +20,13 @@ export default function PagoPaypal() {
         const paymentId = params.get("token");
         const API_URL = import.meta.env.VITE_API_URL;
         if (paymentId) {
-            fetch(`${API_URL}/api/paypal/capturar?orderId=${encodeURIComponent(paymentId)}`)
+            fetch(`${API_URL}/api/paypal/capturar?orderId=${encodeURIComponent(paymentId)}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
                 .then(res => {
                     if (!res.ok) {
                         throw new Error("No se encontró la compra.");
