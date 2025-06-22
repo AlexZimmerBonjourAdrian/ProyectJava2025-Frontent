@@ -1,114 +1,28 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
 
-export default function CursoIncluidoCard({ curso }) {
-    const navigate = useNavigate();
-    const defaultImage = `https://picsum.photos/300/300?random=${curso.articuloClienteId || Math.random()}`;
+const CursoIncluidoCard = ({ nombre, descripcion, imagen, onInfo, id }) => {
+  const defaultImage = `https://picsum.photos/seed/${id || nombre || 'curso'}/300/200`;
+  const finalImage = imagen || defaultImage;
 
-    return (
-        <div 
-            className="curso-card"
-            style={{ 
-                background: '#5a2236', 
-                borderRadius: 12, 
-                display: 'flex', 
-                alignItems: 'flex-start', 
-                padding: 24, 
-                marginBottom: 24,
-                gap: '24px',
-                cursor: curso.nombre !== 'Curso no disponible' ? 'pointer' : 'default'
-            }}
-            onClick={() => {
-                if (curso.nombre !== 'Curso no disponible') {
-                    navigate('/curso', { state: { cursoId: curso.articuloClienteId } });
-                }
-            }}
-        >
-            {/* Imagen del curso */}
-            <div style={{ 
-                width: 140, 
-                height: 140, 
-                flexShrink: 0,
-                background: '#f5f5f5',
-                borderRadius: 8,
-                overflow: 'hidden'
-            }}>
-                <img 
-                    src={curso.imagen || defaultImage}
-                    alt={curso.nombre}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                    }}
-                    onError={(e) => e.target.src = defaultImage}
-                />
-            </div>
+  return (
+    <div style={{ background: '#e98fae', borderRadius: 32, display: 'flex', alignItems: 'center', padding: 24, marginBottom: 28, boxShadow: '0 2px 12px rgba(233,143,174,0.10)' }}>
+      <div style={{ width: 110, height: 110, background: '#ddd', borderRadius: 12, marginRight: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <img 
+            src={finalImage} 
+            alt={nombre || 'Imagen del curso'} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { e.target.onerror = null; e.target.src = defaultImage; }}
+        />
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 700, fontSize: 22, color: '#fff', marginBottom: 6 }}>{nombre}</div>
+        <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>{descripcion}</div>
+        <button onClick={onInfo} style={{ background: '#ffe066', color: '#5a2236', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 22, padding: '8px 28px', cursor: 'pointer', float: 'right', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 2px 8px rgba(255,224,102,0.10)' }}>
+          MÁS INFO <span style={{ fontSize: 18, marginLeft: 4 }}>→</span>
+        </button>
+      </div>
+    </div>
+  );
+};
 
-            {/* Contenido del curso */}
-            <div style={{ flex: 1 }}>
-                {/* Título y subtítulo */}
-                <div style={{ 
-                    fontFamily: "'Playfair Display', serif",
-                    color: '#fff',
-                    marginBottom: 4
-                }}>
-                    <h3 style={{ 
-                        fontSize: '24px',
-                        fontWeight: 'bold',
-                        margin: 0,
-                        marginBottom: '4px'
-                    }}>
-                        {curso.nombre}
-                    </h3>
-                    <p style={{ 
-                        fontSize: '16px',
-                        margin: 0,
-                        color: '#e98fae',
-                        fontStyle: 'italic'
-                    }}>
-                        {curso.autor}
-                    </p>
-                </div>
-
-                {/* Descripción */}
-                <p style={{ 
-                    color: '#fff',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
-                    margin: '12px 0',
-                    opacity: 0.9
-                }}>
-                    {curso.descripcion}
-                </p>
-
-                {/* Progreso */}
-                <div style={{ 
-                    color: '#e98fae',
-                    fontSize: '14px',
-                    marginBottom: '16px'
-                }}>
-                    {curso.estado === 'En progreso' && `${curso.unidadesCompletadas || 4} de ${curso.unidadesTotales || 5} unidades completadas`}
-                </div>
-
-                {/* Botón */}
-                <button 
-                    style={{ 
-                        background: '#e98fae',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '6px',
-                        padding: '8px 24px',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        cursor: curso.nombre !== 'Curso no disponible' ? 'pointer' : 'not-allowed',
-                        opacity: curso.nombre === 'Curso no disponible' ? 0.7 : 1
-                    }}
-                    disabled={curso.nombre === 'Curso no disponible'}
-                >
-                    IR AL CURSO
-                </button>
-            </div>
-        </div>
-    );
-} 
+export default CursoIncluidoCard; 
