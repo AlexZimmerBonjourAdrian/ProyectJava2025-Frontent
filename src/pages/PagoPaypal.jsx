@@ -16,9 +16,8 @@ export default function PagoPaypal() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        const paymentId = params.get("payment_id");
+        const paymentId = params.get("token");
         const API_URL = import.meta.env.VITE_API_URL;
-
         if (paymentId) {
             fetch(`${API_URL}/api/paypal/capturar/${paymentId}`)
                 .then(res => {
@@ -37,6 +36,9 @@ export default function PagoPaypal() {
                     setError(err.message);
                     setTimeout(() => navigate("/carrito"), 4000);
                 });
+        }else{
+            setEstadoPago("error");
+            setError('No hemos recibido el ID de la compra')
         }
     }, []);
 
