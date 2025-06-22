@@ -10,6 +10,9 @@ export default function PagoPaypal() {
     const navigate = useNavigate();
     const [estadoPago, setEstadoPago] = useState("procesando"); // "procesando", "completado", "error"
     const toast = React.useRef(null);
+    const [pagoInfo, setPagoInfo] = useState(null);
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -18,12 +21,25 @@ export default function PagoPaypal() {
 
         if (paymentId) {
             fetch(`${API_URL}/api/compras/by-payment-id/${paymentId}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error("No se encontró la compra.");
+                    }
+                    return res.json();
+                })
                 .then(compra => {
-                    navigate("/resumen", { state: { compra } });
+                    setEstadoPago("completado");
+                    setPagoInfo(compra); // Este estado no está definido todavía, lo vemos abajo.
+                    // navigate("/resumen", { state: { compra } }); ← si vas a mostrar el resumen aquí, no navegues.
+                })
+                .catch(err => {
+                    setEstadoPago("error");
+                    setError(err.message);
+                    setTimeout(() => navigate("/carrito"), 4000);
                 });
         }
     }, []);
+
 
     return (
         <div style={{ textAlign: "center", marginTop: "2rem" }}>

@@ -11,7 +11,7 @@ export const createPaquete = async(reqPaquete, token) => {
 // Obtener todos los paquetes (admin/user)
 export const getAllPaquetes = async(token) => {
     try {
-        const response = await api.get('http://localhost:8080/api/paquetes', {
+        const response = await api.get('/api/paquetes', {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         return response.data;
