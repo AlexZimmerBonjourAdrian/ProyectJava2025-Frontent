@@ -104,6 +104,7 @@ export default function Curso() {
         {videos.map((video, idx) => (
           <CursoIncluidoCard
             key={video.id || idx}
+            id={video.id || idx}
             nombre={video.nombre}
             descripcion={video.descripcion}
             imagen={video.imagen}

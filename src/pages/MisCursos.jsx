@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getMisCursosUsuario } from "../services/ArticuloCliente";
 import { useAuth } from '../context/AuthContext';
 import CursoHeader from "../components/CursoHeader";
+import CursoIncluidoCard from "../components/CursoIncluidoCard";
 import Footer from "../components/Footer";
 import "../styles/global.css";
 import { useNavigate } from 'react-router-dom';
@@ -178,112 +179,14 @@ export default function MisCursos() {
         )}
         
         {cursos.map((curso) => (
-          <div 
-            key={curso.articuloClienteId} 
-            style={{ 
-              background: '#5a2236', 
-              borderRadius: 12, 
-              display: 'flex', 
-              alignItems: 'flex-start', 
-              padding: 32, 
-              marginBottom: 36, 
-              boxShadow: '0 4px 16px rgba(90,34,54,0.15)',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              cursor: 'pointer'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(90,34,54,0.2)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(90,34,54,0.15)';
-            }}
-          >
-            <div style={{ 
-              width: 140, 
-              height: 140, 
-              background: curso.imagen ? `url(${curso.imagen})` : (curso.nombre === 'Curso no disponible' ? '#f8d7da' : '#eee'), 
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              borderRadius: 8, 
-              marginRight: 32, 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-            }}>
-              {!curso.imagen && (
-                curso.nombre === 'Curso no disponible' 
-                  ? <span style={{ color: '#721c24', fontSize: 16, textAlign: 'center', padding: '0 10px' }}>Curso no disponible</span>
-                  : <span style={{ color: '#aaa', fontSize: 22 }}>IMG</span>
-              )}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 24, color: '#fff', marginBottom: 8 }}>
-                {curso.nombre || 'Nombre del curso'}
-              </div>
-              <div style={{ color: '#e98fae', fontStyle: 'italic', fontSize: 16, marginBottom: 10 }}>
-                {curso.autor || 'Autor del curso'}
-              </div>
-              <div style={{ 
-                color: '#fff', 
-                fontSize: 15, 
-                marginBottom: 12,
-                maxHeight: '60px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical'
-              }}>
-                {curso.descripcion || 'Sin descripción.'}
-              </div>
-              <div style={{ 
-                color: '#e98fae', 
-                fontSize: 15, 
-                marginBottom: 16,
-                display: 'flex',
-                gap: '20px'
-              }}>
-                <span><strong>Estado:</strong> {curso.estado}</span> 
-                <span><strong>Caducidad:</strong> {new Date(curso.caducidad).toLocaleDateString()}</span>
-              </div>
-              <button 
-                style={{ 
-                  background: curso.nombre === 'Curso no disponible' ? '#6c757d' : '#e98fae', 
-                  color: '#fff', 
-                  fontWeight: 700, 
-                  fontSize: 16, 
-                  border: 'none', 
-                  borderRadius: 8, 
-                  padding: '12px 32px', 
-                  cursor: curso.nombre === 'Curso no disponible' ? 'not-allowed' : 'pointer', 
-                  marginTop: 8,
-                  transition: 'background 0.2s ease',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                }}
-                onMouseOver={(e) => {
-                  if (curso.nombre !== 'Curso no disponible') {
-                    e.currentTarget.style.background = '#d47a99';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (curso.nombre !== 'Curso no disponible') {
-                    e.currentTarget.style.background = '#e98fae';
-                  }
-                }}
-                onClick={() => {
-                  if (curso.nombre !== 'Curso no disponible') {
-                    navigate('/curso', { state: { cursoId: curso.articuloClienteId } });
-                  }
-                }}
-                disabled={curso.nombre === 'Curso no disponible'}
-              >
-                {curso.nombre === 'Curso no disponible' ? 'NO DISPONIBLE' : 'IR AL CURSO'}
-              </button>
-            </div>
-          </div>
+          <CursoIncluidoCard
+            key={curso.articuloClienteId}
+            id={curso.articuloClienteId}
+            nombre={curso.nombre}
+            descripcion={curso.descripcion}
+            imagen={curso.imagen}
+            onInfo={() => navigate('/curso', { state: { cursoId: curso.articuloClienteId } })}
+          />
         ))}
       </div>
       
