@@ -20,7 +20,7 @@ export default function PagoPaypal() {
         const API_URL = import.meta.env.VITE_API_URL;
 
         if (paymentId) {
-            fetch(`${API_URL}/api/compras/by-payment-id/${paymentId}`)
+            fetch(`${API_URL}/api/paypal/capturar/${paymentId}`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error("No se encontró la compra.");
