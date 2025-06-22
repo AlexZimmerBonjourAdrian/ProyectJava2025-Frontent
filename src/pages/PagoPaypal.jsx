@@ -35,8 +35,7 @@ export default function PagoPaypal() {
                 })
                 .then(compra => {
                     setEstadoPago("completado");
-                    setPagoInfo(compra); // Este estado no está definido todavía, lo vemos abajo.
-                    // navigate("/resumen", { state: { compra } }); ← si vas a mostrar el resumen aquí, no navegues.
+                    setPagoInfo(compra);
                 })
                 .catch(err => {
                     setEstadoPago("error");
@@ -78,7 +77,7 @@ export default function PagoPaypal() {
                                     {art.nombre}
                                 </div>
                                 <div className="pago-item-details">
-                                    <div>Autor: {art.descripcion}</div>
+                                    <div>Descripción: {art.descripcion}</div>
                                     <div>vencimiento: {pagoInfo.vencimiento}</div>
                                 </div>
                                 <div className="pago-item-amount">
@@ -91,8 +90,7 @@ export default function PagoPaypal() {
                             Total: ${pagoInfo.items.reduce((acc, art) => acc + art.precio, 0).toFixed(2)}
                         </div>
                         <div className="pago-footer">
-                            Se ha enviado un correo con la facturación de su compra.
-                            Serás redirigido en unos segundos...
+                            Este comprobante no tiene nignuna valildez legal, su uso es únicamnete de referencia.
                         </div>
                     </div>
                 </div>
