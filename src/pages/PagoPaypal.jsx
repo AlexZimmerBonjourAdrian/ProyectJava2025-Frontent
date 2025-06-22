@@ -13,7 +13,6 @@ export default function PagoPaypal() {
     const toast = React.useRef(null);
     const [pagoInfo, setPagoInfo] = useState(null);
     const [error, setError] = useState(null);
-    const [total, setTotal] = useState(0);
 
 
     useEffect(() => {
@@ -59,6 +58,7 @@ export default function PagoPaypal() {
                         <div className="loading-spinner">
                             <div className="spinner"></div>
                             <p>Procesando tu pago...</p>
+                            <p>Ya casi es tuyo</p>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,6 @@ export default function PagoPaypal() {
                                 <div className="pago-item-details">
                                     <div>Autor: {art.descripcion}</div>
                                     <div>vencimiento: {pagoInfo.vencimiento}</div>
-                                    {setTotal(total + art.precio)}
                                 </div>
                                 <div className="pago-item-amount">
                                     Monto: $ {art.precio.toFixed(2)}
@@ -89,7 +88,7 @@ export default function PagoPaypal() {
                         ))}
                         <div className="pago-divider" />
                         <div className="pago-total">
-                            Total: $ {total}
+                            Total: ${pagoInfo.items.reduce((acc, art) => acc + art.precio, 0).toFixed(2)}
                         </div>
                         <div className="pago-footer">
                             Se ha enviado un correo con la facturación de su compra.
