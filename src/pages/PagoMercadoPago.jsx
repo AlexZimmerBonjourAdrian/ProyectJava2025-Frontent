@@ -18,14 +18,22 @@ export default function PagoPaypal() {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const externalReference = params.get("external_reference");
+        const API_URL = import.meta.env.VITE_API_URL;
         
         if (externalReference) {
             const [usuarioId, carritoId] = externalReference.split("|");
             
             fetch(`${API_URL}/api/mercado-pago/resumen?usuarioId=${usuarioId}&carritoId=${carritoId}`)
             .then(res => res.json())
-            .then(data => setPagoInfo(data))
-            .catch(err => console.error("Error obteniendo resumen:", err));
+            .then(data => {setPagoInfo(data)
+                setEstadoPago("completado")
+            })
+            .catch(err => {
+                console.error("Error obteniendo resumen:", err)
+                setError(err.message)
+                setEstadoPago("error")
+                setTimeout(() => navigate("/carrito"), 4000);
+            });
         }
     }, []);
 
