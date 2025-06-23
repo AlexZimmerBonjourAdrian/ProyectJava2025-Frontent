@@ -21,9 +21,14 @@ export default function PagoPaypal() {
         const API_URL = import.meta.env.VITE_API_URL;
         
         if (externalReference) {
-            const [usuarioId, carritoId] = externalReference.split("|");
+            const [_, carritoId] = externalReference.split("|");
             
-            fetch(`${API_URL}/api/mercado-pago/resumen?usuarioId=${usuarioId}&carritoId=${carritoId}`)
+            fetch(`${API_URL}/api/mercado-pago/resumen?carritoId=${carritoId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
             .then(res => res.json())
             .then(data => {setPagoInfo(data)
                 setEstadoPago("completado")
