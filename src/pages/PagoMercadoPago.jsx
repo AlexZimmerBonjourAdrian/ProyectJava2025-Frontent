@@ -16,14 +16,12 @@ export default function PagoPaypal() {
 
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const externalReference = params.get("external_reference");
+        const query = new URLSearchParams(location.search);
+        const paymentId = query.get("payment_id");
         const API_URL = import.meta.env.VITE_API_URL;
         
-        if (externalReference) {
-            const [_, carritoId] = externalReference.split("|");
-            
-            fetch(`${API_URL}/api/mercado-pago/resumen?carritoId=${carritoId}`, {
+        if (paymentId) {
+            fetch(`${API_URL}/api/mercado-pago/confirmar/${paymentId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
