@@ -16,6 +16,7 @@ export default function Curso() {
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [videosVistos, setVideosVistos] = useState(new Set());
 
   useEffect(() => {
     const fetchCurso = async () => {
@@ -36,6 +37,12 @@ export default function Curso() {
         }
         // 1. Traer el ArticuloCliente (relación usuario-curso) usando el id recibido
         const articuloCliente = await getArticuloClienteUsuario(cursoId, token);
+        
+        // Guardar los videos vistos
+        if (articuloCliente.videosVistos) {
+          setVideosVistos(new Set(articuloCliente.videosVistos));
+        }
+        
         // 2. Obtener el id del curso real desde el ArticuloCliente
         const realCursoId = articuloCliente.articulo || articuloCliente.cursoId || articuloCliente.curso_id || (articuloCliente.curso && articuloCliente.curso.id);
         let cursoData = {};
@@ -108,7 +115,8 @@ export default function Curso() {
             nombre={video.nombre}
             descripcion={video.descripcion}
             imagen={video.imagen}
-            onInfo={() => navigate('/VideoCurso', { state: { videoId: video.id } })}
+            isVisto={videosVistos.has(video.id)}
+            onInfo={() => navigate('/VideoCurso', { state: { videoId: video.id, articuloClienteId: cursoId } })}
           />
         ))}
       </div>

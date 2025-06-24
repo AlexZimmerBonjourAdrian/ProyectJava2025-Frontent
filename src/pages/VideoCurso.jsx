@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getVideoById } from '../services/video';
+import { marcarVideoComoVisto, getArticuloClienteUsuario } from '../services/ArticuloCliente';
 import { useDecryptToken } from '../App';
 import VideoComponent from '../components/VideoComponent';
 import './VideoCurso.css'; // Assuming you have a CSS file for styling
@@ -8,10 +9,13 @@ import './VideoCurso.css'; // Assuming you have a CSS file for styling
 const VideoCurso = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const videoId = location.state?.videoId;
+  const { videoId, articuloClienteId } = location.state || {};
   const [videoData, setVideoData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [completado, setCompletado] = useState(false);
+  const [completando, setCompletando] = useState(false);
+  const [mensaje, setMensaje] = useState("");
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -30,6 +34,19 @@ const VideoCurso = () => {
           setLoading(false);
           return;
         }
+        
+        // Verificar si el video ya está marcado como visto
+        if (articuloClienteId) {
+          try {
+            const articuloCliente = await getArticuloClienteUsuario(articuloClienteId, token);
+            if (articuloCliente.videosVistos && articuloCliente.videosVistos.includes(videoId)) {
+              setCompletado(true);
+            }
+          } catch (err) {
+            console.log('Error al verificar estado del video:', err);
+          }
+        }
+        
         const data = await getVideoById(videoId, token);
         setVideoData({
           ...data,
@@ -42,7 +59,7 @@ const VideoCurso = () => {
       }
     };
     fetchVideo();
-  }, [videoId]);
+  }, [videoId, articuloClienteId]);
 
   if (loading) {
     return (
@@ -97,6 +114,39 @@ const VideoCurso = () => {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+        {/* Botón para marcar como completado */}
+        {articuloClienteId && (
+          <div className="flex flex-col items-center my-4">
+            <button
+              className={`px-4 py-2 rounded text-white transition-colors ${completado ? 'bg-green-500' : 'bg-primary-600 hover:bg-primary-700'} ${completando ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={completado || completando}
+              onClick={async () => {
+                setCompletando(true);
+                setMensaje("");
+                try {
+                  const encryptedToken = localStorage.getItem('authToken');
+                  const token = useDecryptToken(encryptedToken);
+                  await marcarVideoComoVisto(articuloClienteId, videoId, token);
+                  setCompletado(true);
+                  setMensaje("¡Video marcado como completado!");
+                } catch (e) {
+                  setMensaje("Error al marcar como completado");
+                } finally {
+                  setCompletando(false);
+                }
+              }}
+            >
+              {completado ? 'Completado' : completando ? 'Marcando...' : 'Marcar como completado'}
+            </button>
+            {mensaje && <div className="mt-2 text-sm text-gray-700">{mensaje}</div>}
+            <button
+              className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded transition-colors"
+              onClick={() => navigate('/curso', { state: { cursoId: articuloClienteId } })}
+            >
+              Volver a los videos del curso
+            </button>
           </div>
         )}
       </div>
