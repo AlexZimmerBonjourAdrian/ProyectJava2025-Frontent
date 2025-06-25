@@ -14,4 +14,41 @@
     background: #eaf0f1;
     min-height: 100vh;
     padding: 24px;
+    transition: all 0.3s ease;
+}
+
+
+/* Estilos para curso completado */
+
+.curso-container.completado {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 3px solid #28a745;
+}
+
+
+/* Estilos para el botón cuando el curso está terminado */
+
+.curso-button.terminado {
+    background: #28a745 !important;
+    color: #fff !important;
+    cursor: default;
+}
+
+
+/* Animación para el marco verde */
+
+@keyframes completadoGlow {
+    0% {
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+    }
+}
+
+.curso-container.completado {
+    animation: completadoGlow 2s ease-in-out infinite;
 }

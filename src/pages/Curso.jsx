@@ -78,26 +78,90 @@ export default function Curso() {
     fetchCurso();
   }, [cursoId]);
 
+  // Efecto para actualizar el estado cuando se regrese de la página de video
+  useEffect(() => {
+    const handleFocus = async () => {
+      if (cursoId && !loading) {
+        try {
+          const encryptedToken = localStorage.getItem('authToken');
+          const token = useDecryptToken(encryptedToken);
+          if (token) {
+            const articuloCliente = await getArticuloClienteUsuario(cursoId, token);
+            if (articuloCliente.videosVistos) {
+              setVideosVistos(new Set(articuloCliente.videosVistos));
+            }
+          }
+        } catch (err) {
+          console.log('Error al actualizar videos vistos:', err);
+        }
+      }
+    };
+
+    // Actualizar cuando la ventana recupere el foco (usuario regresa de otra página)
+    window.addEventListener('focus', handleFocus);
+    
+    // También actualizar cuando se detecte un cambio en el localStorage
+    const handleStorageChange = (e) => {
+      if (e.key === 'videosVistos' || e.key === 'authToken') {
+        handleFocus();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [cursoId, loading]);
+
+  // Función para verificar si todos los videos están completados
+  const isCursoCompletado = () => {
+    if (!curso || !curso.videos || curso.videos.length === 0) return false;
+    return curso.videos.every(video => videosVistos.has(video.id));
+  };
+
+  // Función para obtener las clases CSS del contenedor
+  const getCursoContainerClasses = () => {
+    const baseClasses = 'curso-container';
+    return isCursoCompletado() ? `${baseClasses} completado` : baseClasses;
+  };
+
+  // Función para obtener las clases CSS del botón
+  const getBotonClasses = () => {
+    const baseClasses = 'curso-button';
+    return isCursoCompletado() ? `${baseClasses} terminado` : baseClasses;
+  };
+
+  // Función para obtener el texto del botón
+  const getBotonTexto = () => {
+    if (isCursoCompletado()) {
+      return "TERMINADO";
+    }
+    return "CONTINUAR DESDE DONDE LO DEJE";
+  };
+
   if (loading) return <div className="curso-container">Cargando curso...</div>;
   if (error) return <div className="curso-container">{error}</div>;
   if (!curso) return null;
 
   const { nombre, descripcion, videoPresentacion, videos = [] } = curso;
+  const cursoCompletado = isCursoCompletado();
 
   return (
-    <div className="curso-container">
+    <div className={getCursoContainerClasses()}>
       <CursoHeader />
       <div style={{ textAlign: 'center', marginTop: 24 }}>
         <h1 style={{ color: '#6d2941', fontWeight: 700, fontSize: 42, marginBottom: 0 }}>{nombre || 'NOMBRE DEL CURSO'}</h1>
         <div style={{ color: '#d4af37', fontWeight: 700, fontSize: 22, marginBottom: 18 }}>CURSO</div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
           {videoPresentacion ? (
-            <video width="600" height="340" controls style={{ border: '4px solid #d4af37', background: '#eee' }}>
+            <video width="600" height="340" controls style={{ border: cursoCompletado ? '4px solid #28a745' : '4px solid #d4af37', background: '#eee' }}>
               <source src={videoPresentacion} type="video/mp4" />
               Tu navegador no soporta el video.
             </video>
           ) : (
-            <div style={{ width: 600, height: 340, border: '4px solid #d4af37', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64, color: '#ccc' }}>
+            <div style={{ width: 600, height: 340, border: cursoCompletado ? '4px solid #28a745' : '4px solid #d4af37', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64, color: '#ccc' }}>
               ▶
             </div>
           )}
@@ -105,7 +169,9 @@ export default function Curso() {
         <div style={{ maxWidth: 700, margin: '0 auto', color: '#6d2941', fontSize: 18, marginBottom: 18 }}>
           {descripcion || 'Descripcion del curso Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue massa ipsum, quis placerat mauris luctus vel. Maecenas ut felis vel orci ultrices'}
         </div>
-        <BotonContinuar />
+        <BotonContinuar className={getBotonClasses()}>
+          {getBotonTexto()}
+        </BotonContinuar>
       </div>
       <div style={{ margin: '32px auto', maxWidth: 800 }}>
         {videos.map((video, idx) => (
@@ -121,7 +187,9 @@ export default function Curso() {
         ))}
       </div>
       <div className="curso-section">
-        <BotonContinuar className="curso-button" />
+        <BotonContinuar className={getBotonClasses()}>
+          {getBotonTexto()}
+        </BotonContinuar>
       </div>
       <Footer />
     </div>
