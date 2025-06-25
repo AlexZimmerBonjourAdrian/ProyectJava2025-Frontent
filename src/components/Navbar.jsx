@@ -5,7 +5,7 @@ import { useDecryptToken } from "../App";
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-  const { isLoggedIn, isAdmin, logout } = useAuth();
+  const { isLoggedIn, isAdmin, nombre, logout } = useAuth();
 
   // useState(() => {
   //   setToken(localStorage.getItem('authToken'));
@@ -32,7 +32,14 @@ const Navbar = () => {
   return (
     <nav className='navbar'>
       <div className='container'>
-        <Link to="/" className='playfair-display'>SOL FUENTES {isAdmin && ' ~ ADMIN'}</Link>
+        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+          <Link to="/" className='playfair-display'>SOL FUENTES {isAdmin && ' ~ ADMIN'}</Link>
+          {isLoggedIn && nombre && (
+            <span className="user-name-navbar" style={{fontWeight: 500, color: '#cca43b', fontSize: '1.1rem'}}>
+              {nombre}
+            </span>
+          )}
+        </div>
         
         <div className='nav'>
           

@@ -337,48 +337,67 @@ const CarritoComponent = () => {
         <div key="cart-summary" style={{ background: primaryColor, borderRadius: borderRadius, padding: 30, flex: 1, minWidth: 340, maxWidth: 700, boxShadow: '0 4px 24px rgba(233,143,174,0.13)' }}>
           {/* Productos en carrito */}
           {carrito.items.map((item, index) => {
-            console.log('Item del carrito:', item);
             return (
-            <div key={`item-${item.id}-${index}`} className="carrito-item">
-              <div key={`imagen-${item.id}-${index}`} className="item-imagen">
-                {item.imagen ? (
-                  <img key={`img-${item.id}-${index}`} src={item.imagen} alt={item.nombre} />
-                ) : (
-                  <div key={`placeholder-${item.id}-${index}`} className="placeholder-imagen">
-                    <svg width="36" height="36" fill="#aaa" viewBox="0 0 24 24"><rect width="100%" height="100%" rx="8" fill="#eee"/><text x="50%" y="55%" textAnchor="middle" fontSize="18" fill="#aaa">✕</text></svg>
-                  </div>
-                )}
-              </div>
-              <div key={`info-${item.id}-${index}`} className="item-detalles">
-                <h3 key={`nombre-${item.id}-${index}`}>{item.nombre}</h3>
-                <p key={`descripcion-${item.id}-${index}`}>{item.descripcion}</p>
-                <p key={`autor-${item.id}-${index}`}>{item.autor}</p>
-                <div key={`precio-container-${item.id}-${index}`} className="item-precio">
-                  ${item.precio}
-                </div>
-              </div>
-              <button 
-                key={`eliminar-${item.id}-${index}`}
-                onClick={() => handleEliminarItem(item.id)}
-                style={{ 
-                  background: "none", 
-                  border: "none", 
-                  color: primaryColor, 
-                  fontSize: 26, 
-                  cursor: "pointer", 
-                  borderRadius: 8, 
-                  padding: 4, 
-                  transition: 'background 0.2s' 
+              <div
+                key={`item-${item.id}-${index}`}
+                className="carrito-item"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: '#fff',
+                  borderRadius: 16,
+                  boxShadow: '0 2px 12px rgba(233,143,174,0.10)',
+                  marginBottom: 22,
+                  padding: 18,
+                  gap: 18,
+                  transition: 'box-shadow 0.2s',
+                  border: '1.5px solid #f3c7d6',
+                  position: 'relative',
+                  minHeight: 120
                 }}
-                title="Eliminar"
-                onMouseOver={e => e.currentTarget.style.background = '#f3c7d6'}
-                onMouseOut={e => e.currentTarget.style.background = 'none'}
+                onMouseOver={e => e.currentTarget.style.boxShadow = '0 4px 24px rgba(233,143,174,0.18)'}
+                onMouseOut={e => e.currentTarget.style.boxShadow = '0 2px 12px rgba(233,143,174,0.10)'}
               >
-                <svg key={`delete-icon-${item.id}-${index}`} width="24" height="24" fill={primaryColor} viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2z"/></svg>
-              </button>
-            </div>
-          );
-        })}
+                {/* Imagen o placeholder */}
+                <div style={{ minWidth: 80, minHeight: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fb', borderRadius: 12, overflow: 'hidden', border: '1px solid #eee' }}>
+                  {item.imagen ? (
+                    <img src={item.imagen} alt={item.nombre} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 12 }} />
+                  ) : (
+                    <svg width="48" height="48" fill="#e98fae" viewBox="0 0 24 24"><rect width="100%" height="100%" rx="12" fill="#f3c7d6"/><text x="50%" y="55%" textAnchor="middle" fontSize="22" fill="#e98fae">🎓</text></svg>
+                  )}
+                </div>
+                {/* Info del curso */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontWeight: 700, fontSize: 22, color: '#bfa046', marginBottom: 2 }}>{item.nombre}</div>
+                  <div style={{ fontSize: 15, color: '#222', marginBottom: 2 }}>{item.descripcion}</div>
+                  <div style={{ fontSize: 14, color: '#888', marginBottom: 2 }}>Autor: <span style={{ color: '#e98fae', fontWeight: 600 }}>{item.autor || 'Desconocido'}</span></div>
+                  <div style={{ fontSize: 20, color: '#e98fae', fontWeight: 700, marginTop: 4 }}>${item.precio}</div>
+                </div>
+                {/* Botón eliminar */}
+                <button
+                  onClick={() => handleEliminarItem(item.id)}
+                  style={{
+                    background: '#f8f9fb',
+                    border: 'none',
+                    color: '#e98fae',
+                    fontSize: 22,
+                    cursor: 'pointer',
+                    borderRadius: 8,
+                    padding: 6,
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                    transition: 'background 0.2s'
+                  }}
+                  title="Eliminar"
+                  onMouseOver={e => e.currentTarget.style.background = '#f3c7d6'}
+                  onMouseOut={e => e.currentTarget.style.background = '#f8f9fb'}
+                >
+                  <svg width="22" height="22" fill="#e98fae" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2z"/></svg>
+                </button>
+              </div>
+            );
+          })}
 
           {/* Total */}
           <div key="total-section" style={{ background: cardBg, borderRadius: 10, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 28, fontWeight: 600, color: accentColor, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', marginBottom: 10 }}>

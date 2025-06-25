@@ -16,6 +16,21 @@ const Home = () => {
     return (
         <div>
 
+        {/* Botones Mis Cursos y Carrito para admin en la esquina superior derecha */}
+        {isAdmin && (
+          <div style={{position: 'fixed', top: '24px', right: '40px', zIndex: 200}} className="flex gap-4 items-center">
+            <Link to="/MisCursos" className="mis-cursos-link">
+              <section className='container mis-cursos-container'>
+                Mis Cursos
+                <i className="pi pi-book"></i>
+              </section>
+            </Link>
+            <Link to="/Carrito">
+              <i className="pi pi-shopping-cart" style={{fontSize: '2rem'}}></i>
+            </Link>
+          </div>
+        )}
+
         <main className="main min-h-screen bg-gray-50 flex items-center justify-right py-12 px-6 sm:px-8 lg:px-12">
             <div className="rectangle-container top-0 left-0">
                 <div className="rect sm"></div>
@@ -80,17 +95,13 @@ const Home = () => {
             <VideoComponent videoUrl="https://www.youtube.com/watch?v=Wx-fWmQkwOA" />
         </section>
 
-        {/* Renderizar solo si NO es admin */}
-        {isAdmin && (
-          <>
-            <CursosIncluidos />
-            <BeneficiosCoaching />
-            <Bienvenida />
-            <Testimonios />
-            <PreguntasFrecuentes />
-            <Footer />
-          </>
-        )}
+        {/* Renderizar para todos los usuarios */}
+        <CursosIncluidos />
+        <BeneficiosCoaching />
+        <Bienvenida />
+        <Testimonios />
+        <PreguntasFrecuentes />
+        <Footer />
 
         <section className="services-section flex flex-col items-center justify-center mt-8">
             <h2 className="text-2xl mb-4 playfair-display">
