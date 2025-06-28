@@ -4,22 +4,23 @@ import CryptoJS from 'crypto-js';
 
 // Function to decrypt token
 const decryptToken = (encryptedToken) => {
-  if(!encryptedToken || encryptedToken === 'null') {
-    return null;
-  }
-  try {
-    const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
-    const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
-    const originalToken = bytes.toString(CryptoJS.enc.Utf8);
-    if (!originalToken) {
-      console.error("Error al desencriptar el token: resultado vacío");
-      return null;
+    if (!encryptedToken || encryptedToken === 'null') {
+        return null;
     }
-    return originalToken;
-  } catch (error) {
-    console.error("Error al desencriptar el token:", error);
-    return null;
-  }
+    try {
+        const SECRET_KEY =
+            import.meta.env.VITE_SECRET_KEY;
+        const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+        const originalToken = bytes.toString(CryptoJS.enc.Utf8);
+        if (!originalToken) {
+            console.error("Error al desencriptar el token: resultado vacío");
+            return null;
+        }
+        return originalToken;
+    } catch (error) {
+        console.error("Error al desencriptar el token:", error);
+        return null;
+    }
 };
 
 const useAuth = () => {
@@ -37,7 +38,7 @@ const useAuth = () => {
                     setIsLoading(false);
                     return;
                 }
-                
+
                 const decryptedToken = decryptToken(encryptedToken);
                 if (!decryptedToken) {
                     // Token found but decryption failed, clear token
@@ -46,7 +47,7 @@ const useAuth = () => {
                     setIsLoading(false);
                     return;
                 }
-                
+
                 // Set the decrypted token
                 setToken(decryptedToken);
                 setIsLoading(false);
