@@ -1,24 +1,16 @@
 import React from 'react';
 import { InputText } from 'primereact/inputtext';
-import { RadioButton } from 'primereact/radiobutton';
 import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
 
 export default function ProductFilter({
     searchQuery,
     onSearchChange,
-    category,
-    onCategoryChange,
     priceRange,
     onPriceRangeChange,
     selectedTypes,
     onTypeChange
 }) {
-    const categories = [
-        { name: 'Meditación', value: 'meditacion' },
-        { name: 'Sanación', value: 'sanacion' },
-        { name: 'Feminidad', value: 'feminidad' }
-    ];
 
     return (
         <div className="product-filters">
@@ -34,37 +26,6 @@ export default function ProductFilter({
                         className="w-full"
                     />
                 </span>
-            </div>
-
-            {/* Categorías */}
-            <div className="filter-section">
-                <h3>Categorías</h3>
-                <div className="categories-list">
-                    {categories.map((cat) => (
-                        <div key={cat.value} className="field-radiobutton">
-                            <RadioButton
-                                inputId={cat.value}
-                                name="category"
-                                value={cat.value}
-                                onChange={(e) => onCategoryChange(e.value)}
-                                checked={category === cat.value}
-                            />
-                            <label htmlFor={cat.value}>{cat.name}</label>
-                        </div>
-                    ))}
-                    {category && (
-                        <div className="field-radiobutton">
-                            <RadioButton
-                                inputId="clear"
-                                name="category"
-                                value=""
-                                onChange={(e) => onCategoryChange(e.value)}
-                                checked={category === ""}
-                            />
-                            <label htmlFor="clear">Todas</label>
-                        </div>
-                    )}
-                </div>
             </div>
 
             {/* Rango de Precio */}

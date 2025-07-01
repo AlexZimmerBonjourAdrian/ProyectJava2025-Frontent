@@ -32,14 +32,14 @@ import { AuthProvider } from './context/AuthContext';
 import MisCursos from './pages/MisCursos';
 import VentaCurso from './pages/VentaCurso';
 
-import CryptoJS from 'crypto-js';
+import CryptoJS, { enc } from 'crypto-js';
 import PagoMercadoPago from './pages/PagoMercadoPago';
-
 const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'clave-secreta-123';
 
 // Función para encriptar
 export function encryptToken(token) {
-  return CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
+  const encrypted = CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
+  return encrypted;
 }
 
 // Función para desencriptar
@@ -92,21 +92,21 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/session11" element={<Session11 />} />
       <Route path="/Paquete" element={<Paquete />} />
-      <Route path="/curso/:id" element={<UserRoute><Curso /></UserRoute>} />
-      <Route path="/Curso" element={<UserRoute><Curso /></UserRoute> } />
-      <Route path="/productos" element={<UserRoute><ListadoProductos /></UserRoute>} />
+      <Route path="/curso/:id" element={<Curso />} />
+      <Route path="/Curso" element={<Curso />} />
+      <Route path="/productos" element={<ListadoProductos />} />
 
       <Route path="/VideoCurso" element={<UserRoute><VideoCurso /></UserRoute>} />
       <Route path="/resumen-pago" element={<UserRoute><Pago /></UserRoute>} />
       <Route path="/pago-paypal" element={<UserRoute><PagoPaypal /></UserRoute>} />
       <Route path="/pago-mercado-pago" element={<UserRoute><PagoMercadoPago /></UserRoute>} />
       <Route path="/Carrito" element={<UserRoute><Carrito /></UserRoute>} />
+      <Route path="/MisCursos" element={<UserRoute><MisCursos /></UserRoute>} />
 
       <Route path="/AgregarPaquete" element={<AdminRoute><PaqueteMenu /></AdminRoute>} />
       <Route path="/AgregarCurso" element={<AdminRoute><CursoMenu /></AdminRoute>} />
       <Route path="/ModificarPaquete" element={<AdminRoute><PaqueteModificar /></AdminRoute>} />
       <Route path="/ModificarCurso" element={<AdminRoute><CursoModificacion /></AdminRoute>} />
-      <Route path="/MisCursos" element={<UserRoute><MisCursos /></UserRoute>} />
     
     </Route>
   ),

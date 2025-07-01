@@ -68,7 +68,9 @@ const Login = () => {
             .then(data => {
                 if (data.nombre) {
                     const token = data.token;
-                    login(data.token);
+                    const encripted = encryptToken(token);
+                    localStorage.setItem('authToken', encripted);
+                    login(encripted);
                     navigate(from, { replace: true });
                 }
             })
