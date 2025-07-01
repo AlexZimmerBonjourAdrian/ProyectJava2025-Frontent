@@ -22,6 +22,7 @@ import { Button } from 'primereact/button';
 import { encryptToken } from '../App';
 import { use } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { enc } from 'crypto-js';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -69,7 +70,7 @@ const Login = () => {
                 if (data.nombre) {
                     const token = data.token;
                     const encripted = encryptToken(token);
-                    localStorage.setItem('authToken', encripted);
+                    localStorage.setItem('authToken', token);
                     login(encripted);
                     navigate(from, { replace: true });
                 }

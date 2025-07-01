@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   }, [isLoggedIn]);
 
   const login = (token) => {
-    localStorage.setItem('authToken', encryptToken(token));
+    localStorage.setItem('authToken', token);
     setIsLoggedIn(true);
   };
 
