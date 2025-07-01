@@ -169,9 +169,6 @@ export default function Curso() {
         <div style={{ maxWidth: 700, margin: '0 auto', color: '#6d2941', fontSize: 18, marginBottom: 18 }}>
           {descripcion || 'Descripcion del curso Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue massa ipsum, quis placerat mauris luctus vel. Maecenas ut felis vel orci ultrices'}
         </div>
-        <BotonContinuar className={getBotonClasses()}>
-          {getBotonTexto()}
-        </BotonContinuar>
       </div>
       <div style={{ margin: '32px auto', maxWidth: 800 }}>
         {videos.map((video, idx) => (
@@ -187,9 +184,6 @@ export default function Curso() {
         ))}
       </div>
       <div className="curso-section">
-        <BotonContinuar className={getBotonClasses()}>
-          {getBotonTexto()}
-        </BotonContinuar>
       </div>
       <Footer />
     </div>
