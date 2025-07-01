@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import CursoHeader from "../components/CursoHeader";
+// import CursoHeader from "../components/CursoHeader";
 import CursoIncluidoCard from "../components/CursoIncluidoCard";
 import BotonContinuar from "../components/BotonContinuar";
 import Footer from "../components/Footer";
@@ -150,7 +150,6 @@ export default function Curso() {
 
   return (
     <div className={getCursoContainerClasses()}>
-      <CursoHeader />
       <div style={{ textAlign: 'center', marginTop: 24 }}>
         <h1 style={{ color: '#6d2941', fontWeight: 700, fontSize: 42, marginBottom: 0 }}>{nombre || 'NOMBRE DEL CURSO'}</h1>
         <div style={{ color: '#d4af37', fontWeight: 700, fontSize: 22, marginBottom: 18 }}>CURSO</div>
