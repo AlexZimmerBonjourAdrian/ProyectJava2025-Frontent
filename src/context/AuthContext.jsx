@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useDecryptToken } from "../App";
+import { useDecryptToken, encryptToken } from "../App";
 
 const AuthContext = createContext();
 
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   }, [isLoggedIn]);
 
   const login = (token) => {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('authToken', encryptToken(token));
     setIsLoggedIn(true);
   };
 

@@ -43,7 +43,7 @@ export function encryptToken(token) {
 }
 
 // Función para desencriptar
-export function useDecryptToken(encryptedToken, location) {
+export function useDecryptToken(encryptedToken) {
   if(!encryptedToken || encryptedToken === 'null') {
     return null;
   }
@@ -70,10 +70,16 @@ const UserRoute = ({ children }) => {
 const AdminRoute = ({ children }) => {
   const location = useLocation?.();
   const token = localStorage.getItem('authToken');
-  const isAdmin = token && JSON.parse(atob(useDecryptToken(token)?.split('.')[1])).authorities.find(
-      (element) => element === 'ADMIN'
-    );
-
+  const decrypted = useDecryptToken(token);
+  let isAdmin = false;
+  if (typeof decrypted === 'string' && decrypted.split('.').length === 3) {
+    try {
+      const decoded = JSON.parse(atob(decrypted.split('.')[1]));
+      isAdmin = decoded.authorities && decoded.authorities.includes('ADMIN');
+    } catch (e) {
+      isAdmin = false;
+    }
+  }
   return isAdmin ? children : <Navigate to="/login" state={{ from: location?.pathname }} replace />;
 };
 
