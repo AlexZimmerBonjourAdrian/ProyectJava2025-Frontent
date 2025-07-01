@@ -68,8 +68,11 @@ const Login = () => {
             .then(data => {
                 if (data.nombre) {
                     const token = data.token;
-                    localStorage.setItem('authToken', encryptToken(token));
-                    login(data.token);
+                    console.log('Token recibido:', token);
+                    const encripted = encryptToken(token);
+                    console.log('token encriptado guardado:', encripted);
+                    localStorage.setItem('authToken', encripted);
+                    login(encripted);
                     navigate(from, { replace: true });
                 }
             })

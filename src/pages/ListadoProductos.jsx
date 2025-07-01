@@ -14,8 +14,7 @@ export default function ListadoProductos() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [category, setCategory] = useState('');
-    const [priceRange, setPriceRange] = useState([0, 100]);
+    const [priceRange, setPriceRange] = useState([0, 1000]);
     const [selectedTypes, setSelectedTypes] = useState({
         paquetes: true,
         cursos: true
@@ -25,88 +24,87 @@ export default function ListadoProductos() {
     const toast = useRef(null);
     const { token } = useAuth();
     const navigate = useNavigate();
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [first, setFirst] = useState(0); // índice del primer elemento a mostrar
+    const rowsPerPage = 6;
     
     const API_URL = import.meta.env.VITE_API_URL;
 
+    const fetchProducts = async (page = 0) => {
+        setIsLoadingData(true);
+        try {
+            const params = new URLSearchParams({
+                pagina: page,
+                cantidad: rowsPerPage,
+            });
+
+            if (searchQuery) params.append("search", searchQuery);
+
+            params.append("precioMin", priceRange[0]);
+            params.append("precioMax", priceRange[1]);
+
+            // Agregar filtros por tipo (curso o paquete)
+            const tiposSeleccionados = [];
+            if (selectedTypes.cursos) tiposSeleccionados.push("curso");
+            if (selectedTypes.paquetes) tiposSeleccionados.push("paquete");
+
+            if (tiposSeleccionados.length > 0) {
+                params.append("tipos", tiposSeleccionados.join(","));
+            }
+            
+            console.log('params', params.toString());
+            const res = await fetch(`${API_URL}/api/articulos/paginado?${params.toString()}`, {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+            console.log('res', res);
+            const data = await res.json();
+            console.log('data', data);
+            const productos = data.content.map(art => ({
+                ...art,
+                tipo: art.videos ? 'curso' : 'paquete',
+                precio: parseFloat(art.precio || 0),
+                precioOriginal: parseFloat(art.precioOriginal || art.precio || 0)
+            }));
+
+            setProducts(productos);
+            setFilteredProducts(productos);
+            setTotalRecords(data.totalElements);
+        } catch (err) {
+            console.error("Error al cargar productos:", err);
+        } finally {
+            setIsLoadingData(false);
+        }
+            setIsLoadingData(false);
+
+    };
+
     // Cargar cursos y paquetes
     useEffect(() => {
-        const fetchProducts = async () => {
-            setIsLoadingData(true);
-            try {
-                let cursosData = [];
-                let paquetesData = [];
+        fetchProducts(0);
+    }, [token, searchQuery, selectedTypes]);
 
-                // Intentar obtener cursos
-                try {
-                    cursosData = await getAllCursos(token);
-                } catch (error) {
-                    console.error('Error al cargar cursos:', error);
-                }
+    useEffect(() => {
+        fetch(`${API_URL}/api/articulos/max-precio`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Max price data:', data);
+                const maxPrice = parseFloat(data || 0);
+                console.log('Max price:', maxPrice);
+                setPriceRange([0, maxPrice]);
+                fetchProducts(0)
+            })
+            .catch(err => {
+                console.error("Error al obtener el precio máximo:", err);
+            });
+    }, []);
 
-                // Intentar obtener paquetes
-                try {
-                    paquetesData = await getAllPaquetes(token);
-                } catch (error) {
-                    console.error('Error al cargar paquetes:', error);
-                }
-
-                // Si no hay datos y no hay token, redirigir al login
-                if (cursosData.length === 0 && paquetesData.length === 0 && !token) {
-                    toast.current.show({
-                        severity: 'info',
-                        summary: 'Iniciar sesión',
-                        detail: 'Por favor, inicia sesión para ver los productos',
-                        life: 3000
-                    });
-                    navigate('/login');
-                    return;
-                }
-
-                // Formatear cursos
-                const formattedCursos = cursosData.map(curso => ({
-                    ...curso,
-                    tipo: 'curso',
-                    precio: parseFloat(curso.precio || 0),
-                    precioOriginal: parseFloat(curso.precioOriginal || curso.precio || 0)
-                }));
-
-                // Formatear paquetes
-                const formattedPaquetes = paquetesData.map(paquete => ({
-                    ...paquete,
-                    tipo: 'paquete',
-                    precio: parseFloat(paquete.precio || 0),
-                    precioOriginal: parseFloat(paquete.precioOriginal || paquete.precio || 0)
-                }));
-
-                // Combinar y establecer productos
-                const allProducts = [...formattedCursos, ...formattedPaquetes];
-                
-                if (allProducts.length > 0) {
-                    // Encontrar el rango de precios
-                    const prices = allProducts.map(p => p.precio).filter(p => !isNaN(p));
-                    const minPrice = Math.floor(Math.min(...prices));
-                    const maxPrice = Math.ceil(Math.max(...prices));
-                    setPriceRange([minPrice, maxPrice]);
-                }
-
-                setProducts(allProducts);
-                setFilteredProducts(allProducts);
-
-            } catch (error) {
-                console.error('Error al cargar productos:', error);
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudieron cargar los productos',
-                    life: 3000
-                });
-            } finally {
-                setIsLoadingData(false);
-            }
-        };
-
-        fetchProducts();
-    }, [token, navigate]);
+    const handlePageChange = (e) => {
+        const newPage = e.first / rowsPerPage;
+        setFirst(e.first);
+        fetchProducts(newPage);
+    };
 
     // Filtrar productos
     useEffect(() => {
@@ -120,11 +118,6 @@ export default function ListadoProductos() {
             );
         }
 
-        // Filtrar por categoría
-        if (category) {
-            result = result.filter(product => product.categoria === category);
-        }
-
         // Filtrar por rango de precio
         result = result.filter(product => 
             product.precio >= priceRange[0] && product.precio <= priceRange[1]
@@ -136,8 +129,8 @@ export default function ListadoProductos() {
             (selectedTypes.cursos && product.tipo === 'curso')
         );
 
-        setFilteredProducts(result);
-    }, [searchQuery, category, priceRange, selectedTypes, products]);
+        //setFilteredProducts(result);
+    }, [searchQuery, priceRange, selectedTypes, products]);
 
     const handleAddToCart = async (product) => {
         if (!token) {
@@ -204,8 +197,6 @@ export default function ListadoProductos() {
                 <ProductFilter 
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
-                    category={category}
-                    onCategoryChange={setCategory}
                     priceRange={priceRange}
                     onPriceRangeChange={setPriceRange}
                     selectedTypes={selectedTypes}
@@ -227,8 +218,12 @@ export default function ListadoProductos() {
                         </div>
                     )}
                     layout='grid'
-                    rows={9}
+                    rows={rowsPerPage}
                     paginator
+                    lazy
+                    totalRecords={totalRecords}
+                    first={first}
+                    onPage={(e) => handlePageChange(e)}
                     loading={isLoadingData}
                     emptyMessage={token ? "No se encontraron productos" : "Inicia sesión para ver los productos"}
                 />
