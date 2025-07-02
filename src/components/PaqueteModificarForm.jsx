@@ -156,7 +156,7 @@ const PaqueteModificarForm = () => {
         <h2 className="paquete-form-title">
           <span className="paquete-form-title-main">MODIFICAR PAQUETE</span>
         </h2>
-        <label className="paquete-form-label">Seleccionar curso</label>
+        <label className="paquete-form-label">Seleccionar paquete</label>
         <select
           className="paquete-form-input"
           value={paqueteSeleccionado}
