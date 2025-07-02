@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import VideoPopUp from "./VideoPopUp";
 import { Messages } from 'primereact/messages';
-import CryptoJS from 'crypto-js';
+import { useDecryptToken } from "../App";
 
 const CursoForm = () => {
   const msgs = useRef(null);
@@ -42,28 +42,15 @@ const CursoForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!nombre || !descripcion || !videoLink || !linkPresentacion || precio <= 0 || videos.length === 0) {
-            msgs.current.clear();
-            msgs.current.show([
-                { sticky: true, severity: 'error', summary: 'Error', detail: 'Rellene todos los campos' },
-            ]);
-            return;
-        }
-
+    if (!nombre || !descripcion || !linkPresentacion || precio <= 0 || videos.length === 0) {
+      msgs.current.clear();
+      msgs.current.show([
+        { sticky: true, severity: 'error', summary: 'Error', detail: 'Rellene todos los campos' },
+      ]);
+      return;
+    }
      try{
-      const encryptedToken = localStorage.getItem('authToken');
-      if (!encryptedToken) {
-        msgs.current.clear();
-        msgs.current.show([
-          { sticky: true, severity: 'error', summary: 'Error', detail: 'No se encontró token de autenticación. Por favor, inicie sesión nuevamente.' },
-        ]);
-        return;
-      }
-      
-      // Decrypt the token
-      const bytes = CryptoJS.AES.decrypt(encryptedToken, import.meta.env.VITE_SECRET_KEY);
-      const token = bytes.toString(CryptoJS.enc.Utf8);
-      
+      const token = useDecryptToken(localStorage.getItem('authToken'));
       if (!token) {
         msgs.current.clear();
         msgs.current.show([
@@ -81,6 +68,7 @@ const CursoForm = () => {
         precio: precio,
         activo: true
       }
+      console.log('Enviando datos del curso:', body);
       fetch(`${API_URL}/api/curso`, {
           method: 'POST',
           headers: {
@@ -150,7 +138,6 @@ const CursoForm = () => {
             placeholder="https://www.youtube.com/watch?"
             value={videoLink}
             onChange={(e) => setVideoLink(e.target.value)}
-            required
           />
           <button
             type="button"

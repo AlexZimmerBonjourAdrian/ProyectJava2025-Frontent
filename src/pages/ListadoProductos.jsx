@@ -64,9 +64,11 @@ export default function ListadoProductos() {
                 precioOriginal: parseFloat(art.precioOriginal || art.precio || 0)
             }));
 
-            setProducts(productos);
+            setProducts([...productos, {'a': 'b'}]);
+
+            console.log('productos', productos);
             setFilteredProducts(productos);
-            setTotalRecords(data.totalElements);
+            setTotalRecords(data.totalElements + 1);
         } catch (err) {
             console.error("Error al cargar productos:", err);
         } finally {

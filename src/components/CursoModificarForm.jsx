@@ -217,13 +217,6 @@ const CursoModificarForm = () => {
             <span>＋</span>
           </button>
         </div>
-        <input
-          className="paquete-form-input"
-          type="text"
-          placeholder="Nombre video"
-          value={videoNombre}
-          onChange={(e) => setVideoNombre(e.target.value)}
-        />
         <div className="paquete-form-cursos-list">
           {videos.map((video, idx) => (
             <div className="paquete-form-curso-item" key={idx}>

@@ -48,11 +48,8 @@ export function useDecryptToken(encryptedToken) {
     return null;
   }
   try {
-    console.log('Desencriptando token:', encryptedToken);
     const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
-    console.log('Bytes desencriptados:', bytes);
     const originalToken = bytes.toString(CryptoJS.enc.Utf8);
-    console.log('Token desencriptado:', originalToken);
     if (!originalToken) { // Si la desencriptación resulta en una cadena vacía
         console.error("Error al desencriptar el token: resultado vacío");
         return null;
