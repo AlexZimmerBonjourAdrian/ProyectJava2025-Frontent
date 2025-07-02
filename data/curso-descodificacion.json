@@ -1,0 +1,23 @@
+{
+    "nombre": "Curso de Descodificación",
+    "descripcion": "Aprende las técnicas fundamentales de descodificación para transformar tu vida y liberarte de patrones limitantes. Este curso te guiará a través de un proceso profundo de autoconocimiento y sanación.",
+    "precio": 30,
+    "videoPresentacion": "",
+    "videos": [{
+            "nombre": "Introducción a la Descodificación",
+            "descripcion": "Fundamentos básicos y principios de la descodificación biológica",
+            "link": "https://www.youtube.com/watch?v=afZt5lyMtfQ&list=PL-M9syEP4gJvLNifq9qEm176pcGIBxDdR"
+        },
+        {
+            "nombre": "Técnicas de Descodificación",
+            "descripcion": "Métodos prácticos para aplicar la descodificación en tu vida diaria",
+            "link": "https://www.youtube.com/watch?v=STm4kASROPI&list=PL-M9syEP4gJvLNifq9qEm176pcGIBxDdR&index=2"
+        },
+        {
+            "nombre": "Descodificación Avanzada",
+            "descripcion": "Técnicas avanzadas para casos complejos y transformación profunda",
+            "link": "https://www.youtube.com/watch?v=i7mg80piAQQ&list=PL-M9syEP4gJvLNifq9qEm176pcGIBxDdR&index=3"
+        }
+    ],
+    "activo": true
+}

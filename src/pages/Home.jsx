@@ -89,20 +89,6 @@ const Home = () => {
                     )}
             </div>
         </main>
-
-
-        <section className="video-section flex flex-col items-center justify-center mt-8">
-            <VideoComponent videoUrl="https://www.youtube.com/watch?v=Wx-fWmQkwOA" />
-        </section>
-
-        {/* Renderizar para todos los usuarios */}
-        <CursosIncluidos />
-        <BeneficiosCoaching />
-        <Bienvenida />
-        <Testimonios />
-        <PreguntasFrecuentes />
-        <Footer />
-
         <section className="services-section flex flex-col items-center justify-center mt-8">
             <h2 className="text-2xl mb-4 playfair-display">
                 SESIONES PERSONALES<br /> CON UNA GENIO DEL COACHING
@@ -122,6 +108,19 @@ const Home = () => {
                 <div className="rect w-sm"></div>
             </div>
         </section>
+
+        <section className="video-section flex flex-col items-center justify-center mt-8">
+            <VideoComponent videoUrl="https://www.youtube.com/watch?v=Wx-fWmQkwOA" />
+        </section>
+
+        {/* Renderizar para todos los usuarios */}
+        <CursosIncluidos />
+        <BeneficiosCoaching />
+        <Bienvenida />
+        <Testimonios />
+        <PreguntasFrecuentes />
+        <Footer />
+
         </div>
     )
 }

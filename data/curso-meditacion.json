@@ -1,0 +1,23 @@
+{
+    "nombre": "Curso de Meditación",
+    "descripcion": "Aprende las técnicas fundamentales de meditación para encontrar paz interior, reducir el estrés y mejorar tu bienestar general. Este curso te guiará desde los conceptos básicos hasta prácticas avanzadas.",
+    "precio": 40,
+    "videoPresentacion": "",
+    "videos": [{
+            "nombre": "Introducción a la Meditación",
+            "descripcion": "Conceptos básicos y preparación para la práctica meditativa",
+            "link": "https://www.youtube.com/watch?v=SoWmBluQpvA"
+        },
+        {
+            "nombre": "Técnicas de Respiración",
+            "descripcion": "Ejercicios de respiración para mejorar la concentración y relajación",
+            "link": "https://www.youtube.com/watch?v=FdOB06fuyLE"
+        },
+        {
+            "nombre": "Meditación Guiada",
+            "descripcion": "Sesiones de meditación guiada para diferentes objetivos",
+            "link": "https://www.youtube.com/watch?v=wq52u41Lmjw"
+        }
+    ],
+    "activo": true
+}

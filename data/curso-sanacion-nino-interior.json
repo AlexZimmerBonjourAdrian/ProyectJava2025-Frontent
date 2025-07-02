@@ -1,0 +1,18 @@
+{
+    "nombre": "Sanación del Niño Interior",
+    "descripcion": "Embárcate en un viaje de sanación profunda para conectar y curar tu niño interior. Aprende técnicas terapéuticas para liberar heridas del pasado y crear una base sólida para tu bienestar emocional.",
+    "precio": 14,
+    "videoPresentacion": "",
+    "videos": [{
+            "nombre": "Conectando con tu Niño Interior",
+            "descripcion": "Técnicas para establecer una conexión profunda con tu niño interior",
+            "link": "https://www.youtube.com/watch?v=g6GkJi_0ogM"
+        },
+        {
+            "nombre": "Sanación y Liberación",
+            "descripcion": "Proceso de sanación y liberación de heridas emocionales",
+            "link": "https://www.youtube.com/watch?v=QP-Adc_gJE8"
+        }
+    ],
+    "activo": true
+}

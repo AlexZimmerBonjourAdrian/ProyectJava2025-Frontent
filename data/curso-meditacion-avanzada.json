@@ -1,0 +1,23 @@
+{
+    "nombre": "Curso Avanzado de Meditación",
+    "descripcion": "Profundiza en técnicas avanzadas de meditación para alcanzar estados superiores de consciencia. Este curso está diseñado para practicantes experimentados que buscan llevar su práctica meditativa al siguiente nivel.",
+    "precio": 70,
+    "videoPresentacion": "",
+    "videos": [{
+            "nombre": "Meditación Profunda",
+            "descripcion": "Técnicas para alcanzar estados profundos de meditación",
+            "link": "https://www.youtube.com/watch?v=xBHf42p_AM4"
+        },
+        {
+            "nombre": "Meditación Trascendental",
+            "descripcion": "Prácticas para trascender la mente y alcanzar la consciencia pura",
+            "link": "https://www.youtube.com/watch?v=Zoe7vuReotE&list=PLbsq99xmN-MOudrKK-p0SKF0IN-f2OA8S&index=5"
+        },
+        {
+            "nombre": "Estados Superiores de Consciencia",
+            "descripcion": "Exploración de estados avanzados de consciencia y realización espiritual",
+            "link": "https://www.youtube.com/watch?v=428yCBB4QW0&list=PLbsq99xmN-MOudrKK-p0SKF0IN-f2OA8S&index=6"
+        }
+    ],
+    "activo": true
+}

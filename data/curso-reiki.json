@@ -1,0 +1,18 @@
+{
+    "nombre": "Curso de Reiki",
+    "descripcion": "Descubre el poder curativo del Reiki y aprende a canalizar la energía universal para la sanación. Este curso te enseñará los principios fundamentales y técnicas prácticas de esta ancestral práctica de sanación energética.",
+    "precio": 20,
+    "videoPresentacion": "",
+    "videos": [{
+            "nombre": "Fundamentos del Reiki",
+            "descripcion": "Introducción a los principios básicos y la filosofía del Reiki",
+            "link": "https://www.youtube.com/watch?v=Fq5BQCh-F60"
+        },
+        {
+            "nombre": "Técnicas de Sanación Reiki",
+            "descripcion": "Aplicación práctica de técnicas de sanación energética",
+            "link": "https://www.youtube.com/watch?v=-pK_YOMeXnM"
+        }
+    ],
+    "activo": true
+}
