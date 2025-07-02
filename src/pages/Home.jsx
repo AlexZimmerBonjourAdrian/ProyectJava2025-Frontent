@@ -36,6 +36,36 @@ const Home = () => {
                 <div className="rect sm"></div>
                 <div className="rect bg"></div>
             </div>
+
+            <div className="nav-home">
+                {isLoggedIn && (
+                            <>
+                              <Link to="/MisCursos" className="mis-cursos-link">
+                                <section className='container mis-cursos-container'>
+                                  Mis Cursos
+                                  <i className="pi pi-book"></i>
+                                </section>
+                              </Link>
+                              <Link to="/Carrito">
+                                <i className="pi pi-shopping-cart"></i>
+                              </Link>
+                              <Link to="/login" onClick={logout}>
+                                <section className='container log-out'>
+                                  Cerrar Sesion
+                                  <i className="pi pi-sign-out"></i>
+                                </section>
+                              </Link>
+                            </>
+                          )}
+                       
+                
+                          {!isLoggedIn && (
+                            <>
+                              <Link to="/login">Iniciar Sesión</Link>
+                              <Link to="/register">Registrarse</Link>
+                            </>
+                          )}
+            </div>
             
             <div className="w-full max-w-[1800px] mx-auto flex flex-col items-center justify-center text-center">
                 <h1 className="heading playfair-display text-center">
@@ -51,20 +81,18 @@ const Home = () => {
                             </button>
                         </Link>
                     )}
-                    {isAdmin && (
-                    <section className="admin-section">
-                        <h3 className="playfair-display">PAQUETES</h3>
-                        <h3 className="playfair-display">CURSOS</h3>
+                    {isAdmin && (<>
+                    <section className="admin-listado">
+
                         <Link to="/productos"> 
                             <button className="boton-dorado p-button-primary text-md px-6 py-3">
                                 LISTADO DE PAQUETES 
                             </button>
                         </Link>
-                        <Link to="/productos">
-                            <button className="boton-dorado p-button-primary text-md px-6 py-3">
-                                LISTADO DE CURSOS
-                            </button>
-                        </Link>
+                    </section>
+                    <section className="admin-section">
+                        <h3 className="playfair-display">PAQUETES</h3>
+                        <h3 className="playfair-display">CURSOS</h3>
                         <Link to="/AgregarPaquete">
                             <button className="boton-dorado p-button-primary text-md px-6 py-3">
                                 NUEVO PAQUETE
@@ -86,7 +114,7 @@ const Home = () => {
                             </button>
                         </Link>
                     </section>
-                    )}
+                    </>)}
             </div>
         </main>
         <section className="services-section flex flex-col items-center justify-center mt-8">
