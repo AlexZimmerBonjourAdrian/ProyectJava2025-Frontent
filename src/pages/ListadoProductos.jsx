@@ -11,10 +11,11 @@ import ProductCard from '../components/productos/ProductCard';
 import './ListadoProductos.css';
 
 export default function ListadoProductos() {
+    const [max, setMax] = useState(1000);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [priceRange, setPriceRange] = useState([0, 1000]);
+    const [priceRange, setPriceRange] = useState([0, max]);
     const [selectedTypes, setSelectedTypes] = useState({
         paquetes: true,
         cursos: true
@@ -53,15 +54,12 @@ export default function ListadoProductos() {
             }
             
             console.log('params', params.toString());
-            const res = await fetch(`${API_URL}/api/articulos/paginado?${params.toString()}`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {}
-            });
+            const res = await fetch(`${API_URL}/api/articulos/paginado?${params.toString()}`);
             console.log('res', res);
             const data = await res.json();
             console.log('data', data);
             const productos = data.content.map(art => ({
                 ...art,
-                tipo: art.videos ? 'curso' : 'paquete',
                 precio: parseFloat(art.precio || 0),
                 precioOriginal: parseFloat(art.precioOriginal || art.precio || 0)
             }));
@@ -81,18 +79,17 @@ export default function ListadoProductos() {
     // Cargar cursos y paquetes
     useEffect(() => {
         fetchProducts(0);
-    }, [token, searchQuery, selectedTypes]);
+    }, [token, searchQuery, selectedTypes, priceRange]);
 
     useEffect(() => {
-        fetch(`${API_URL}/api/articulos/max-precio`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {}
-        })
+        fetch(`${API_URL}/api/articulos/max-precio`)
             .then(res => res.json())
             .then(data => {
                 console.log('Max price data:', data);
                 const maxPrice = parseFloat(data || 0);
                 console.log('Max price:', maxPrice);
                 setPriceRange([0, maxPrice]);
+                setMax(maxPrice);
                 fetchProducts(0)
             })
             .catch(err => {

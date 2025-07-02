@@ -14,7 +14,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     position: sticky;
-    top: 1rem;
+    top: 5rem;
     height: fit-content;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -268,4 +268,25 @@
 
 .p-dataview .p-grid {
     margin: -0.5rem;
+}
+
+.product-card{
+    position: relative;
+}
+
+.tipoProd{
+    border: 1px solid #f8d7e3;
+    border-radius: 1rem;
+    padding: 0 4px;
+    background-color: var(--primary-color);
+    width:fit-content;
+    color: #000;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.tipoPaq{
+    background-color: var(--primary-gold);
+
 }

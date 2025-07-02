@@ -27,7 +27,9 @@ export default function ProductCard({ product, onAddToCart, loading }) {
             <Button
                 label="Añadir"
                 icon="pi pi-shopping-cart"
-                onClick={() => onAddToCart(product)}
+                onClick={() => {
+                    onAddToCart(product)
+                }}
                 loading={loading}
                 className="add-to-cart-button p-button-sm"
             />
@@ -41,6 +43,8 @@ export default function ProductCard({ product, onAddToCart, loading }) {
             className="product-card"
         >
             <div className="product-content">
+                <section className={('tipoProd ' + (product.tipo == "paquete" ? 'tipoPaq' : ''))}>{product.tipo}</section>
+
                 <h3 className="product-title">{product.nombre || "NOMBRE DEL PAQUETE"}</h3>
                 <p className="product-description">
                     {product.descripcion || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut conque massa ipsum, quis placerat mauris luctus vel."}
