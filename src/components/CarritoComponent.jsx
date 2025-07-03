@@ -47,7 +47,6 @@ const CarritoComponent = () => {
                   nombre: item.nombre || 'Error al cargar nombre',
                   precio: item.precio || 0, // O quizás item.precio si el carrito básico lo trae
                   descripcion: item.descripcion || 'Error al cargar descripción.',
-                  autor: item.autor || 'Error al cargar autor'
                 };
               }
             } else {
@@ -57,7 +56,6 @@ const CarritoComponent = () => {
                   nombre: item.nombre || 'Artículo sin referencia',
                   precio: item.precio || 0, // O quizás item.precio si el carrito básico lo trae
                   descripcion: item.descripcion || 'Sin descripción referenciada.',
-                  autor: item.autor || 'Autor desconocido'
                 };
             }
           });
@@ -370,7 +368,6 @@ const CarritoComponent = () => {
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <div style={{ fontWeight: 700, fontSize: 22, color: '#bfa046', marginBottom: 2 }}>{item.nombre}</div>
                   <div style={{ fontSize: 15, color: '#222', marginBottom: 2 }}>{item.descripcion}</div>
-                  <div style={{ fontSize: 14, color: '#888', marginBottom: 2 }}>Autor: <span style={{ color: '#e98fae', fontWeight: 600 }}>{item.autor || 'Desconocido'}</span></div>
                   <div style={{ fontSize: 20, color: '#e98fae', fontWeight: 700, marginTop: 4 }}>${item.precio}</div>
                 </div>
                 {/* Botón eliminar */}
